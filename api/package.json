@@ -1,0 +1,13 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "API for JISPEN application",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": {
+    "name": "Nikita Tashchilin",
+    "email": "nikita.tashilin@gmail.com"
+  },
+  "license": "ISC"
+}
