@@ -14,7 +14,9 @@
     "allowJs": false,
     "strictNullChecks": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   }
 }
 
