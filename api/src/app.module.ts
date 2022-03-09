@@ -1,10 +1,18 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { AuthModule } from "./auth/auth.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { postgresConfig } from "./configs/postgres.config";
 
 @Module({
-	imports: [],
-	controllers: [AppController],
-	providers: [AppService],
+	imports: [
+		ConfigModule.forRoot(),
+		TypeOrmModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: postgresConfig,
+			inject: [ConfigService],
+		}),
+		AuthModule,
+	],
 })
 export class AppModule {}
