@@ -4,9 +4,9 @@
 Create a program for waste management and registration in medical institutions with the possibility of importing data into ENVITA with the subsequent creation of an annual report on waste production
 
 ### Technologies:
-Database: PostgreSQL 13\
-Back-end: NodeJS, TypeScript, NestJS, Prisma\
-Front-end: Typescript, React, Material-UI
+Database: PostgreSQL 14\
+Back-end: TypeScript, NodeJS, NestJS, TypeORM\
+Front-end: Typescript, ReactJS, NextJS, Tailwind
 
 ### Database design:
 <img src="https://user-images.githubusercontent.com/63300936/145693348-a8bb8c2d-0579-4c83-b159-e56218decaeb.png" width="600" />
