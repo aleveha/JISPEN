@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+    db:
+        container_name: jispen-postgres
+        image: postgres:14.1-alpine
+        restart: always
+        env_file:
+            - ./database/.env
+        volumes:
+            - db:/var/lib/postgresql/data
+            - ./database/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+    api:
+        container_name: jispen-api
+        build:
+            context: ./api
+            target: prod
+        depends_on:
+            - db
+        ports:
+            - "8000:8000"
+        env_file:
+            - ./api/.env
+        links:
+            - db
+        volumes:
+            - ./api:/api
+            - /api/node_modules
+        command: node ./dist/main.js
+
+    web:
+        container_name: jispen-web
+        build:
+            context: ./web
+            target: prod
+        depends_on:
+            - api
+        ports:
+            - "3000:3000"
+        env_file:
+            - ./web/.env
+        links:
+            - api
+        volumes:
+            - ./web:/web
+            - /web/node_modules
+        command: node_modules/.bin/next start
+
+
+volumes:
+    db:
+        driver: local
