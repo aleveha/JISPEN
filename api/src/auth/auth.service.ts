@@ -1,9 +1,9 @@
 import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserModel } from "./user.model";
+import { UserModel } from "../models/user.model";
 import { Repository } from "typeorm";
 import { AuthorizationDto, ConfirmRegistrationDto } from "./dto/authorizationDto";
-import { genSalt, hash, compare } from "bcryptjs";
+import { compare, genSalt, hash } from "bcryptjs";
 
 @Injectable()
 export class AuthService {

@@ -1,6 +1,6 @@
+import { join } from "path";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { UserModel } from "../auth/user.model";
 
 export const postgresConfig = async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
 	type: "postgres",
@@ -9,6 +9,6 @@ export const postgresConfig = async (configService: ConfigService): Promise<Type
 	username: configService.get<string>("DATABASE_USER"),
 	password: configService.get<string>("DATABASE_PASS"),
 	database: configService.get<string>("DATABASE_NAME"),
-	entities: [UserModel],
+	entities: [join(__dirname, "..", "models", "*.model.{ts,js}")],
 	synchronize: false,
 });

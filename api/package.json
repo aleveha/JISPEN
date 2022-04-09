@@ -11,7 +11,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "dev": "nest start --watch",
+    "dev": "NODE_ENV=local nest start --watch",
     "debug": "nest start --debug --watch",
     "start": "node dist/main",
     "lint": "eslint --fix",
