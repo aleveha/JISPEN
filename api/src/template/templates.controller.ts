@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, Post, Query } from "@nestjs/co
 import { TemplateDto } from "./dto/templateDto";
 import { CatalogueService } from "./catalogue.service";
 import { TemplatesService } from "./templates.service";
+import { LoadingCodeModel } from "../models/loadingCode.model";
 import { TemplateModel } from "../models/template.model";
 import { TerritorialUnitModel } from "../models/territorialUnit.model";
 import { WasteModel } from "../models/waste.model";
@@ -41,5 +42,10 @@ export class TemplatesController {
 	@Get("zipcodes")
 	async getZipcodes(): Promise<ZipcodeModel[]> {
 		return await this.catalogueService.getZipCodes();
+	}
+
+	@Get("loading-codes")
+	async getLoadingCodes(): Promise<LoadingCodeModel[]> {
+		return await this.catalogueService.getLoadingCodes();
 	}
 }

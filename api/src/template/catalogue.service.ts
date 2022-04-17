@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { LoadingCodeModel } from "../models/loadingCode.model";
 import { TerritorialUnitModel } from "../models/territorialUnit.model";
 import { WasteModel } from "../models/waste.model";
 import { ZipcodeModel } from "../models/zipcode.model";
@@ -8,6 +9,8 @@ import { ZipcodeModel } from "../models/zipcode.model";
 @Injectable()
 export class CatalogueService {
 	constructor(
+		@InjectRepository(LoadingCodeModel)
+		private readonly loadingCodeRepository: Repository<LoadingCodeModel>,
 		@InjectRepository(TerritorialUnitModel)
 		private readonly territorialUnitRepository: Repository<TerritorialUnitModel>,
 		@InjectRepository(WasteModel)
@@ -26,5 +29,9 @@ export class CatalogueService {
 
 	public async getTerritorialUnits(): Promise<TerritorialUnitModel[]> {
 		return await this.territorialUnitRepository.find();
+	}
+
+	public async getLoadingCodes(): Promise<LoadingCodeModel[]> {
+		return await this.loadingCodeRepository.find();
 	}
 }
