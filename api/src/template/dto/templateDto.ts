@@ -1,3 +1,7 @@
+import { LoadingCodeModel } from "../../models/loadingCode.model";
+import { WasteModel } from "../../models/waste.model";
+import { WasteCompanyModel } from "../../models/wasteCompany.model";
+
 export interface AddressDto {
 	city: string;
 	street: string;
@@ -26,4 +30,7 @@ export interface TemplateDto {
 	medicalCompanyId?: number;
 	medicalCompany: MedicalCompanyDto;
 	expireAt?: Date;
+	loadingCodes: LoadingCodeModel[];
+	wastes: WasteModel[];
+	wasteCompanies: WasteCompanyModel[];
 }

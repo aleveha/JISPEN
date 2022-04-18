@@ -8,19 +8,24 @@ import { TemplateModel } from "../models/template.model";
 
 @Injectable()
 export class TemplatesService {
+	private readonly TEMPLATE_RELATIONS = ["user", "medicalCompany", "medicalCompany.address", "medicalCompany.address.zipcode", "medicalCompany.territorialUnit", "loadingCodes", "wastes", "wasteCompanies"];
+
 	public constructor(
 		@InjectRepository(AddressModel)
-		private addressRepository: Repository<AddressModel>,
+		private readonly addressRepository: Repository<AddressModel>,
 		@InjectRepository(MedicalCompanyModel)
-		private medicalCompanyRepository: Repository<MedicalCompanyModel>,
+		private readonly medicalCompanyRepository: Repository<MedicalCompanyModel>,
 		@InjectRepository(TemplateModel)
-		private templateRepository: Repository<TemplateModel>
+		private readonly templateRepository: Repository<TemplateModel>
 	) {}
 
 	public async getAll(userId: number): Promise<TemplateModel[]> {
 		return await this.templateRepository.find({
 			where: { userId: userId },
-			relations: ["user", "medicalCompany", "medicalCompany.address", "medicalCompany.address.zipcode", "medicalCompany.territorialUnit"],
+			relations: this.TEMPLATE_RELATIONS,
+			order: {
+				id: "DESC",
+			},
 		});
 	}
 
@@ -72,7 +77,7 @@ export class TemplatesService {
 				title: title,
 				userId: userId,
 			},
-			{ relations: ["user", "medicalCompany", "medicalCompany.address", "medicalCompany.address.zipcode", "medicalCompany.territorialUnit"] }
+			{ relations: this.TEMPLATE_RELATIONS }
 		);
 	}
 
@@ -99,6 +104,7 @@ export class TemplatesService {
 
 	private async createTemplate(template: TemplateDto): Promise<TemplateModel> {
 		const newTemplate = await this.templateRepository.create(template);
-		return await this.templateRepository.save(newTemplate);
+		await this.templateRepository.save(newTemplate);
+		return await this.getUserTemplateByTitle(newTemplate.title, newTemplate.userId);
 	}
 }

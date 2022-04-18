@@ -9,10 +9,11 @@ import { MedicalCompanyModel } from "../models/medicalCompany.model";
 import { TemplateModel } from "../models/template.model";
 import { TerritorialUnitModel } from "../models/territorialUnit.model";
 import { WasteModel } from "../models/waste.model";
+import { WasteCompanyModel } from "../models/wasteCompany.model";
 import { ZipcodeModel } from "../models/zipcode.model";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([AddressModel, LoadingCodeModel, MedicalCompanyModel, TemplateModel, TerritorialUnitModel, WasteModel, ZipcodeModel])],
+	imports: [TypeOrmModule.forFeature([AddressModel, LoadingCodeModel, MedicalCompanyModel, TemplateModel, TerritorialUnitModel, WasteModel, WasteCompanyModel, ZipcodeModel])],
 	controllers: [TemplatesController],
 	providers: [CatalogueService, TemplatesService],
 })

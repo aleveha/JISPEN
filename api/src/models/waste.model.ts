@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { TemplateModel } from "./template.model";
 
 @Entity("waste")
 export class WasteModel extends BaseEntity {
@@ -16,4 +17,7 @@ export class WasteModel extends BaseEntity {
 
 	@Column()
 	certificate: string;
+
+	@ManyToMany(() => TemplateModel, template => template.wastes)
+	templates: TemplateModel[];
 }

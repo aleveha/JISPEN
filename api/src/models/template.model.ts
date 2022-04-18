@@ -1,6 +1,9 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { UserModel } from "./user.model";
+import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { LoadingCodeModel } from "./loadingCode.model";
 import { MedicalCompanyModel } from "./medicalCompany.model";
+import { UserModel } from "./user.model";
+import { WasteModel } from "./waste.model";
+import { WasteCompanyModel } from "./wasteCompany.model";
 
 @Entity("template")
 export class TemplateModel extends BaseEntity {
@@ -26,4 +29,23 @@ export class TemplateModel extends BaseEntity {
 
 	@Column({ name: "expired_at" })
 	expiredAt?: Date;
+
+	@JoinTable({
+		name: "template_loading_code",
+		joinColumn: { name: "loading_code_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "template_id", referencedColumnName: "id" },
+	})
+	@ManyToMany(() => LoadingCodeModel, loadingCode => loadingCode.templates)
+	loadingCodes: LoadingCodeModel[];
+
+	@JoinTable({
+		name: "template_waste",
+		joinColumn: { name: "waste_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "template_id", referencedColumnName: "id" },
+	})
+	@ManyToMany(() => WasteModel, waste => waste.templates)
+	wastes: WasteModel[];
+
+	@OneToMany(() => WasteCompanyModel, wasteCompany => wasteCompany.template)
+	wasteCompanies: WasteCompanyModel[];
 }
