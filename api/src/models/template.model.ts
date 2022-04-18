@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { LoadingCodeModel } from "./loadingCode.model";
 import { MedicalCompanyModel } from "./medicalCompany.model";
+import { RecordModel } from "./record.model";
 import { UserModel } from "./user.model";
 import { WasteModel } from "./waste.model";
 import { WasteCompanyModel } from "./wasteCompany.model";
@@ -48,4 +49,7 @@ export class TemplateModel extends BaseEntity {
 
 	@OneToMany(() => WasteCompanyModel, wasteCompany => wasteCompany.template)
 	wasteCompanies: WasteCompanyModel[];
+
+	@OneToMany(() => RecordModel, record => record.template)
+	records: RecordModel[];
 }

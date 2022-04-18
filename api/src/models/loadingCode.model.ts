@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { RecordModel } from "./record.model";
 import { TemplateModel } from "./template.model";
 
 @Entity("loading_code")
@@ -11,6 +12,9 @@ export class LoadingCodeModel extends BaseEntity {
 
 	@Column()
 	name: string;
+
+	@OneToMany(() => RecordModel, record => record.loadingCode)
+	records: RecordModel[];
 
 	@ManyToMany(() => TemplateModel, template => template.loadingCodes)
 	templates: TemplateModel[];

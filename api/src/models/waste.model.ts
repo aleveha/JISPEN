@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { RecordModel } from "./record.model";
 import { TemplateModel } from "./template.model";
 
 @Entity("waste")
@@ -20,4 +21,7 @@ export class WasteModel extends BaseEntity {
 
 	@ManyToMany(() => TemplateModel, template => template.wastes)
 	templates: TemplateModel[];
+
+	@OneToMany(() => RecordModel, record => record.waste)
+	records: RecordModel[];
 }

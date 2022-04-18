@@ -1,5 +1,6 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { AddressModel } from "./address.model";
+import { RecordModel } from "./record.model";
 import { TerritorialUnitModel } from "./territorialUnit.model";
 import { TemplateModel } from "./template.model";
 
@@ -37,4 +38,7 @@ export class WasteCompanyModel extends BaseEntity {
 	@JoinColumn({ name: "template_id" })
 	@ManyToOne(() => TemplateModel, template => template.wasteCompanies)
 	template: TemplateModel;
+
+	@OneToMany(() => RecordModel, record => record.wasteCompany)
+	records: RecordModel[];
 }
