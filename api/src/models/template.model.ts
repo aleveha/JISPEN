@@ -32,16 +32,16 @@ export class TemplateModel extends BaseEntity {
 
 	@JoinTable({
 		name: "template_loading_code",
-		joinColumn: { name: "loading_code_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "template_id", referencedColumnName: "id" },
+		joinColumn: { name: "template_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "loading_code_id", referencedColumnName: "id" },
 	})
 	@ManyToMany(() => LoadingCodeModel, loadingCode => loadingCode.templates)
 	loadingCodes: LoadingCodeModel[];
 
 	@JoinTable({
 		name: "template_waste",
-		joinColumn: { name: "waste_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "template_id", referencedColumnName: "id" },
+		joinColumn: { name: "template_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "waste_id", referencedColumnName: "id" },
 	})
 	@ManyToMany(() => WasteModel, waste => waste.templates)
 	wastes: WasteModel[];

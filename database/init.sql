@@ -224,7 +224,7 @@ ALTER TABLE template_loading_code
 ALTER TABLE template_loading_code
     ADD CONSTRAINT template_loading_code_template
         FOREIGN KEY (template_id)
-            REFERENCES template (id)
+            REFERENCES template (id) ON DELETE CASCADE
             NOT DEFERRABLE
                 INITIALLY IMMEDIATE
 ;
@@ -251,7 +251,7 @@ ALTER TABLE template
 ALTER TABLE template_waste
     ADD CONSTRAINT template_waste_template
         FOREIGN KEY (template_id)
-            REFERENCES template (id)
+            REFERENCES template (id) ON DELETE CASCADE
             NOT DEFERRABLE
                 INITIALLY IMMEDIATE
 ;
