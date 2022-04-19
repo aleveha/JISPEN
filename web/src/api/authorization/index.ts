@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { apiClient } from "@api/config";
 import { ApiError, ApiReturnType } from "@api/config/types";
 import { axiosErrorHelper } from "@api/utils/apiErrorHelper";
-import { LoginFormValues } from "@forms/authorization/loginForm";
+import { LoginFormValues } from "@zones/authorization/forms/loginForm";
 import { User } from "./types";
 
 export async function loginUser(data: LoginFormValues): Promise<ApiReturnType<User>> {

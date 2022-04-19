@@ -23,17 +23,14 @@
       "@api/*": [
         "src/api/*"
       ],
-      "@forms/*": [
-        "src/components/forms/*"
-      ],
       "@ui/*": [
-        "src/components/ui/*"
-      ],
-      "@pages/*": [
-        "src/pages/*"
+        "src/ui/*"
       ],
       "@state/*": [
         "src/states/*"
+      ],
+      "@zones/*": [
+        "src/zones/*"
       ]
     }
   },
