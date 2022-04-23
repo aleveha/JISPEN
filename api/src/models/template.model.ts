@@ -47,7 +47,7 @@ export class TemplateModel extends BaseEntity {
 	@ManyToMany(() => WasteModel, waste => waste.templates)
 	wastes: WasteModel[];
 
-	@OneToMany(() => WasteCompanyModel, wasteCompany => wasteCompany.template)
+	@OneToMany(() => WasteCompanyModel, wasteCompany => wasteCompany.template, { cascade: true })
 	wasteCompanies: WasteCompanyModel[];
 
 	@OneToMany(() => RecordModel, record => record.template)

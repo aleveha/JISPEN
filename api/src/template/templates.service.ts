@@ -1,8 +1,7 @@
 import { Repository } from "typeorm";
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AddressDto, MedicalCompanyDto, TemplateDto } from "./dto/templateDto";
-import { AddressModel } from "../models/address.model";
+import { MedicalCompanyDto, TemplateDto } from "./dto/templateDto";
 import { MedicalCompanyModel } from "../models/medicalCompany.model";
 import { TemplateModel } from "../models/template.model";
 
@@ -11,8 +10,6 @@ export class TemplatesService {
 	private readonly TEMPLATE_RELATIONS = ["user", "medicalCompany", "medicalCompany.address", "medicalCompany.address.zipcode", "medicalCompany.territorialUnit", "loadingCodes", "wastes", "wasteCompanies"];
 
 	public constructor(
-		@InjectRepository(AddressModel)
-		private readonly addressRepository: Repository<AddressModel>,
 		@InjectRepository(MedicalCompanyModel)
 		private readonly medicalCompanyRepository: Repository<MedicalCompanyModel>,
 		@InjectRepository(TemplateModel)
@@ -44,12 +41,7 @@ export class TemplatesService {
 			});
 		}
 
-		const createdAddress = await this.createAddress(template.medicalCompany.address);
-		const createdMedicalCompany = await this.createMedicalCompany({
-			...template.medicalCompany,
-			addressId: createdAddress.id,
-			address: createdAddress,
-		});
+		const createdMedicalCompany = await this.createMedicalCompany(template.medicalCompany);
 		return await this.createTemplate({
 			...template,
 			medicalCompanyId: createdMedicalCompany.id,
@@ -90,11 +82,6 @@ export class TemplatesService {
 			},
 			{ relations: ["address", "address.zipcode", "territorialUnit"] }
 		);
-	}
-
-	private async createAddress(address: AddressDto): Promise<AddressModel> {
-		const newAddress = await this.addressRepository.create(address);
-		return await this.addressRepository.save(newAddress);
 	}
 
 	private async createMedicalCompany(medicalCompany: MedicalCompanyDto): Promise<MedicalCompanyModel> {

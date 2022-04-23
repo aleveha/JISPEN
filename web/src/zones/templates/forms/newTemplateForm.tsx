@@ -64,9 +64,19 @@ export const NewTemplateForm: FC = () => {
 			})),
 		};
 
-		createTemplate(requestObject).then(() => {
-			router.push("/templates");
-		});
+		createTemplate(requestObject)
+			.then(res => {
+				if (res.data) {
+					router.push("/templates").then(() => {
+						toast.success("Šablona úspěšně vytvořena");
+					});
+					return;
+				}
+				toast.error("Nepodařilo se vytvořit šablonu");
+			})
+			.catch(() => {
+				toast.error("Nepodařilo se vytvořit šablonu");
+			});
 	}, []);
 
 	const onExit = useCallback(() => {

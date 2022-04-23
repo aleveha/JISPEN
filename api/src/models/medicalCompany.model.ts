@@ -29,7 +29,7 @@ export class MedicalCompanyModel extends BaseEntity {
 	addressId: number;
 
 	@JoinColumn({ name: "address_id" })
-	@OneToOne(() => AddressModel)
+	@OneToOne(() => AddressModel, { cascade: true })
 	address: AddressModel;
 
 	@Column({ name: "contact_firstname" })

@@ -18,6 +18,9 @@ export class WasteCompanyModel extends BaseEntity {
 	@Column()
 	name: string;
 
+	@Column()
+	type: number;
+
 	@Column({ name: "territorial_unit_id" })
 	territorialUnitId: number;
 
@@ -29,7 +32,7 @@ export class WasteCompanyModel extends BaseEntity {
 	addressId: number;
 
 	@JoinColumn({ name: "address_id" })
-	@OneToOne(() => AddressModel)
+	@OneToOne(() => AddressModel, { cascade: true })
 	address: AddressModel;
 
 	@Column({ name: "template_id" })
