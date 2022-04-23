@@ -96,6 +96,7 @@ const CreateFormSection: FC<FormikProps<CreateRecordValues>> = props => {
 
 export const CreateRecordForm: FC = () => {
 	const router = useRouter();
+
 	const onSubmit = useCallback<FormikConfig<CreateRecordValues>["onSubmit"]>(values => {
 		createRecord({
 			amount: values.amount ?? 0,
@@ -113,6 +114,8 @@ export const CreateRecordForm: FC = () => {
 		});
 	}, []);
 
+	const onBack = useCallback(() => router.back(), [router]);
+
 	return (
 		<Formik<CreateRecordValues>
 			initialValues={{}}
@@ -123,7 +126,9 @@ export const CreateRecordForm: FC = () => {
 				<Form className="space-y-6 divide-y divide-gray-200">
 					<CreateFormSection {...props} />
 					<div className="w-full flex justify-end gap-x-8 py-8">
-						<Button variant={ButtonType.white}>Zpět</Button>
+						<Button variant={ButtonType.white} onClick={onBack}>
+							Zpět
+						</Button>
 						<Button type="submit">Vytvořit evidenci</Button>
 					</div>
 				</Form>

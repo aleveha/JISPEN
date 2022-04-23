@@ -15,7 +15,7 @@ import { ButtonType } from "@ui/button/types";
 const RecordsHomeComponent: NextPage = () => {
 	const router = useRouter();
 	const [user] = useRecoilState(userState);
-	const [records, setRecords] = useState<Record[]>([]);
+	const [records, setRecords] = useState<Record[] | null>(null);
 
 	useEffect(() => {
 		if (!user) {
@@ -40,13 +40,17 @@ const RecordsHomeComponent: NextPage = () => {
 			});
 	}, []);
 
-	if (records.length == 0) {
-		return <p className="text-xl text-grey">Zatím nemáte žádné evidenci</p>;
+	if (!records) {
+		return null;
 	}
 
 	return (
 		<div className="h-max">
-			<RecordsTable data={records} onDataChange={setRecords} />
+			{records.length === 0 ? (
+				<p className="text-xl text-grey">Zatím nemáte žádné evidence</p>
+			) : (
+				<RecordsTable data={records} onDataChange={setRecords} />
+			)}
 			<div className="w-full flex justify-end items-center mt-8">
 				<Link href="/records/new" passHref>
 					<Button variant={ButtonType.primary}>Nový záznam</Button>

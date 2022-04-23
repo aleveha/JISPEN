@@ -19,7 +19,7 @@ interface TemplatePageProps extends Record<string, unknown> {
 const TemplatesHomePage: NextPage<TemplatePageProps> = () => {
 	const router = useRouter();
 	const [user] = useRecoilState(userState);
-	const [templates, setTemplates] = useState<Template[]>([]);
+	const [templates, setTemplates] = useState<Template[] | null>(null);
 
 	const onDataChanged = useCallback((templates: Template[]) => {
 		setTemplates(templates);
@@ -48,13 +48,17 @@ const TemplatesHomePage: NextPage<TemplatePageProps> = () => {
 			});
 	}, [user, router]);
 
-	if (templates.length == 0) {
-		return <p className="text-xl text-grey">Zatím nemáte žádné šablony</p>;
+	if (!templates) {
+		return null;
 	}
 
 	return (
 		<div className="h-max">
-			<TemplatesTable data={templates} onDataChange={onDataChanged} />
+			{templates.length == 0 ? (
+				<p className="text-xl text-grey">Zatím nemáte žádné šablony</p>
+			) : (
+				<TemplatesTable data={templates} onDataChange={onDataChanged} />
+			)}
 			<div className="w-full flex justify-end items-center mt-8">
 				<Link href="/templates/new" passHref>
 					<Button variant={ButtonType.primary}>Nová šablona</Button>

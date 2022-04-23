@@ -13,7 +13,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 			<RecoilRoot>
 				<Component {...pageProps} />
 			</RecoilRoot>
-			<Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+			<Toaster toastOptions={{ duration: 4000, position: "top-center" }} />
 		</>
 	);
 }

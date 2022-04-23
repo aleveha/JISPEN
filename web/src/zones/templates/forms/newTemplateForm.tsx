@@ -64,8 +64,6 @@ export const NewTemplateForm: FC = () => {
 			})),
 		};
 
-		console.log(JSON.stringify(requestObject, null, 2));
-
 		createTemplate(requestObject).then(() => {
 			router.push("/templates");
 		});

@@ -3,7 +3,6 @@ services:
     db:
         container_name: jispen-postgres
         image: postgres:14.1-alpine
-        restart: always
         env_file:
             - ./database/.env
         volumes:
