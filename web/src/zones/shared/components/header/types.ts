@@ -3,4 +3,7 @@ export interface HeaderTab {
 	label: string;
 }
 
-export const HeaderTabs: HeaderTab[] = [{ href: "/templates", label: "Šablony" }];
+export const HeaderTabs: HeaderTab[] = [
+	{ href: "/templates", label: "Šablony" },
+	{ href: "/records", label: "Evidence" },
+];

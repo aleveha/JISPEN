@@ -6,6 +6,7 @@ import { AutocompleteOption, AutocompleteProps } from "@ui/autocomlete/types";
 
 export const Autocomplete = <T extends AutocompleteOption>({
 	data,
+	disabled,
 	displayValueKey,
 	errorMessage,
 	filterBy,
@@ -34,12 +35,12 @@ export const Autocomplete = <T extends AutocompleteOption>({
 	);
 
 	return (
-		<Combobox value={selectedOption} onChange={onValueChange}>
-			<div className="relative">
+		<Combobox value={selectedOption} onChange={onValueChange} disabled={disabled}>
+			<div className="relative max-w-md">
 				<Combobox.Input
 					autoComplete={props.autoComplete}
 					className={clsx(
-						"p-4 rounded-lg max-w-lg w-full tracking-wider border border-grey outline-none",
+						"p-4 rounded-lg w-full tracking-wider border border-grey outline-none",
 						isError && "outline outline-red border-transparent"
 					)}
 					displayValue={(item: T | null) => (item ? String(item[displayValueKey]) : "")}
@@ -49,7 +50,11 @@ export const Autocomplete = <T extends AutocompleteOption>({
 					onBlur={field.onBlur}
 					placeholder={props.placeholder}
 				/>
-				{isError && <div className="absolute my-2 text-base text-red">{Object.values(error)[0]}</div>}
+				{isError && (
+					<div className="absolute my-2 text-base text-red">
+						{typeof error === "string" ? error : String(Object.values(error)[0])}
+					</div>
+				)}
 				<Combobox.Options className="absolute z-50 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-lg border border-grey max-h-72 focus:outline-none">
 					{filteredData.length === 0 && query !== "" ? (
 						<p className="cursor-default select-none relative py-2 px-4 text-gray-700">{errorMessage}</p>

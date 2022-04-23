@@ -47,7 +47,7 @@ const LoginFormComponent: FC = () => {
 		}
 
 		setUser(user);
-		router.push("/templates").then(() => toast.success("Vítejte v aplikaci JISPEN", { id: loadingToastId }));
+		router.push("/").then(() => toast.success("Vítejte v aplikaci JISPEN", { id: loadingToastId }));
 
 		resetForm();
 	}, []);

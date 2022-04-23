@@ -6,7 +6,7 @@ import { HeaderTab } from "./types";
 
 export const HeaderButton: FC<HeaderTab> = ({ href, label }) => {
 	const router = useRouter();
-	const isActive = href === router.route;
+	const isActive = router.route.includes(href);
 
 	return (
 		<Link href={href}>

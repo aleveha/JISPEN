@@ -13,7 +13,7 @@ const InputComponent: FC<InputProps & FieldProps> = props => {
 		<div className={className}>
 			<input
 				className={clsx(
-					"p-4 rounded-lg max-w-lg w-full tracking-wider border border-grey outline-none",
+					"p-4 rounded-lg max-w-md w-full tracking-wider border border-grey outline-none",
 					isError ? "outline outline-red border-transparent mb-1" : "mb-10"
 				)}
 				type={type}

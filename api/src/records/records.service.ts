@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RecordDto } from "./dto/recordDto";
 import { RecordModel } from "../models/record.model";
@@ -11,10 +11,12 @@ export class RecordsService {
 		private readonly recordsRepository: Repository<RecordModel>
 	) {}
 
-	public async getAll(templateId: number): Promise<RecordModel[]> {
+	public async getAll(userId: number): Promise<RecordModel[]> {
 		return await this.recordsRepository.find({
 			where: {
-				templateId: templateId,
+				template: {
+					userId: userId,
+				},
 			},
 			relations: [
 				"loadingCode",
@@ -30,10 +32,27 @@ export class RecordsService {
 				"wasteCompany.address.zipcode",
 				"wasteCompany.template",
 			],
+			order: {
+				id: "DESC",
+			},
 		});
 	}
 
 	public async create(record: RecordDto): Promise<RecordModel> {
 		return await this.recordsRepository.save(record);
+	}
+
+	public async delete(recordId: number): Promise<RecordModel> {
+		const recordToBeDeleted = await this.recordsRepository.findOne({ id: recordId });
+		if (!recordToBeDeleted) {
+			throw new BadRequestException();
+		}
+
+		const result = await this.recordsRepository.delete({ id: recordId });
+		if (result.affected === 0) {
+			throw new InternalServerErrorException();
+		}
+
+		return recordToBeDeleted;
 	}
 }
