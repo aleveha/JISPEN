@@ -292,6 +292,19 @@ ALTER TABLE waste_company
                 INITIALLY IMMEDIATE
 ;
 
+-- Initialize loading codes
+INSERT INTO loading_code(uid, name)
+VALUES ('A00', 'Produkce odpadu (vlastní vyprodukovaný odpad)'),
+       ('A20', 'Primární produkce odpadu (produkce převzetím lékárnou odpadu léčiv)'),
+       ('AN3', 'Předání jiné oprávněné osobě (kromě přepravce, dopravce)'),
+       ('AN5', 'Odpad, který nebyl předán a zůstává na skladě k 31.12.'),
+       ('B00', 'Odpad převzatý od původce, jiné oprávněné osoby, nebo jiné provozovny'),
+       ('BN3', 'Předání jiné oprávněné osobě (kromě přepravce, dopravce)'),
+       ('BN5', 'Odpad, který nebyl předán a zůstává na skladě k 31.12.'),
+       ('C00', 'Množství odpadu převedené z minulého roku'),
+       ('CN3', 'Předání jiné oprávněné osobě (kromě přepravce, dopravce)'),
+       ('CN5', 'Odpad, který nebyl předán a zůstává na skladě k 31.12.');
+
 -- Initialize waste table
 INSERT INTO waste(uid, name, category)
 VALUES ('150101', 'Papírové a lepenkové obaly', 'O/N'),
