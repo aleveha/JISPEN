@@ -46,7 +46,7 @@ const TemplatesHomePage: NextPage<TemplatePageProps> = () => {
 			.catch(() => {
 				toast.error("Vyskytla se\xa0chyba během načítání šablon");
 			});
-	}, [user, router, templates]);
+	}, [user, router]);
 
 	if (!templates) {
 		return null;
