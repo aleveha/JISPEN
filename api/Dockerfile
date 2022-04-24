@@ -1,14 +1,14 @@
 FROM node:16-alpine as develop
-WORKDIR /api
+WORKDIR /usr/app
 ADD package.json yarn.lock ./
 RUN yarn install
 ADD . .
 RUN yarn build
 
 FROM node:16-alpine as prod
-WORKDIR /api
+WORKDIR /usr/app
 ADD package.json yarn.lock ./
 RUN yarn install --prod
-COPY --from=develop /api/dist ./dist
+COPY --from=develop /usr/app/dist ./dist
 
 CMD ["node", "./dist/main.js"]
