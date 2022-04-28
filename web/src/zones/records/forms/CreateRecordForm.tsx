@@ -43,7 +43,7 @@ const CreateFormSection: FC<FormikProps<CreateRecordValues>> = props => {
 		<div className="space-y-10">
 			<Autocomplete<Template>
 				name="template"
-				placeholder="Vyberte šablónu"
+				placeholder="Vyberte šablonu"
 				data={templates}
 				displayValueKey="title"
 				errorMessage="Žadná šablona nebyla nalezena"
@@ -65,7 +65,7 @@ const CreateFormSection: FC<FormikProps<CreateRecordValues>> = props => {
 					name="amount"
 					type="number"
 					component={Input}
-					placeholder="Zadejte množstvi (tůny)"
+					placeholder="Zadejte množství (tuny)"
 					disabled={!template}
 				/>
 				<Autocomplete<LoadingCode>
@@ -129,7 +129,7 @@ export const CreateRecordForm: FC = () => {
 						<Button variant={ButtonType.white} onClick={onBack}>
 							Zpět
 						</Button>
-						<Button type="submit">Vytvořit evidenci</Button>
+						<Button type="submit">Vytvořit záznam</Button>
 					</div>
 				</Form>
 			)}

@@ -60,7 +60,7 @@ export const MedicalCompanySection: FC<AddressCatalogue> = ({ territorialUnits, 
 					className="w-1/4"
 					component={Input}
 					name="medicalCompany.contactPersonLastName"
-					placeholder="Přijmení"
+					placeholder="Příjmení"
 				/>
 				<Field
 					className="w-1/4"

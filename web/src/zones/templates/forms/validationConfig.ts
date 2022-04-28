@@ -31,8 +31,8 @@ export const newTemplateFormSchema = object({
 		address: addressObject,
 		contactPersonName: string(),
 		contactPersonLastName: string(),
-		contactPersonPhone: string().matches(/^\+\d*$/, "Špatný format (+420...)"),
-		contactPersonEmail: string().email("Špatný format e-mailu"),
+		contactPersonPhone: string().matches(/^\+\d*$/, "Špatný formát (+420...)"),
+		contactPersonEmail: string().email("Špatný formát e-mailu"),
 	}),
 	wastes: array()
 		.of(

@@ -66,7 +66,7 @@ const LoginFormComponent: FC = () => {
 						component={Input}
 						id="email"
 						name="email"
-						placeholder="Uživatelské jmeno (e-mail)"
+						placeholder="Uživatelské jméno (e-mail)"
 						type="email"
 					/>
 					<Field
