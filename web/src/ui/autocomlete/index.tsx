@@ -29,16 +29,19 @@ export const Autocomplete = <T extends AutocompleteOption>({
 			? data
 			: data.filter(item => String(item[filterBy]).toLowerCase().includes(query.toLowerCase()));
 
-	const selectedOption = useMemo(
-		() => data.find(option => (field.value ? option.id === field.value.id : null)),
-		[data, field.value]
-	);
+	const selectedOption = useMemo(() => {
+		if (data.length === 1) {
+			setValue(data[0]);
+			return data[0];
+		}
+		return data.find(option => (field.value ? option.id === field.value.id : null));
+	}, [data, field.value]);
 
 	return (
 		<Combobox value={selectedOption} onChange={onValueChange} disabled={disabled}>
 			<div className="relative max-w-md">
 				<Combobox.Input
-					autoComplete={props.autoComplete}
+					autoComplete={props.autoComplete ?? "off"}
 					className={clsx(
 						"p-4 rounded-lg w-full tracking-wider border border-grey outline-none",
 						isError && "outline outline-red border-transparent"
