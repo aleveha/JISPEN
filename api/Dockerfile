@@ -1,14 +1,13 @@
-FROM node:16-alpine as develop
-WORKDIR /usr/app
-ADD package.json yarn.lock ./
+FROM node:16-alpine as deps
+WORKDIR /tmp
+COPY package.json yarn.lock ./
 RUN yarn install
-ADD . .
+COPY . .
 RUN yarn build
+RUN yarn install --production --ignore-scripts --prefer-offline
+RUN mv dist /home/node && mv node_modules /home/node
 
 FROM node:16-alpine as prod
-WORKDIR /usr/app
-ADD package.json yarn.lock ./
-RUN yarn install --prod
-COPY --from=develop /usr/app/dist ./dist
-
-CMD ["node", "./dist/main.js"]
+COPY --from=deps /home/node /home/node
+WORKDIR /home/node/dist
+CMD ["node", "main.js"]

@@ -1,20 +1,14 @@
 FROM node:16-alpine as deps
-WORKDIR /usr/app
-ADD package.json yarn.lock ./
+WORKDIR /tmp
+COPY package.json yarn.lock ./
 RUN yarn install
-
-FROM node:16-alpine as builder
-ENV NODE_ENV=production
-WORKDIR /usr/app
-ADD . .
-COPY --from=deps /usr/app/node_modules ./node_modules
+COPY . .
 RUN yarn build
+RUN mv public .next/standalone/public && \
+    mv .next/static .next/standalone/.next/static && \
+    mv .next/standalone /home/node
 
 FROM node:16-alpine AS prod
-WORKDIR /usr/app
-ENV NODE_ENV=production
-COPY --from=builder /usr/app/next.config.js ./
-COPY --from=builder /usr/app/public ./public
-COPY --from=builder /usr/app/.next ./.next
-COPY --from=builder /usr/app/node_modules ./node_modules
-CMD ["node_modules/.bin/next", "start"]
+COPY --from=deps /home/node /home/node
+WORKDIR /home/node/standalone
+CMD ["node", "server.js"]

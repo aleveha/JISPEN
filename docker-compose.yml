@@ -22,10 +22,7 @@ services:
             - ./api/.env
         links:
             - db
-        volumes:
-            - ./api:/api
-            - /api/node_modules
-        command: node ./dist/main.js
+        command: node main.js
 
     web:
         container_name: jispen-web
@@ -40,10 +37,7 @@ services:
             - ./web/.env
         links:
             - api
-        volumes:
-            - ./web:/web
-            - /web/node_modules
-        command: node_modules/.bin/next start
+        command: node server.js
 
     nginx:
         image: nginx:alpine
