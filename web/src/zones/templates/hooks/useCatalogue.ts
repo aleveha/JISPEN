@@ -1,60 +1,68 @@
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 import { getLoadingCodes, getTerritorialUnits, getWaste, getZipCodes } from "@api/templates/catalogues";
 import { LoadingCode, TerritorialUnit, Waste, Zipcode } from "@api/templates/types";
-import { UseCatalogueReturnType } from "@zones/templates/hooks/types";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+
+interface UseCatalogueDataType {
+	loadingCodes: LoadingCode[] | null;
+	territorialUnits: TerritorialUnit[] | null;
+	wastes: Waste[] | null;
+	zipcodes: Zipcode[] | null;
+}
+
+interface UseCatalogueReturnType {
+	catalogue: UseCatalogueDataType;
+	isLoading: boolean;
+}
 
 export function useCatalogue(): UseCatalogueReturnType {
-	const [loadingCodes, setLoadingCodes] = useState<LoadingCode[]>([]);
-	const [territorialUnits, setTerritorialUnits] = useState<TerritorialUnit[]>([]);
-	const [wastes, setWastes] = useState<Waste[]>([]);
-	const [zipcodes, setZipcodes] = useState<Zipcode[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [loadingCodes, setLoadingCodes] = useState<LoadingCode[] | null>(null);
+	const [territorialUnits, setTerritorialUnits] = useState<TerritorialUnit[] | null>(null);
+	const [wastes, setWastes] = useState<Waste[] | null>(null);
+	const [zipcodes, setZipcodes] = useState<Zipcode[] | null>(null);
 
 	useEffect(() => {
-		getZipCodes().then(res => {
-			if (res.error) {
-				toast.error("Nepodařilo se načíst číselník PSČ");
-				return;
-			}
-
-			if (res.data) {
-				setZipcodes(res.data);
-			}
-		});
-
-		getTerritorialUnits().then(res => {
-			if (res.error) {
-				toast.error("Nepodařilo se načíst číselník krajů");
-				return;
-			}
-
-			if (res.data) {
-				setTerritorialUnits(res.data);
-			}
-		});
-
-		getWaste().then(res => {
-			if (res.error) {
-				toast.error("Nepodařilo se načíst číselník odpadů");
-				return;
-			}
-
-			if (res.data) {
-				setWastes(res.data);
-			}
-		});
-
-		getLoadingCodes().then(res => {
-			if (res.error) {
+		const loadingCodesPromise = getLoadingCodes().then(({ data, error }) => {
+			if (error) {
 				toast.error("Nepodařilo se načíst číselník kódů nakládání");
 				return;
 			}
 
-			if (res.data) {
-				setLoadingCodes(res.data);
+			setLoadingCodes(data);
+		});
+
+		const territorialUnitsPromise = getTerritorialUnits().then(({ data, error }) => {
+			if (error) {
+				toast.error("Nepodařilo se načíst číselník krajů");
+				return;
 			}
+
+			setTerritorialUnits(data);
+		});
+
+		const wastesPromise = getWaste().then(({ data, error }) => {
+			if (error) {
+				toast.error("Nepodařilo se načíst číselník odpadů");
+				return;
+			}
+
+			setWastes(data);
+		});
+
+		const zipcodePromise = getZipCodes().then(({ data, error }) => {
+			if (error) {
+				toast.error("Nepodařilo se načíst číselník PSČ");
+				return;
+			}
+
+			setZipcodes(data);
+		});
+
+		Promise.all([loadingCodesPromise, territorialUnitsPromise, wastesPromise, zipcodePromise]).then(() => {
+			setIsLoading(false);
 		});
 	}, []);
 
-	return { loadingCodes, territorialUnits, wastes, zipcodes };
+	return { isLoading, catalogue: { loadingCodes, territorialUnits, wastes, zipcodes } };
 }

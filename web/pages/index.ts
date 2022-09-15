@@ -1,3 +1,3 @@
-import HomePage from "@zones/home/pages/HomePage";
+import { Page } from "@pages/homepage";
 
-export default HomePage;
+export default Page;

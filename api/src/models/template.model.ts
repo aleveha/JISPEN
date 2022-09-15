@@ -18,7 +18,7 @@ export class TemplateModel extends BaseEntity {
 	medicalCompanyId: number;
 
 	@JoinColumn({ name: "medical_company_id" })
-	@ManyToOne(() => MedicalCompanyModel, medicalCompany => medicalCompany.templates)
+	@ManyToOne(() => MedicalCompanyModel, medicalCompany => medicalCompany.templates, { cascade: ["insert", "update"] })
 	medicalCompany: MedicalCompanyModel;
 
 	@Column({ name: "user_id" })
@@ -28,7 +28,7 @@ export class TemplateModel extends BaseEntity {
 	@ManyToOne(() => UserModel, user => user.templates)
 	user: UserModel;
 
-	@Column({ name: "expired_at" })
+	@Column({ name: "expired_at", nullable: true })
 	expiredAt?: Date;
 
 	@JoinTable({
@@ -47,9 +47,9 @@ export class TemplateModel extends BaseEntity {
 	@ManyToMany(() => WasteModel, waste => waste.templates)
 	wastes: WasteModel[];
 
-	@OneToMany(() => WasteCompanyModel, wasteCompany => wasteCompany.template, { cascade: true })
+	@OneToMany(() => WasteCompanyModel, wasteCompany => wasteCompany.template, { cascade: ["insert", "update", "remove"] })
 	wasteCompanies: WasteCompanyModel[];
 
-	@OneToMany(() => RecordModel, record => record.template)
+	@OneToMany(() => RecordModel, record => record.template, { cascade: ["update", "remove"] })
 	records: RecordModel[];
 }

@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { TemplateModel } from "./template.model";
 import { MedicalCompanyModel } from "./medicalCompany.model";
+import { TemplateModel } from "./template.model";
 
 @Entity("user")
 export class UserModel extends BaseEntity {
@@ -13,15 +13,19 @@ export class UserModel extends BaseEntity {
 	@Column({ name: "password" })
 	passwordHash: string;
 
-	@Column({ name: "service_code" })
+	@Column({ name: "service_code", nullable: true })
 	serviceCode?: string;
 
 	@Column({ name: "verified_at" })
 	verifiedAt?: Date;
 
-	@OneToMany(() => TemplateModel, template => template.user)
+	@OneToMany(() => TemplateModel, template => template.user, { cascade: ["update", "remove"] })
 	templates: TemplateModel[];
 
-	@OneToMany(() => MedicalCompanyModel, medicalCompany => medicalCompany.user)
+	@OneToMany(() => MedicalCompanyModel, medicalCompany => medicalCompany.user, {
+		cascade: ["update", "remove"],
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	medicalCompanies: MedicalCompanyModel[];
 }

@@ -1,15 +1,18 @@
-import { Repository } from "typeorm";
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { MedicalCompanyDto, TemplateDto } from "./dto/templateDto";
+import { Repository } from "typeorm";
+import { AddressModel } from "../models/address.model";
 import { MedicalCompanyModel } from "../models/medicalCompany.model";
 import { TemplateModel } from "../models/template.model";
+import { MedicalCompanyDto, TemplateDto } from "./dto/templateDto";
 
 @Injectable()
 export class TemplatesService {
-	private readonly TEMPLATE_RELATIONS = ["user", "medicalCompany", "medicalCompany.address", "medicalCompany.address.zipcode", "medicalCompany.territorialUnit", "loadingCodes", "wastes", "wasteCompanies"];
+	private readonly TEMPLATE_RELATIONS = ["user", "medicalCompany", "medicalCompany.address", "medicalCompany.templates", "medicalCompany.address.zipcode", "medicalCompany.territorialUnit", "loadingCodes", "wastes", "wasteCompanies"];
 
 	public constructor(
+		@InjectRepository(AddressModel)
+		private readonly addressRepository: Repository<AddressModel>,
 		@InjectRepository(MedicalCompanyModel)
 		private readonly medicalCompanyRepository: Repository<MedicalCompanyModel>,
 		@InjectRepository(TemplateModel)
@@ -50,7 +53,7 @@ export class TemplatesService {
 	}
 
 	public async delete(templateId: number): Promise<TemplateModel> {
-		const templateToBeDeleted = await this.templateRepository.findOne({ id: templateId });
+		const templateToBeDeleted = await this.templateRepository.findOne({ id: templateId }, { relations: this.TEMPLATE_RELATIONS });
 		if (!templateToBeDeleted) {
 			throw new BadRequestException();
 		}
@@ -58,6 +61,15 @@ export class TemplatesService {
 		const result = await this.templateRepository.delete({ id: templateToBeDeleted.id });
 		if (result.affected === 0) {
 			throw new InternalServerErrorException();
+		}
+
+		for (const wasteCompany of templateToBeDeleted.wasteCompanies) {
+			await this.addressRepository.delete(wasteCompany.addressId);
+		}
+
+		if (templateToBeDeleted.medicalCompany.templates.length === 1 && templateToBeDeleted.medicalCompany.templates[0].id === templateToBeDeleted.id) {
+			await this.medicalCompanyRepository.delete(templateToBeDeleted.medicalCompanyId);
+			await this.addressRepository.delete(templateToBeDeleted.medicalCompany.addressId);
 		}
 
 		return templateToBeDeleted;

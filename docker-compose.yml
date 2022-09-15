@@ -7,37 +7,27 @@ services:
             - ./database/.env
         volumes:
             - db:/var/lib/postgresql/data
-            - ./database/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
 
     api:
         container_name: jispen-api
         build:
             context: ./api
-            target: prod
-        depends_on:
-            - db
-        expose:
-            - "8000"
         env_file:
             - ./api/.env
+        depends_on:
+            - db
         links:
             - db
-        command: node main.js
+        restart: on-failure
 
     web:
         container_name: jispen-web
         build:
             context: ./web
-            target: prod
         depends_on:
             - api
-        expose:
-            - "3000"
-        env_file:
-            - ./web/.env
         links:
             - api
-        command: node server.js
 
     nginx:
         image: nginx:alpine
@@ -49,6 +39,15 @@ services:
         depends_on:
             - api
             - web
+        restart: on-failure
+
+    adminer:
+        image: adminer:latest
+        container_name: jispen-adminer
+        depends_on:
+            - db
+        ports:
+            - "8080:8080"
 
 
 volumes:

@@ -56,7 +56,7 @@ export interface Waste {
 	uid: number;
 	name: string;
 	category: string;
-	certificate: string;
+	certificate?: string;
 }
 
 export interface LoadingCode {

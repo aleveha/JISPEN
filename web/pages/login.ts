@@ -1,3 +1,3 @@
-import AuthorizationPage from "@zones/authorization/pages/AuthorizationPage";
+import { AuthorizationPage } from "@pages/authorization-page";
 
 export default AuthorizationPage;

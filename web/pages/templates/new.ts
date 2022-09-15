@@ -1,3 +1,3 @@
-import TemplatesNew from "@zones/templates/pages/TemplatesNew";
+import { Page } from "@pages/templates/new-template-page";
 
-export default TemplatesNew;
+export default Page;

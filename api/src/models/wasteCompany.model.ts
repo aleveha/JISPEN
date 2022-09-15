@@ -1,8 +1,8 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { AddressModel } from "./address.model";
 import { RecordModel } from "./record.model";
-import { TerritorialUnitModel } from "./territorialUnit.model";
 import { TemplateModel } from "./template.model";
+import { TerritorialUnitModel } from "./territorialUnit.model";
 
 @Entity("waste_company")
 export class WasteCompanyModel extends BaseEntity {
@@ -32,14 +32,14 @@ export class WasteCompanyModel extends BaseEntity {
 	addressId: number;
 
 	@JoinColumn({ name: "address_id" })
-	@OneToOne(() => AddressModel, { cascade: true })
+	@OneToOne(() => AddressModel, { cascade: ["insert", "update", "remove"] })
 	address: AddressModel;
 
 	@Column({ name: "template_id" })
 	templateId: number;
 
 	@JoinColumn({ name: "template_id" })
-	@ManyToOne(() => TemplateModel, template => template.wasteCompanies)
+	@ManyToOne(() => TemplateModel, template => template.wasteCompanies, { onDelete: "CASCADE" })
 	template: TemplateModel;
 
 	@OneToMany(() => RecordModel, record => record.wasteCompany)

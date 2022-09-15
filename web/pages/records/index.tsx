@@ -1,3 +1,3 @@
-import RecordsHome from "@zones/records/pages/RecordsHome";
+import RecordsHome from "@pages/records/all-records-page";
 
 export default RecordsHome;

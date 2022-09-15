@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, HttpCode, Post, Query } from "@nestjs/common";
-import { TemplateDto } from "./dto/templateDto";
-import { CatalogueService } from "./catalogue.service";
-import { TemplatesService } from "./templates.service";
 import { LoadingCodeModel } from "../models/loadingCode.model";
 import { TemplateModel } from "../models/template.model";
 import { TerritorialUnitModel } from "../models/territorialUnit.model";
 import { WasteModel } from "../models/waste.model";
 import { ZipcodeModel } from "../models/zipcode.model";
+import { CatalogueService } from "./catalogue.service";
+import { TemplateDto } from "./dto/templateDto";
+import { TemplatesService } from "./templates.service";
 
 @Controller("template")
 export class TemplatesController {

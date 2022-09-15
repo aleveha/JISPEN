@@ -1,3 +1,3 @@
-import CreateRecordPage from "@zones/records/pages/RecordsNew";
+import CreateRecordPage from "@pages/records/new-record-page";
 
 export default CreateRecordPage;

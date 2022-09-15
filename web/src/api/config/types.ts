@@ -1,7 +1,6 @@
-export interface ApiReturnType<T> {
-	data?: T;
-	error?: ApiError;
-}
+import { DiscriminatedUnion } from "@shared/types/types";
+
+export type ApiReturnType<T> = DiscriminatedUnion<T>;
 
 export interface ApiError {
 	statusCode: number;

@@ -1,8 +1,8 @@
-import { UserModel } from "./user.model";
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { AddressModel } from "./address.model";
-import { TerritorialUnitModel } from "./territorialUnit.model";
 import { TemplateModel } from "./template.model";
+import { TerritorialUnitModel } from "./territorialUnit.model";
+import { UserModel } from "./user.model";
 
 @Entity("medical_company")
 export class MedicalCompanyModel extends BaseEntity {
@@ -29,19 +29,19 @@ export class MedicalCompanyModel extends BaseEntity {
 	addressId: number;
 
 	@JoinColumn({ name: "address_id" })
-	@OneToOne(() => AddressModel, { cascade: true })
+	@OneToOne(() => AddressModel, { cascade: ["insert", "update", "remove"] })
 	address: AddressModel;
 
-	@Column({ name: "contact_firstname" })
+	@Column({ name: "contact_firstname", nullable: true })
 	contactFirstName: string;
 
-	@Column({ name: "contact_lastname" })
+	@Column({ name: "contact_lastname", nullable: true })
 	contactLastName: string;
 
-	@Column({ name: "contact_phone" })
+	@Column({ name: "contact_phone", nullable: true })
 	contactPhone: number;
 
-	@Column({ name: "contact_email" })
+	@Column({ name: "contact_email", nullable: true })
 	contactEmail: string;
 
 	@Column({ name: "user_id" })

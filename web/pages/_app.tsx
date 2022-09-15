@@ -1,8 +1,9 @@
+import { ThemeProvider } from "@mui/material";
+import { THEME } from "@styles/theme";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import "../styles/global.css";
 import { Toaster } from "react-hot-toast";
-import { RecoilRoot } from "recoil";
+import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 	return (
@@ -10,10 +11,10 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 			<Head>
 				<title>JISPEN – evidence odpadů</title>
 			</Head>
-			<RecoilRoot>
+			<ThemeProvider theme={THEME}>
 				<Component {...pageProps} />
-			</RecoilRoot>
-			<Toaster toastOptions={{ duration: 4000, position: "top-center" }} />
+			</ThemeProvider>
+			<Toaster toastOptions={{ duration: 5000, position: "top-right" }} />
 		</>
 	);
 }

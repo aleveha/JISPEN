@@ -1,3 +1,3 @@
-import { PageNotFound } from "@zones/shared/pages/pageNotFound";
+import { Page } from "@pages/page-not-found";
 
-export default PageNotFound;
+export default Page;
