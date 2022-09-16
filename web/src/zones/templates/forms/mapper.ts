@@ -26,7 +26,7 @@ export function mapTemplateValues(values: NewTemplateFormValues, user: User): Te
 			uid: Number(value.uid),
 			territorialUnitId: parseInt(value.territorialUnit?.id ?? "0"),
 			userId: user.id,
-			type: Number(value.type),
+			typeId: parseInt(value.type?.id ?? "0"),
 			expiredAt: value.expiredAt ? new Date(value.expiredAt) : undefined,
 			address: {
 				...value.address,

@@ -12,17 +12,17 @@ export class RecordModel extends BaseEntity {
 	@Column()
 	date: Date;
 
-	@Column()
+	@Column({ type: "decimal" })
 	amount: number;
 
 	@Column({ name: "template_id" })
 	templateId: number;
 
 	@JoinColumn({ name: "template_id" })
-	@ManyToOne(() => TemplateModel, template => template.records)
+	@ManyToOne(() => TemplateModel, template => template.records, { onDelete: "CASCADE" })
 	template: TemplateModel;
 
-	@Column({ name: "waste_company_id" })
+	@Column({ name: "waste_company_id", nullable: true })
 	wasteCompanyId: number;
 
 	@JoinColumn({ name: "waste_company_id" })

@@ -59,10 +59,17 @@ export interface Waste {
 	certificate?: string;
 }
 
+export interface WasteCompanyType {
+	id: number;
+	uid: number;
+	name: string;
+}
+
 export interface LoadingCode {
 	id: number;
 	uid: string;
 	name: string;
+	requireWasteCompany: boolean;
 }
 
 export interface WasteCompany {
@@ -75,6 +82,7 @@ export interface WasteCompany {
 	templateId: number;
 	address: Address;
 	territorialUnit: TerritorialUnit;
-	type: number;
+	typeId: number;
+	type: WasteCompanyType;
 	expiredAt?: Date;
 }

@@ -11,7 +11,7 @@ export interface NewTemplateFormValues {
 	};
 	title: string;
 	wasteCompanies: (DefaultValues<
-		Omit<WasteCompany, "id" | "address" | "territorialUnitId" | "addressId" | "templateId" | "expiredAt">
+		Omit<WasteCompany, "id" | "address" | "territorialUnitId" | "addressId" | "templateId" | "expiredAt" | "typeId">
 	> & {
 		address: DefaultValues<Omit<Address, "id" | "zipcodeId">>;
 		expiredAt?: string;
@@ -42,21 +42,21 @@ export const newTemplateFormDefaultValues: NewTemplateFormValues = {
 		territorialUnit: null,
 	},
 	title: "",
-	wasteCompanies: [
-		{
-			uid: "",
-			companyId: "",
-			name: "",
-			address: {
-				street: "",
-				buildingNumber: "",
-				registryNumber: "",
-				city: "",
-				zipcode: null,
-			},
-			territorialUnit: null,
-			type: "",
-		},
-	],
+	wasteCompanies: [],
 	wastes: [],
+};
+
+export const wasteCompanyDefaultValue: NewTemplateFormValues["wasteCompanies"][number] = {
+	uid: "",
+	companyId: "",
+	name: "",
+	address: {
+		street: "",
+		buildingNumber: "",
+		registryNumber: "",
+		city: "",
+		zipcode: null,
+	},
+	territorialUnit: null,
+	type: null,
 };

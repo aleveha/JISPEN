@@ -2,12 +2,14 @@ import { createRecord } from "@api/records";
 import { CreateRecordDto } from "@api/records/types";
 import { getUserTemplates } from "@api/templates";
 import { LoadingCode, Template, Waste, WasteCompany } from "@api/templates/types";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { Input } from "@shared/components/inputs/text-input";
+import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { useRouter } from "next/router";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, MouseEvent, useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
@@ -20,6 +22,8 @@ interface NewRecordFormValues {
 	date: string;
 }
 
+type MassUnit = "kg" | "t";
+
 const defaultValues: NewRecordFormValues = {
 	template: null,
 	waste: null,
@@ -29,24 +33,49 @@ const defaultValues: NewRecordFormValues = {
 	date: "",
 };
 
-function mapRecordValues(values: NewRecordFormValues): CreateRecordDto {
+function formatDecimal(value: string) {
+	return value.replace(/,/g, ".");
+}
+
+function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit): CreateRecordDto {
+	const formattedAmount = parseFloat(formatDecimal(values.amount));
 	return {
-		amount: parseInt(values.amount) ?? 0,
+		amount: massUnit === "t" ? formattedAmount : formattedAmount / 1000,
 		date: new Date(values.date),
 		loadingCodeId: values.loadingCode?.id ?? 0,
 		templateId: values.template?.id ?? 0,
 		wasteId: values.waste?.id ?? 0,
-		wasteCompanyId: values.wasteCompany?.id ?? 0,
+		wasteCompanyId: values.wasteCompany?.id ?? null,
 	};
 }
 
 export const NewRecordForm: FC = () => {
 	const [templates, setTemplates] = useState<Template[]>([]);
+	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
 	const user = useAuth();
 	const router = useRouter();
-	const { control, handleSubmit, watch } = useForm<NewRecordFormValues>({
-		defaultValues,
-	});
+	const { control, handleSubmit, watch } = useForm<NewRecordFormValues>({ defaultValues });
+
+	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
+		values => {
+			createRecord(mapRecordValues(values, massUnit)).then(res => {
+				if (res.data) {
+					router.push("/records").then(() => toast.success("Záznam byl úspěšně vytvořen"));
+					return;
+				}
+				toast.error("Nepodařilo se vytvořit záznam");
+			});
+		},
+		[massUnit, router]
+	);
+	const onExit = useCallback(() => router.back(), [router]);
+	const onMassUnitChange = useCallback(
+		(_: MouseEvent<HTMLElement>, value: string) => setMassUnit(value as MassUnit),
+		[]
+	);
+
+	const selectedTemplate = watch("template");
+	const loadingCode = watch("loadingCode");
 
 	useEffect(() => {
 		if (!user) {
@@ -58,23 +87,6 @@ export const NewRecordForm: FC = () => {
 			}
 		});
 	}, [user]);
-
-	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
-		values => {
-			createRecord(mapRecordValues(values)).then(res => {
-				if (res.data) {
-					router.push("/records").then(() => toast.success("Záznam byl úspěšně vytvořen"));
-					return;
-				}
-				toast.error("Nepodařilo se vytvořit záznam");
-			});
-		},
-		[router]
-	);
-
-	const onExit = useCallback(() => router.back(), [router]);
-
-	const selectedTemplate = watch("template");
 
 	return (
 		<form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -102,14 +114,37 @@ export const NewRecordForm: FC = () => {
 					options={selectedTemplate?.wastes ?? []}
 					required
 				/>
-				<Input
-					control={control}
-					disabled={!selectedTemplate}
-					label="Zadejte množství (tuny)"
-					name="amount"
-					required
-					type="number"
-				/>
+				<div className="relative">
+					<Input
+						className="w-full"
+						control={control}
+						disabled={!selectedTemplate}
+						label="Zadejte množství"
+						name="amount"
+						required
+						rules={{
+							pattern: { value: Validator.DECIMAL_REGEXP, message: "Pouze čislo" },
+							validate: value =>
+								Validator.isOnlySpaces(value) || parseFloat(formatDecimal(value as string)) === 0
+									? "Zadejte nenulovou hodnotu"
+									: undefined,
+						}}
+					/>
+					<ToggleButtonGroup
+						className="absolute top-0 bottom-0 right-0 h-fit"
+						orientation="vertical"
+						value={massUnit}
+						exclusive
+						onChange={onMassUnitChange}
+					>
+						<ToggleButton className="rounded-l-none py-1 text-[0.66rem] lowercase" value="t">
+							t
+						</ToggleButton>
+						<ToggleButton className="rounded-l-none py-1 text-[0.66rem] lowercase" value="kg">
+							kg
+						</ToggleButton>
+					</ToggleButtonGroup>
+				</div>
 				<Autocomplete
 					autocompleteProps={{
 						disabled: !selectedTemplate,
@@ -125,15 +160,19 @@ export const NewRecordForm: FC = () => {
 				<Input control={control} disabled={!selectedTemplate} name="date" required type="date" />
 				<Autocomplete
 					autocompleteProps={{
-						disabled: !selectedTemplate,
+						disabled: !selectedTemplate || !loadingCode?.requireWasteCompany,
 						getOptionLabel: (option: WasteCompany) => option.name,
 						noOptionsText: "Žadná oprávněná osoba nebyla nalezena",
 					}}
 					control={control}
-					label="Vyberte oprávněnou osobu"
+					label={
+						loadingCode?.requireWasteCompany
+							? "Vyberte oprávněnou osobu"
+							: "Oprávněná osoba není vyžadována"
+					}
 					name="wasteCompany"
 					options={selectedTemplate?.wasteCompanies ?? []}
-					required
+					required={loadingCode?.requireWasteCompany}
 				/>
 			</div>
 			<div className="py-8">

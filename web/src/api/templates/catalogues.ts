@@ -1,12 +1,12 @@
-import { AxiosError } from "axios";
 import { apiClient } from "@api/config";
 import { ApiError, ApiReturnType } from "@api/config/types";
-import { LoadingCode, TerritorialUnit, Waste, Zipcode } from "@api/templates/types";
+import { LoadingCode, TerritorialUnit, Waste, WasteCompanyType, Zipcode } from "@api/templates/types";
 import { axiosErrorHelper } from "@api/utils/apiErrorHelper";
+import { AxiosError } from "axios";
 
-export async function getZipCodes(): Promise<ApiReturnType<Zipcode[]>> {
+export async function getLoadingCodes(): Promise<ApiReturnType<LoadingCode[]>> {
 	return apiClient
-		.get<Zipcode[]>("template/zipcodes")
+		.get<LoadingCode[]>("template/loading-codes")
 		.then(res => {
 			return { data: res.data };
 		})
@@ -37,9 +37,20 @@ export async function getWaste(): Promise<ApiReturnType<Waste[]>> {
 		});
 }
 
-export async function getLoadingCodes(): Promise<ApiReturnType<LoadingCode[]>> {
+export async function getWasteCompaniesTypes(): Promise<ApiReturnType<WasteCompanyType[]>> {
 	return apiClient
-		.get<LoadingCode[]>("template/loading-codes")
+		.get<WasteCompanyType[]>("template/waste-company-types")
+		.then(res => {
+			return { data: res.data };
+		})
+		.catch(async (err: Error | AxiosError<ApiError>) => {
+			return { error: await axiosErrorHelper(err) };
+		});
+}
+
+export async function getZipCodes(): Promise<ApiReturnType<Zipcode[]>> {
+	return apiClient
+		.get<Zipcode[]>("template/zipcodes")
 		.then(res => {
 			return { data: res.data };
 		})

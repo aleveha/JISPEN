@@ -10,8 +10,8 @@ export interface Record {
 	templateId: number;
 	waste: Waste;
 	wasteId: number;
-	wasteCompany: WasteCompany;
-	wasteCompanyId: number;
+	wasteCompany?: WasteCompany;
+	wasteCompanyId?: number;
 }
 
 export interface CreateRecordDto {
@@ -20,5 +20,5 @@ export interface CreateRecordDto {
 	loadingCodeId: number;
 	templateId: number;
 	wasteId: number;
-	wasteCompanyId: number;
+	wasteCompanyId: number | null;
 }

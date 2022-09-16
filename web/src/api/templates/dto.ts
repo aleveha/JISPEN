@@ -29,7 +29,7 @@ export interface WasteCompanyDTO {
 	name: string;
 	address: AddressDTO;
 	territorialUnitId: number;
-	type: number;
+	typeId: number;
 	expiredAt?: Date;
 }
 

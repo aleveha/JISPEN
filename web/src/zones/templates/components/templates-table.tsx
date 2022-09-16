@@ -18,10 +18,11 @@ const HEADER_CELLS: HeadCell<TemplatesTable>[] = [
 	{
 		id: "title",
 		label: "Název šablony",
+		width: 200,
 	},
 	{ id: "medicalCompanyUid", label: "IČO" },
 	{ id: "medicalCompanyCompanyId", label: "IČZ/IČS/IČP" },
-	{ id: "medicalCompanyName", label: "Název provozovny" },
+	{ id: "medicalCompanyName", label: "Název provozovny", width: 250 },
 ];
 
 interface Props {

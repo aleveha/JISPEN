@@ -3,6 +3,7 @@ import { LoadingCodeModel } from "../models/loadingCode.model";
 import { TemplateModel } from "../models/template.model";
 import { TerritorialUnitModel } from "../models/territorialUnit.model";
 import { WasteModel } from "../models/waste.model";
+import { WasteCompanyTypeModel } from "../models/wasteCompanyType.model";
 import { ZipcodeModel } from "../models/zipcode.model";
 import { CatalogueService } from "./catalogue.service";
 import { TemplateDto } from "./dto/templateDto";
@@ -29,6 +30,11 @@ export class TemplatesController {
 		return await this.templateService.delete(templateId);
 	}
 
+	@Get("loading-codes")
+	async getLoadingCodes(): Promise<LoadingCodeModel[]> {
+		return await this.catalogueService.getLoadingCodes();
+	}
+
 	@Get("territorial-units")
 	async getTerritorialUnits(): Promise<TerritorialUnitModel[]> {
 		return await this.catalogueService.getTerritorialUnits();
@@ -39,13 +45,13 @@ export class TemplatesController {
 		return await this.catalogueService.getWaste();
 	}
 
+	@Get("waste-company-types")
+	async getWasteCompanyTypes(): Promise<WasteCompanyTypeModel[]> {
+		return await this.catalogueService.getWasteCompanyTypes();
+	}
+
 	@Get("zipcodes")
 	async getZipcodes(): Promise<ZipcodeModel[]> {
 		return await this.catalogueService.getZipCodes();
-	}
-
-	@Get("loading-codes")
-	async getLoadingCodes(): Promise<LoadingCodeModel[]> {
-		return await this.catalogueService.getLoadingCodes();
 	}
 }

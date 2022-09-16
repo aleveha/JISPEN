@@ -25,7 +25,7 @@ export const DataGridHead = <T extends Record<string, any>>({
 						sortDirection={orderBy === id ? order : false}
 						sx={{
 							border: "none",
-							width: width,
+							minWidth: width,
 							".MuiTableSortLabel-root, .MuiTableSortLabel-icon": {
 								color: THEME.palette.primary.contrastText + " !important",
 							},

@@ -3,6 +3,7 @@ import { AddressModel } from "./address.model";
 import { RecordModel } from "./record.model";
 import { TemplateModel } from "./template.model";
 import { TerritorialUnitModel } from "./territorialUnit.model";
+import { WasteCompanyTypeModel } from "./wasteCompanyType.model";
 
 @Entity("waste_company")
 export class WasteCompanyModel extends BaseEntity {
@@ -18,8 +19,12 @@ export class WasteCompanyModel extends BaseEntity {
 	@Column()
 	name: string;
 
-	@Column()
-	type: number;
+	@Column({ name: "type_id" })
+	typeId: number;
+
+	@JoinColumn({ name: "type_id" })
+	@ManyToOne(() => WasteCompanyTypeModel, wasteCompanyType => wasteCompanyType.wasteCompanies)
+	type: WasteCompanyTypeModel;
 
 	@Column({ name: "territorial_unit_id" })
 	territorialUnitId: number;

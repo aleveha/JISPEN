@@ -3,26 +3,6 @@
 @tailwind utilities;
 
 body {
-	letter-spacing: 0.05rem;
-}
-
-@layer base {
-	.dashboard-layout-main {
-		min-height: 100vh;
-		width: 100%;
-	}
-
-	@media only screen and (max-width: 768px) {
-		width: calc(100% - 18rem);
-	}
-
-	body {
-		font-size: 16px;
-	}
-}
-
-@layer components {
-	.ui-container {
-		@apply container mx-auto px-6 md:px-0;
-	}
+    letter-spacing: 0.05rem;
+    font-size: 16px;
 }

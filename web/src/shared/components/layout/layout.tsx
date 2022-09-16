@@ -17,8 +17,8 @@ const Layout: FC<Props> = ({ children, title }) => {
 		<div className="relative flex w-full">
 			<MobileSidebarOpenButton openSidebar={onOpenSidebar} />
 			<Sidebar onClose={onCloseSidebar} open={isSidebarOpen} />
-			<main className="dashboard-layout-main">
-				<div className="flex h-full w-full flex-col px-6 py-20">
+			<main className="min-h-screen w-full md:w-[calc(100%_-_18rem)]">
+				<div className="flex h-full w-full flex-col px-4 py-28 md:py-20 md:px-6">
 					{title && <h1 className="mt-16 mb-8 text-3xl font-medium text-primary">{title}</h1>}
 					{children}
 				</div>

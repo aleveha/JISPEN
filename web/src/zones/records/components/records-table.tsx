@@ -3,7 +3,6 @@ import { Record } from "@api/records/types";
 import { HeadCell } from "@shared/components/checkbox-list/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
 import { RemoveRecordModal } from "@zones/records/components/remove-record-modal";
-import { formatAmount, formatDate } from "@zones/records/helpers/formatters";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -13,21 +12,46 @@ interface RecordsTable {
 	id: Record["id"];
 	loadingCodeUid: Record["loadingCode"]["uid"];
 	medicalCompanyName: Record["template"]["medicalCompany"]["name"];
-	wasteCompanyName: Record["wasteCompany"]["name"];
+	templateName: Record["template"]["title"];
+	wasteCompanyName?: string;
 	wasteUid: Record["waste"]["uid"];
 }
 
 const HEADER_CELLS: HeadCell<RecordsTable>[] = [
+	{ id: "date", label: "Datum" },
+	{ id: "templateName", label: "Šablona" },
+	{ id: "wasteUid", label: "Odpad" },
+	{ id: "amount", label: "Množství" },
+	{ id: "loadingCodeUid", label: "Nakládání" },
 	{
 		id: "medicalCompanyName",
 		label: "Provozovna",
 	},
-	{ id: "wasteUid", label: "Odpad" },
-	{ id: "amount", label: "Množství" },
-	{ id: "loadingCodeUid", label: "Nakládání" },
-	{ id: "date", label: "Datum" },
-	{ id: "wasteCompanyName", label: "Oprávněná osoba" },
+	{ id: "wasteCompanyName", label: "Oprávněná osoba", width: 200 },
 ];
+
+function formatAmount(amount: number): string {
+	const valueToString = amount.toString();
+	const value = parseInt(valueToString[valueToString.length - 1], 10);
+
+	if (value === 1) {
+		return `${amount}\xa0tuna`;
+	}
+
+	if (value > 1 && value < 5) {
+		return `${amount}\xa0tuny`;
+	}
+
+	if (value >= 5) {
+		return `${amount}\xa0tun`;
+	}
+
+	return "";
+}
+
+function formatDate(date: Date): string {
+	return new Date(date).toLocaleDateString("ru");
+}
 
 interface Props {
 	data: Record[];
@@ -48,7 +72,8 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 				id: record.id,
 				loadingCodeUid: record.loadingCode.uid,
 				medicalCompanyName: record.template.medicalCompany.name,
-				wasteCompanyName: record.wasteCompany.name,
+				templateName: record.template.title,
+				wasteCompanyName: record.wasteCompany?.name ?? "—",
 				wasteUid: record.waste.uid,
 			})),
 		[data]

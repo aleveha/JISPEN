@@ -1,25 +1,29 @@
-import { TerritorialUnit, Zipcode } from "@api/templates/types";
+import { TerritorialUnit, WasteCompanyType, Zipcode } from "@api/templates/types";
 import ClearIcon from "@mui/icons-material/Clear";
 import { IconButton } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { Input } from "@shared/components/inputs/text-input";
 import { newTemplateFormDefaultValues, NewTemplateFormValues } from "@zones/templates/forms/types";
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import { useFieldArray, UseFieldArrayProps } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 export interface WasteCompaniesArrayProps extends UseFieldArrayProps<NewTemplateFormValues> {
+	requireWasteCompany: boolean;
 	territorialUnits: TerritorialUnit[];
 	wasteCompanyDefaultValue: typeof newTemplateFormDefaultValues["wasteCompanies"][0];
+	wasteCompanyTypes: WasteCompanyType[];
 	zipcodes: Zipcode[];
 }
 
 export const WasteCompaniesArray: FC<WasteCompaniesArrayProps> = ({
 	control,
 	name,
+	requireWasteCompany,
 	territorialUnits,
 	wasteCompanyDefaultValue,
+	wasteCompanyTypes,
 	zipcodes,
 }) => {
 	const { fields, append, remove } = useFieldArray({ control, name });
@@ -36,6 +40,14 @@ export const WasteCompaniesArray: FC<WasteCompaniesArrayProps> = ({
 		},
 		[fields, remove]
 	);
+
+	useEffect(() => {
+		if (requireWasteCompany) {
+			append(wasteCompanyDefaultValue);
+		} else {
+			remove();
+		}
+	}, [append, remove, requireWasteCompany, wasteCompanyDefaultValue]);
 
 	return (
 		<div className="flex flex-col gap-8 pt-6">
@@ -70,7 +82,18 @@ export const WasteCompaniesArray: FC<WasteCompaniesArrayProps> = ({
 						options={territorialUnits ?? []}
 						required
 					/>
-					<Input control={control} label="Typ" name={`wasteCompanies.${index}.type`} required />
+					<Autocomplete
+						autocompleteProps={{
+							getOptionLabel: (option: TerritorialUnit) =>
+								option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`,
+							noOptionsText: "Žádný typ nebyl nalezen",
+						}}
+						control={control}
+						label="Typ"
+						name={`wasteCompanies.${index}.type`}
+						options={wasteCompanyTypes ?? []}
+						required
+					/>
 					<Input control={control} label="Ulice" name={`wasteCompanies.${index}.address.street`} required />
 					<Input
 						control={control}

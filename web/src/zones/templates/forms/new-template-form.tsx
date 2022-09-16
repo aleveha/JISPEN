@@ -7,7 +7,11 @@ import { Input } from "@shared/components/inputs/text-input";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { mapTemplateValues } from "@zones/templates/forms/mapper";
 import { NewTemplateFormSection } from "@zones/templates/forms/new-template-form-section";
-import { newTemplateFormDefaultValues, NewTemplateFormValues } from "@zones/templates/forms/types";
+import {
+	newTemplateFormDefaultValues,
+	NewTemplateFormValues,
+	wasteCompanyDefaultValue,
+} from "@zones/templates/forms/types";
 import { useCatalogue } from "@zones/templates/hooks/useCatalogue";
 import { useRouter } from "next/router";
 import React, { memo, useCallback } from "react";
@@ -21,7 +25,9 @@ export const NewTemplateForm = memo(() => {
 	const user = useAuth();
 	const router = useRouter();
 	const { isLoading, catalogue } = useCatalogue();
-	const { control, handleSubmit } = useForm<NewTemplateFormValues>({ defaultValues: newTemplateFormDefaultValues });
+	const { control, handleSubmit, watch } = useForm<NewTemplateFormValues>({
+		defaultValues: newTemplateFormDefaultValues,
+	});
 
 	const onSubmit = useCallback<SubmitHandler<NewTemplateFormValues>>(
 		values => {
@@ -49,6 +55,8 @@ export const NewTemplateForm = memo(() => {
 	const onExit = useCallback(() => {
 		router.back();
 	}, [router]);
+
+	const requireWasteCompany = watch("loadingCodes").some(code => code.requireWasteCompany);
 
 	return (
 		<form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -139,23 +147,33 @@ export const NewTemplateForm = memo(() => {
 					) : null}
 				</NewTemplateFormSection>
 				<Divider />
-				<NewTemplateFormSection
-					description="Zadejte, prosím, všechny opravněné osoby, které&nbsp;mohou z&nbsp;provozovny převzít odpad, nebo jej na&nbsp;provozovnu předat"
-					title="Oprávněné osoby (partner)"
-				>
-					{isLoading ? (
-						<CircularProgress />
-					) : catalogue.territorialUnits && catalogue.zipcodes ? (
-						<WasteCompaniesArray
-							control={control}
-							name="wasteCompanies"
-							territorialUnits={catalogue.territorialUnits}
-							wasteCompanyDefaultValue={newTemplateFormDefaultValues.wasteCompanies[0]}
-							zipcodes={catalogue.zipcodes}
-						/>
-					) : null}
-				</NewTemplateFormSection>
-				<Divider />
+				{requireWasteCompany && (
+					<>
+						<NewTemplateFormSection
+							description="Zadejte, prosím, všechny opravněné osoby, které&nbsp;mohou z&nbsp;provozovny převzít odpad, nebo jej na&nbsp;provozovnu předat"
+							title="Oprávněné osoby (partner)"
+						>
+							{isLoading ? (
+								<CircularProgress />
+							) : (
+								catalogue.territorialUnits &&
+								catalogue.zipcodes &&
+								catalogue.wasteCompanyTypes && (
+									<WasteCompaniesArray
+										control={control}
+										name="wasteCompanies"
+										requireWasteCompany={requireWasteCompany}
+										territorialUnits={catalogue.territorialUnits}
+										wasteCompanyDefaultValue={wasteCompanyDefaultValue}
+										wasteCompanyTypes={catalogue.wasteCompanyTypes}
+										zipcodes={catalogue.zipcodes}
+									/>
+								)
+							)}
+						</NewTemplateFormSection>
+						<Divider />
+					</>
+				)}
 			</div>
 			<div className="py-8">
 				<div className="flex flex-col-reverse justify-end gap-6 md:flex-row">

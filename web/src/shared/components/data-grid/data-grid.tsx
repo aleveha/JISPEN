@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { DataGridHead } from "@shared/components/data-grid/data-grid-head";
 import clsx from "clsx";
-import React, { ChangeEventHandler, MouseEvent, useCallback, useMemo, useState } from "react";
+import React, { ChangeEventHandler, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { HeadCell, Order } from "./types";
 
 interface DataGridDefaultType extends Record<string, any> {
@@ -88,6 +88,10 @@ export const DataGrid = <T extends DataGridDefaultType>({
 		() => rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage),
 		[page, rows, rowsPerPage]
 	);
+
+	useEffect(() => {
+		setRowsPerPage(rows.length > 10 ? 10 : rows.length);
+	}, [rows]);
 
 	return (
 		<Paper className={clsx("overflow-hidden rounded-lg", className)} variant="outlined">

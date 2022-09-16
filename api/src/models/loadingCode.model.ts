@@ -16,6 +16,9 @@ export class LoadingCodeModel extends BaseEntity {
 	@OneToMany(() => RecordModel, record => record.loadingCode)
 	records: RecordModel[];
 
+	@Column({ default: false, name: "require_waste_company" })
+	requireWasteCompany: boolean;
+
 	@ManyToMany(() => TemplateModel, template => template.loadingCodes)
 	templates: TemplateModel[];
 }
