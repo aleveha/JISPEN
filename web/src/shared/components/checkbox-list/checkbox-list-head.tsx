@@ -19,8 +19,8 @@ export const CheckboxHead = <T extends Record<string, any>>(props: EnhancedTable
 
 	return (
 		<MuiTableHead>
-			<TableRow className="border-y">
-				<TableCell padding="checkbox" sx={{ border: "none" }}>
+			<TableRow>
+				<TableCell padding="checkbox">
 					<Checkbox
 						checked={rowCount > 0 && numSelected === rowCount}
 						className={clsx(isError && "text-red")}
@@ -29,11 +29,7 @@ export const CheckboxHead = <T extends Record<string, any>>(props: EnhancedTable
 					/>
 				</TableCell>
 				{headCells.map(({ id, label, width }) => (
-					<TableCell
-						key={id.toString()}
-						sortDirection={orderBy === id ? order : false}
-						sx={{ border: "none", width: width }}
-					>
+					<TableCell key={id.toString()} sortDirection={orderBy === id ? order : false} sx={{ width: width }}>
 						<TableSortLabel
 							active={orderBy === id}
 							direction={orderBy === id ? order : "asc"}

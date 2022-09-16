@@ -5,13 +5,11 @@ import {
 	TableBody,
 	TableCell,
 	TableContainer,
-	TablePagination,
 	TableRow,
 	Tooltip,
 } from "@mui/material";
-import { THEME } from "@styles/theme";
 import clsx from "clsx";
-import React, { ChangeEventHandler, MouseEvent, useCallback, useMemo, useState } from "react";
+import React, { ChangeEventHandler, useCallback, useState } from "react";
 import { CheckboxHead } from "./checkbox-list-head";
 import { CheckboxListToolbar } from "./checkbox-list-toolbar";
 import { HeadCell, Order } from "./types";
@@ -63,8 +61,6 @@ export const CheckboxList = <T extends TableDefaultType>({
 	const [order, setOrder] = useState<Order>("asc");
 	const [orderBy, setOrderBy] = useState<keyof T>(orderedBy);
 	const [selected, setSelected] = useState<T[]>([]);
-	const [page, setPage] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState<number>(rows.length > 10 ? 10 : rows.length);
 
 	const handleRequestSort = useCallback(
 		(property: keyof T) => () => {
@@ -103,19 +99,6 @@ export const CheckboxList = <T extends TableDefaultType>({
 		[onSelectedValueChanged, selected]
 	);
 
-	const handleChangePage = useCallback((event: MouseEvent<HTMLButtonElement> | null, page: number) => {
-		setPage(page);
-	}, []);
-
-	const handleChangeRowsPerPage = useCallback<ChangeEventHandler<HTMLInputElement>>(
-		({ target }) => {
-			const value = parseInt(target.value, 10);
-			setRowsPerPage(value > rows.length ? rows.length : value);
-			setPage(0);
-		},
-		[rows]
-	);
-
 	const handleDeleteAll = useCallback(() => {
 		if (onDelete) {
 			onDelete(selected.map(value => value.id));
@@ -126,11 +109,6 @@ export const CheckboxList = <T extends TableDefaultType>({
 	}, [onDelete, onSelectedValueChanged, selected]);
 
 	const isSelected = useCallback((value: T) => selected.indexOf(value) !== -1, [selected]);
-
-	const emptyRows = useMemo(
-		() => rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage),
-		[page, rows, rowsPerPage]
-	);
 
 	return (
 		<Paper className={className} variant="outlined">
@@ -156,10 +134,8 @@ export const CheckboxList = <T extends TableDefaultType>({
 						{rows
 							.slice()
 							.sort(getComparator(order, orderBy))
-							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map(row => (
 								<TableRow
-									className="border-b"
 									hover
 									key={row.id}
 									onClick={handleClick(row)}
@@ -186,25 +162,9 @@ export const CheckboxList = <T extends TableDefaultType>({
 									))}
 								</TableRow>
 							))}
-						{emptyRows > 0 && (
-							<TableRow style={{ height: 53 * emptyRows }}>
-								<TableCell colSpan={headCells.length + 1} sx={{ border: "none" }} />
-							</TableRow>
-						)}
 					</TableBody>
 				</MuiTable>
 			</TableContainer>
-			<TablePagination
-				labelDisplayedRows={({ from, to, count }) => `${from}-${to} z ${count}`}
-				sx={{ borderTop: `1px solid ${THEME.palette.divider}` }}
-				rowsPerPageOptions={[]}
-				component="div"
-				count={rows.length}
-				rowsPerPage={rowsPerPage}
-				page={page}
-				onPageChange={handleChangePage}
-				onRowsPerPageChange={handleChangeRowsPerPage}
-			/>
 		</Paper>
 	);
 };
