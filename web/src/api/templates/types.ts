@@ -10,8 +10,8 @@ export interface Address {
 	id: number;
 	city: string;
 	street: string;
-	registryNumber: string;
-	buildingNumber: string;
+	registryNumber: string | null;
+	buildingNumber: string | null;
 	zipcodeId: number;
 	zipcode: Zipcode;
 }
@@ -29,10 +29,10 @@ export interface MedicalCompany {
 	name: string;
 	territorialUnitId: number;
 	addressId: number;
-	contactFirstName: string;
-	contactLastName: string;
-	contactPhone: number;
-	contactEmail: string;
+	contactFirstName: string | null;
+	contactLastName: string | null;
+	contactPhone: string | null;
+	contactEmail: string | null;
 	userId: number;
 	address: Address;
 	territorialUnit: TerritorialUnit;
@@ -43,7 +43,7 @@ export interface Template {
 	title: string;
 	medicalCompanyId: number;
 	userId: number;
-	expiredAt?: Date;
+	expiredAt: Date | null;
 	user: User;
 	medicalCompany: MedicalCompany;
 	loadingCodes: LoadingCode[];
@@ -74,15 +74,15 @@ export interface LoadingCode {
 
 export interface WasteCompany {
 	id: number;
-	uid: number;
-	companyId: string;
-	name: string;
+	uid: number | null;
+	companyId: string | null;
+	name: string | null;
 	territorialUnitId: number;
-	addressId: number;
+	addressId: number | null;
 	templateId: number;
-	address: Address;
+	address: Address | null;
 	territorialUnit: TerritorialUnit;
 	typeId: number;
 	type: WasteCompanyType;
-	expiredAt?: Date;
+	expiredAt: Date | null;
 }

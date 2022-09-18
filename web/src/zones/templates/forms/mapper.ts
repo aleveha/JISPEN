@@ -1,18 +1,24 @@
 import { User } from "@api/authorization/types";
-import { TemplateDTO } from "@api/templates/dto";
+import { AddressDTO, TemplateDTO } from "@api/templates/dto";
 import { NewTemplateFormValues } from "@zones/templates/forms/types";
+
+function mapAddress(address: NewTemplateFormValues["medicalCompany"]["address"]): AddressDTO {
+	return {
+		buildingNumber:
+			address.buildingNumber && address.buildingNumber.length > 0 ? address.buildingNumber : undefined,
+		city: address.city,
+		registryNumber:
+			address.registryNumber && address.registryNumber.length > 0 ? address.registryNumber : undefined,
+		street: address.street,
+		zipcodeId: parseInt(address.zipcode?.id ?? "0"),
+	};
+}
 
 export function mapTemplateValues(values: NewTemplateFormValues, user: User): TemplateDTO {
 	return {
 		loadingCodes: values.loadingCodes,
 		medicalCompany: {
-			address: {
-				buildingNumber: values.medicalCompany.address.buildingNumber,
-				city: values.medicalCompany.address.city,
-				registryNumber: values.medicalCompany.address.registryNumber,
-				street: values.medicalCompany.address.street,
-				zipcodeId: parseInt(values.medicalCompany.address.zipcode?.id ?? "0"),
-			},
+			address: mapAddress(values.medicalCompany.address),
 			companyId: values.medicalCompany.companyId,
 			name: values.medicalCompany.name,
 			territorialUnitId: parseInt(values.medicalCompany.territorialUnit?.id ?? "0"),
@@ -21,18 +27,20 @@ export function mapTemplateValues(values: NewTemplateFormValues, user: User): Te
 		},
 		title: values.title,
 		userId: user.id,
-		wasteCompanies: values.wasteCompanies.map(value => ({
-			...value,
-			uid: Number(value.uid),
-			territorialUnitId: parseInt(value.territorialUnit?.id ?? "0"),
-			userId: user.id,
-			typeId: parseInt(value.type?.id ?? "0"),
-			expiredAt: value.expiredAt ? new Date(value.expiredAt) : undefined,
-			address: {
-				...value.address,
-				zipcodeId: parseInt(value.address.zipcode?.id ?? "0"),
-			},
-		})),
+		wasteCompanies: values.wasteCompanies.map(value => {
+			const valuesRequired = value.type ? parseInt(value.type?.uid) !== 3 : true;
+			return {
+				...value,
+				address: valuesRequired ? mapAddress(value.address) : undefined,
+				companyId: valuesRequired ? value.companyId ?? undefined : undefined,
+				expiredAt: value.expiredAt ? new Date(value.expiredAt) : undefined,
+				name: valuesRequired ? value.companyId ?? undefined : undefined,
+				territorialUnitId: parseInt(value.territorialUnit?.id ?? "0"),
+				typeId: parseInt(value.type?.id ?? "0"),
+				uid: valuesRequired ? parseInt(value.uid) ?? undefined : undefined,
+				userId: user.id,
+			};
+		}),
 		wastes: values.wastes.filter(value => !!value.id),
 	};
 }

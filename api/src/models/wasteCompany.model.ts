@@ -10,13 +10,13 @@ export class WasteCompanyModel extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({ nullable: true })
 	uid: number;
 
-	@Column({ name: "company_id" })
+	@Column({ name: "company_id", nullable: true })
 	companyId: string;
 
-	@Column()
+	@Column({ nullable: true })
 	name: string;
 
 	@Column({ name: "type_id" })
@@ -33,7 +33,7 @@ export class WasteCompanyModel extends BaseEntity {
 	@ManyToOne(() => TerritorialUnitModel, territorialUnit => territorialUnit.medicalCompanies)
 	territorialUnit: TerritorialUnitModel;
 
-	@Column({ name: "address_id" })
+	@Column({ name: "address_id", nullable: true })
 	addressId: number;
 
 	@JoinColumn({ name: "address_id" })

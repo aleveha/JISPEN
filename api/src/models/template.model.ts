@@ -9,7 +9,7 @@ import { WasteCompanyModel } from "./wasteCompany.model";
 @Entity("template")
 export class TemplateModel extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	id?: number;
+	id: number;
 
 	@Column()
 	title: string;

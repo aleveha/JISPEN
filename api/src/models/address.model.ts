@@ -12,11 +12,11 @@ export class AddressModel extends BaseEntity {
 	@Column()
 	street: string;
 
-	@Column({ name: "registry_number" })
-	registryNumber: string;
+	@Column({ name: "registry_number", nullable: true })
+	registryNumber?: string;
 
-	@Column({ name: "building_number" })
-	buildingNumber: string;
+	@Column({ name: "building_number", nullable: true })
+	buildingNumber?: string;
 
 	@Column({ name: "zip_code_id" })
 	zipcodeId: number;

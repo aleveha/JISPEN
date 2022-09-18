@@ -4,6 +4,7 @@ import { CircularProgress, Divider } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { Input } from "@shared/components/inputs/text-input";
+import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { mapTemplateValues } from "@zones/templates/forms/mapper";
 import { NewTemplateFormSection } from "@zones/templates/forms/new-template-form-section";
@@ -13,6 +14,7 @@ import {
 	wasteCompanyDefaultValue,
 } from "@zones/templates/forms/types";
 import { useCatalogue } from "@zones/templates/hooks/useCatalogue";
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { memo, useCallback } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -27,6 +29,7 @@ export const NewTemplateForm = memo(() => {
 	const { isLoading, catalogue } = useCatalogue();
 	const { control, handleSubmit, watch } = useForm<NewTemplateFormValues>({
 		defaultValues: newTemplateFormDefaultValues,
+		mode: "onChange",
 	});
 
 	const onSubmit = useCallback<SubmitHandler<NewTemplateFormValues>>(
@@ -84,12 +87,38 @@ export const NewTemplateForm = memo(() => {
 							required
 							rules={{ minLength: { value: 3, message: "Název musí obsahovat alespoň 3 znaky" } }}
 						/>
-						<Input control={control} label="IČO" name="medicalCompany.uid" required type="number" />
+						<Input
+							control={control}
+							inputMode="numeric"
+							label="IČO"
+							name="medicalCompany.uid"
+							required
+							rules={{
+								pattern: { value: Validator.NUMBER_REGEXP, message: "Pouze čislo" },
+								validate: value => Validator.onlyPositiveNumber(value as string),
+							}}
+						/>
 						<Input control={control} label="IČZ/IČS/IČP" name="medicalCompany.companyId" required />
+						<Input control={control} label="Město" name="medicalCompany.address.city" required />
+						<Input control={control} label="Ulice" name="medicalCompany.address.street" required />
+						<div className="flex space-x-6">
+							<Input
+								className="min-w-[5rem]"
+								control={control}
+								label="Č.P."
+								name="medicalCompany.address.registryNumber"
+							/>
+							<Input
+								className="min-w-[5rem]"
+								control={control}
+								label="Č.0."
+								name="medicalCompany.address.buildingNumber"
+							/>
+						</div>
 						<Autocomplete
 							autocompleteProps={{
 								getOptionLabel: (option: TerritorialUnit) =>
-									option.uid === 0 ? "" : option.uid.toString(),
+									option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`,
 								noOptionsText: "Žádný ZÚJ nebyl nalezen",
 							}}
 							control={control}
@@ -98,10 +127,6 @@ export const NewTemplateForm = memo(() => {
 							options={catalogue.territorialUnits ?? []}
 							required
 						/>
-						<Input control={control} label="Ulice" name="medicalCompany.address.street" required />
-						<Input control={control} label="Č.P." name="medicalCompany.address.registryNumber" required />
-						<Input control={control} label="Č.0." name="medicalCompany.address.buildingNumber" />
-						<Input control={control} label="Město" name="medicalCompany.address.city" required />
 						<Autocomplete
 							autocompleteProps={{
 								getOptionLabel: (option: Zipcode) =>
@@ -114,10 +139,36 @@ export const NewTemplateForm = memo(() => {
 							options={catalogue.zipcodes ?? []}
 							required
 						/>
-						<Input control={control} label="Jméno" name="medicalCompany.contactFirstName" />
-						<Input control={control} label="Příjmení" name="medicalCompany.contactLastName" />
-						<Input control={control} label="Telefon" name="medicalCompany.contactPhone" type="tel" />
-						<Input control={control} label="E-mail" name="medicalCompany.contactEmail" type="email" />
+					</div>
+					<div className="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
+						<p className="mb-2 text-xl font-medium text-primary">Kontaktní osoba</p>
+						<Input
+							className="col-span-1 col-start-1"
+							control={control}
+							label="Jméno"
+							name="medicalCompany.contactFirstName"
+						/>
+						<Input
+							className="col-span-1 col-start-2"
+							control={control}
+							label="Příjmení"
+							name="medicalCompany.contactLastName"
+						/>
+						<Input
+							className="col-span-1 col-start-1"
+							control={control}
+							inputMode="numeric"
+							label="Telefon"
+							name="medicalCompany.contactPhone"
+							type="tel"
+						/>
+						<Input
+							className="col-span-1 col-start-2"
+							control={control}
+							label="E-mail"
+							name="medicalCompany.contactEmail"
+							type="email"
+						/>
 					</div>
 				</NewTemplateFormSection>
 				<Divider />
@@ -147,33 +198,30 @@ export const NewTemplateForm = memo(() => {
 					) : null}
 				</NewTemplateFormSection>
 				<Divider />
-				{requireWasteCompany && (
-					<>
-						<NewTemplateFormSection
-							description="Zadejte, prosím, všechny opravněné osoby, které&nbsp;mohou z&nbsp;provozovny převzít odpad, nebo jej na&nbsp;provozovnu předat"
-							title="Oprávněné osoby (partner)"
-						>
-							{isLoading ? (
-								<CircularProgress />
-							) : (
-								catalogue.territorialUnits &&
-								catalogue.zipcodes &&
-								catalogue.wasteCompanyTypes && (
-									<WasteCompaniesArray
-										control={control}
-										name="wasteCompanies"
-										requireWasteCompany={requireWasteCompany}
-										territorialUnits={catalogue.territorialUnits}
-										wasteCompanyDefaultValue={wasteCompanyDefaultValue}
-										wasteCompanyTypes={catalogue.wasteCompanyTypes}
-										zipcodes={catalogue.zipcodes}
-									/>
-								)
-							)}
-						</NewTemplateFormSection>
-						<Divider />
-					</>
-				)}
+				<NewTemplateFormSection
+					className={clsx(!requireWasteCompany && "hidden")}
+					description="Zadejte, prosím, všechny opravněné osoby, které&nbsp;mohou z&nbsp;provozovny převzít odpad, nebo jej na&nbsp;provozovnu předat"
+					title="Oprávněné osoby (partner)"
+				>
+					{isLoading ? (
+						<CircularProgress />
+					) : (
+						catalogue.territorialUnits &&
+						catalogue.zipcodes &&
+						catalogue.wasteCompanyTypes && (
+							<WasteCompaniesArray
+								control={control}
+								name="wasteCompanies"
+								requireWasteCompany={requireWasteCompany}
+								territorialUnits={catalogue.territorialUnits}
+								wasteCompanyDefaultValue={wasteCompanyDefaultValue}
+								wasteCompanyTypes={catalogue.wasteCompanyTypes}
+								zipcodes={catalogue.zipcodes}
+							/>
+						)
+					)}
+				</NewTemplateFormSection>
+				<Divider className={clsx(!requireWasteCompany && "hidden")} />
 			</div>
 			<div className="py-8">
 				<div className="flex flex-col-reverse justify-end gap-6 md:flex-row">

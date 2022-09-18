@@ -6,6 +6,7 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { Input } from "@shared/components/inputs/text-input";
+import { formatDecimal } from "@shared/utils/validator/helpers";
 import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { useRouter } from "next/router";
@@ -33,10 +34,6 @@ const defaultValues: NewRecordFormValues = {
 	date: "",
 };
 
-function formatDecimal(value: string) {
-	return value.replace(/,/g, ".");
-}
-
 function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit): CreateRecordDto {
 	const formattedAmount = parseFloat(formatDecimal(values.amount));
 	return {
@@ -54,7 +51,7 @@ export const NewRecordForm: FC = () => {
 	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
 	const user = useAuth();
 	const router = useRouter();
-	const { control, handleSubmit, watch } = useForm<NewRecordFormValues>({ defaultValues });
+	const { control, handleSubmit, watch, reset } = useForm<NewRecordFormValues>({ defaultValues, mode: "onChange" });
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
 		values => {
@@ -88,6 +85,12 @@ export const NewRecordForm: FC = () => {
 		});
 	}, [user]);
 
+	useEffect(() => {
+		if (!selectedTemplate) {
+			reset();
+		}
+	}, [reset, selectedTemplate]);
+
 	return (
 		<form noValidate onSubmit={handleSubmit(onSubmit)}>
 			<div className="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
@@ -102,32 +105,20 @@ export const NewRecordForm: FC = () => {
 					options={templates}
 					required
 				/>
-				<Autocomplete
-					autocompleteProps={{
-						disabled: !selectedTemplate,
-						getOptionLabel: (option: Waste) => `${option.uid} (${option.category})`,
-						noOptionsText: "Žadný odpad nebyl nalezen",
-					}}
-					control={control}
-					label="Vyberte odpad"
-					name="waste"
-					options={selectedTemplate?.wastes ?? []}
-					required
-				/>
+				<Input control={control} disabled={!selectedTemplate} name="date" required type="date" />
 				<div className="relative">
 					<Input
 						className="w-full"
 						control={control}
 						disabled={!selectedTemplate}
+						inputMode="numeric"
 						label="Zadejte množství"
 						name="amount"
 						required
 						rules={{
+							maxLength: { value: 7, message: "Množství může mít maximálně 7 znaků" },
 							pattern: { value: Validator.DECIMAL_REGEXP, message: "Pouze čislo" },
-							validate: value =>
-								Validator.isOnlySpaces(value) || parseFloat(formatDecimal(value as string)) === 0
-									? "Zadejte nenulovou hodnotu"
-									: undefined,
+							validate: value => Validator.onlyPositiveNumber(value as string),
 						}}
 					/>
 					<ToggleButtonGroup
@@ -148,7 +139,19 @@ export const NewRecordForm: FC = () => {
 				<Autocomplete
 					autocompleteProps={{
 						disabled: !selectedTemplate,
-						getOptionLabel: (option: LoadingCode) => option.uid.toString(),
+						getOptionLabel: (option: Waste) => `${option.uid} (${option.category}) \u2013 ${option.name}`,
+						noOptionsText: "Žadný odpad nebyl nalezen",
+					}}
+					control={control}
+					label="Vyberte odpad"
+					name="waste"
+					options={selectedTemplate?.wastes ?? []}
+					required
+				/>
+				<Autocomplete
+					autocompleteProps={{
+						disabled: !selectedTemplate,
+						getOptionLabel: (option: LoadingCode) => `${option.uid} \u2013 ${option.name}`,
 						noOptionsText: "Žadný způsob nakladání nebyl nalezen",
 					}}
 					control={control}
@@ -157,11 +160,11 @@ export const NewRecordForm: FC = () => {
 					options={selectedTemplate?.loadingCodes ?? []}
 					required
 				/>
-				<Input control={control} disabled={!selectedTemplate} name="date" required type="date" />
 				<Autocomplete
 					autocompleteProps={{
 						disabled: !selectedTemplate || !loadingCode?.requireWasteCompany,
-						getOptionLabel: (option: WasteCompany) => option.name,
+						getOptionLabel: (option: WasteCompany) =>
+							option.name ?? `Občané obce ${option.territorialUnit.name}`,
 						noOptionsText: "Žadná oprávněná osoba nebyla nalezena",
 					}}
 					control={control}

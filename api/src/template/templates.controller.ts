@@ -6,7 +6,7 @@ import { WasteModel } from "../models/waste.model";
 import { WasteCompanyTypeModel } from "../models/wasteCompanyType.model";
 import { ZipcodeModel } from "../models/zipcode.model";
 import { CatalogueService } from "./catalogue.service";
-import { TemplateDto } from "./dto/templateDto";
+import { TemplateDto } from "./dto/template.dto";
 import { TemplatesService } from "./templates.service";
 
 @Controller("template")

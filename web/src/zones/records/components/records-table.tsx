@@ -30,25 +30,6 @@ const HEADER_CELLS: HeadCell<RecordsTable>[] = [
 	{ id: "wasteCompanyName", label: "Oprávněná osoba", width: 200 },
 ];
 
-function formatAmount(amount: number): string {
-	const valueToString = amount.toString();
-	const value = parseInt(valueToString[valueToString.length - 1], 10);
-
-	if (value === 1) {
-		return `${amount}\xa0tuna`;
-	}
-
-	if (value > 1 && value < 5) {
-		return `${amount}\xa0tuny`;
-	}
-
-	if (value >= 5) {
-		return `${amount}\xa0tun`;
-	}
-
-	return "";
-}
-
 function formatDate(date: Date): string {
 	return new Date(date).toLocaleDateString("ru");
 }
@@ -67,7 +48,7 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 	const rows: RecordsTable[] = useMemo(
 		() =>
 			data.map(record => ({
-				amount: formatAmount(record.amount),
+				amount: `${record.amount} t`,
 				date: formatDate(record.date),
 				id: record.id,
 				loadingCodeUid: record.loadingCode.uid,

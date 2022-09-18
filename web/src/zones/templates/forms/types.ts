@@ -1,7 +1,7 @@
 import { Address, LoadingCode, MedicalCompany, Waste, WasteCompany } from "@api/templates/types";
 
 export type DefaultValues<T extends Record<string, any>> = {
-	[K in keyof T]: T[K] extends string | number ? string : DefaultValues<T[K]> | null;
+	[K in keyof T]: T[K] extends string | number | null ? string : DefaultValues<T[K]> | null;
 };
 
 export interface NewTemplateFormValues {

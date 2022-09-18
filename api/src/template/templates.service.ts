@@ -4,11 +4,22 @@ import { Repository } from "typeorm";
 import { AddressModel } from "../models/address.model";
 import { MedicalCompanyModel } from "../models/medicalCompany.model";
 import { TemplateModel } from "../models/template.model";
-import { MedicalCompanyDto, TemplateDto } from "./dto/templateDto";
+import { MedicalCompanyDto, TemplateDto } from "./dto/template.dto";
 
 @Injectable()
 export class TemplatesService {
-	private readonly TEMPLATE_RELATIONS = ["user", "medicalCompany", "medicalCompany.address", "medicalCompany.templates", "medicalCompany.address.zipcode", "medicalCompany.territorialUnit", "loadingCodes", "wastes", "wasteCompanies"];
+	private readonly TEMPLATE_RELATIONS = [
+		"user",
+		"medicalCompany",
+		"medicalCompany.address",
+		"medicalCompany.templates",
+		"medicalCompany.address.zipcode",
+		"medicalCompany.territorialUnit",
+		"loadingCodes",
+		"wastes",
+		"wasteCompanies",
+		"wasteCompanies.territorialUnit",
+	];
 
 	public constructor(
 		@InjectRepository(AddressModel)

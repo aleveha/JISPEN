@@ -24,10 +24,10 @@ export interface MedicalCompanyDTO {
 }
 
 export interface WasteCompanyDTO {
-	uid: number;
-	companyId: string;
-	name: string;
-	address: AddressDTO;
+	uid?: number;
+	companyId?: string;
+	name?: string;
+	address?: AddressDTO;
 	territorialUnitId: number;
 	typeId: number;
 	expiredAt?: Date;
@@ -36,7 +36,7 @@ export interface WasteCompanyDTO {
 export interface AddressDTO {
 	city: string;
 	street: string;
-	registryNumber: string;
+	registryNumber?: string;
 	buildingNumber?: string;
 	zipcodeId: number;
 }
