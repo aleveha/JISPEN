@@ -35,6 +35,7 @@ export const DataGridHead = <T extends Record<string, any>>({
 							active={orderBy === id}
 							direction={orderBy === id ? order : "asc"}
 							onClick={onSortClick(id)}
+							tabIndex={-1}
 						>
 							<span className="font-medium uppercase">{label}</span>
 							{orderBy === id ? (

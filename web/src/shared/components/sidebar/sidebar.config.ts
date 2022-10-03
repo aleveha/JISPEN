@@ -1,6 +1,9 @@
+import { HTMLAttributeAnchorTarget } from "react";
+
 export interface SidebarItem {
 	href: string;
 	label: string;
+	target?: HTMLAttributeAnchorTarget;
 }
 
 export const SidebarItems: SidebarItem[] = [
