@@ -14,11 +14,12 @@
 		"paths": {
 			"@api/*": ["src/api/*"],
 			"@config/*": ["src/config/*"],
+			"@icons/*": ["src/icons/*"],
 			"@pages/*": ["src/pages/*"],
 			"@shared/*": ["src/shared/*"],
+			"@state/*": ["src/states/*"],
 			"@styles/*": ["styles/*"],
 			"@ui/*": ["src/ui/*"],
-			"@state/*": ["src/states/*"],
 			"@zones/*": ["src/zones/*"]
 		},
 		"pretty": true,
