@@ -40,7 +40,7 @@ export const Autocomplete = <FormData extends FieldValues>({
 	textFieldProps,
 }: AutocompleteElementProps<FormData, AutoDefault | string | any, boolean | undefined, boolean | undefined>) => {
 	const {
-		field,
+		field: { ref, value, onChange },
 		fieldState: { error },
 	} = useController<FormData>({
 		control,
@@ -49,15 +49,14 @@ export const Autocomplete = <FormData extends FieldValues>({
 	});
 
 	useEffect(() => {
-		if (options.length === 1 && field.value === null && required) {
-			field.onChange(options[0]);
+		if (options.length === 1 && value === null && required) {
+			onChange(options[0]);
 		}
-	}, [field, options, required]);
+	}, [onChange, options, required, value]);
 
 	return (
 		<MuiAutocomplete
 			{...autocompleteProps}
-			{...field}
 			getOptionLabel={
 				autocompleteProps?.getOptionLabel
 					? autocompleteProps.getOptionLabel
@@ -70,16 +69,15 @@ export const Autocomplete = <FormData extends FieldValues>({
 			}
 			loading={loading}
 			multiple={multiple}
-			onChange={(_, value) => field.onChange(value)}
+			onChange={(_, value) => onChange(value)}
 			options={options}
 			renderInput={params => (
 				<TextField
 					{...textFieldProps}
 					{...params}
-					name={name}
-					required={required}
-					label={label}
 					error={!!error}
+					helperText={error?.message ?? " "}
+					inputRef={ref}
 					InputProps={{
 						...params.InputProps,
 						endAdornment: (
@@ -89,7 +87,10 @@ export const Autocomplete = <FormData extends FieldValues>({
 							</>
 						),
 					}}
-					helperText={error?.message ?? " "}
+					label={label}
+					name={name}
+					required={required}
+					value={value}
 					variant="outlined"
 				/>
 			)}

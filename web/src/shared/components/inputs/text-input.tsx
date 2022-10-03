@@ -31,23 +31,47 @@ function getPatterns(type?: HTMLInputTypeAttribute): ValidationRule<RegExp> | un
 }
 
 export const Input = <FormData extends Record<string, any>>({
+	className,
 	control,
+	disabled,
+	fullWidth,
+	inputMode,
+	label,
 	name,
 	requireMessage,
-	...rest
+	required,
+	rules,
+	type,
 }: TextInputProps<FormData>) => {
 	const {
-		field,
+		field: { onChange, value, ref },
 		fieldState: { error },
 	} = useController<FormData>({
 		control,
 		name,
 		rules: {
-			pattern: getPatterns(rest.type),
-			required: rest.required ? requireMessage ?? "Povinný údaj" : undefined,
+			pattern: getPatterns(type),
+			required: required ? requireMessage ?? "Povinný údaj" : undefined,
 			validate: v => (Validator.isOnlySpaces(v) ? "Vyplňte platnou hodnotu" : undefined),
-			...rest.rules,
+			...rules,
 		},
 	});
-	return <TextField {...field} {...rest} error={!!error} helperText={error?.message ?? " "} variant="outlined" />;
+
+	return (
+		<TextField
+			className={className}
+			disabled={disabled}
+			error={!!error}
+			fullWidth={fullWidth}
+			helperText={error?.message ?? " "}
+			inputMode={inputMode}
+			inputRef={ref}
+			label={label}
+			name={name}
+			onChange={onChange}
+			type={type}
+			value={value}
+			variant="outlined"
+		/>
+	);
 };
