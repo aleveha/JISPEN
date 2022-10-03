@@ -4,11 +4,9 @@ import { NewTemplateFormValues } from "@zones/templates/forms/types";
 
 function mapAddress(address: NewTemplateFormValues["medicalCompany"]["address"]): AddressDTO {
 	return {
-		buildingNumber:
-			address.buildingNumber && address.buildingNumber.length > 0 ? address.buildingNumber : undefined,
+		buildingNumber: address.buildingNumber && address.buildingNumber.length > 0 ? address.buildingNumber : undefined,
 		city: address.city,
-		registryNumber:
-			address.registryNumber && address.registryNumber.length > 0 ? address.registryNumber : undefined,
+		registryNumber: address.registryNumber && address.registryNumber.length > 0 ? address.registryNumber : undefined,
 		street: address.street,
 		zipcodeId: parseInt(address.zipcode?.id ?? "0"),
 	};

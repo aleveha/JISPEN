@@ -30,17 +30,9 @@ export const CheckboxHead = <T extends Record<string, any>>(props: EnhancedTable
 				</TableCell>
 				{headCells.map(({ id, label, width }) => (
 					<TableCell key={id.toString()} sortDirection={orderBy === id ? order : false} sx={{ width: width }}>
-						<TableSortLabel
-							active={orderBy === id}
-							direction={orderBy === id ? order : "asc"}
-							onClick={onSortClick(id)}
-						>
+						<TableSortLabel active={orderBy === id} direction={orderBy === id ? order : "asc"} onClick={onSortClick(id)}>
 							<span className="font-medium uppercase">{label}</span>
-							{orderBy === id ? (
-								<span className="sr-only">
-									{order === "desc" ? "sorted descending" : "sorted ascending"}
-								</span>
-							) : null}
+							{orderBy === id ? <span className="sr-only">{order === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
 						</TableSortLabel>
 					</TableCell>
 				))}

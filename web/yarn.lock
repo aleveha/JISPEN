@@ -194,11 +194,6 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@headlessui/react@^1.5.0":
-  version "1.6.6"
-  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.6.6.tgz#3073c066b85535c9d28783da0a4d9288b5354d0c"
-  integrity sha512-MFJtmj9Xh/hhBMhLccGbBoSk+sk61BlP6sJe4uQcVMtXZhCgGqd2GyIQzzmsdPdTEWGSF434CBi8mnhR6um46Q==
-
 "@hookform/resolvers@^2.9.7":
   version "2.9.7"
   resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-2.9.7.tgz#8b257ae67234ce0270e6b044c1a61fb98ec02b4b"
@@ -241,13 +236,6 @@
   version "5.10.3"
   resolved "https://registry.yarnpkg.com/@mui/core-downloads-tracker/-/core-downloads-tracker-5.10.3.tgz#e17a3cd87c7814ff35592284b19ae39ad52b85ac"
   integrity sha512-mX2S0d1oboKBbWQqWIgRmyALAEzh37yiknpD3mKx8bcoMKbp1VtqzIt0aeHP16Uhsd0eValDFILxLNHWi0oddQ==
-
-"@mui/icons-material@^5.8.4":
-  version "5.10.3"
-  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.10.3.tgz#33bd1d973c4727ab55d02928fc8973b7f16fff55"
-  integrity sha512-o0kbUlsWCBtCE0wP33cGKbyryCh7kpm2EECYMPDmWrLhbA+HUODXIdhiTFS26szp2xXo9HY1lEx0ufeJ+tddYw==
-  dependencies:
-    "@babel/runtime" "^7.18.9"
 
 "@mui/material@^5.9.1":
   version "5.10.3"

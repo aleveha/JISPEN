@@ -1,15 +1,5 @@
-import { DeleteOutline } from "@mui/icons-material";
-import {
-	IconButton,
-	Paper,
-	Table as MuiTable,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TablePagination,
-	TableRow,
-	Tooltip,
-} from "@mui/material";
+import { Icons } from "@icons/icons.config";
+import { IconButton, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TablePagination, TableRow, Tooltip } from "@mui/material";
 import { DataGridHead } from "@shared/components/data-grid/data-grid-head";
 import clsx from "clsx";
 import React, { ChangeEventHandler, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
@@ -41,9 +31,7 @@ function getComparator<Key extends keyof any>(
 	order: Order,
 	orderBy: Key
 ): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-	return order === "desc"
-		? (a, b) => descendingComparator(a, b, orderBy)
-		: (a, b) => -descendingComparator(a, b, orderBy);
+	return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 export const DataGrid = <T extends DataGridDefaultType>({
@@ -79,15 +67,9 @@ export const DataGrid = <T extends DataGridDefaultType>({
 		[rows]
 	);
 
-	const handleDelete = useCallback(
-		(value: T) => () => handleSelectedChange && handleSelectedChange(value),
-		[handleSelectedChange]
-	);
+	const handleDelete = useCallback((value: T) => () => handleSelectedChange && handleSelectedChange(value), [handleSelectedChange]);
 
-	const emptyRows = useMemo(
-		() => rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage),
-		[page, rows, rowsPerPage]
-	);
+	const emptyRows = useMemo(() => rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage), [page, rows, rowsPerPage]);
 
 	useEffect(() => {
 		setRowsPerPage(rows.length > 10 ? 10 : rows.length);
@@ -97,12 +79,7 @@ export const DataGrid = <T extends DataGridDefaultType>({
 		<Paper className={clsx("overflow-hidden rounded-lg", className)} variant="outlined">
 			<TableContainer className="max-h-[50vh]">
 				<MuiTable>
-					<DataGridHead
-						headCells={headCells}
-						onSortClick={handleRequestSort}
-						order={order}
-						orderBy={orderBy}
-					/>
+					<DataGridHead headCells={headCells} onSortClick={handleRequestSort} order={order} orderBy={orderBy} />
 					<TableBody>
 						{rows
 							.slice()
@@ -125,8 +102,8 @@ export const DataGrid = <T extends DataGridDefaultType>({
 										</TableCell>
 									))}
 									<TableCell>
-										<IconButton className="-ml-2" onClick={handleDelete(row)}>
-											<DeleteOutline />
+										<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleDelete(row)}>
+											{Icons.delete}
 										</IconButton>
 									</TableCell>
 								</TableRow>

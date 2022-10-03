@@ -1,10 +1,4 @@
-import {
-	getLoadingCodes,
-	getTerritorialUnits,
-	getWaste,
-	getWasteCompaniesTypes,
-	getZipCodes,
-} from "@api/templates/catalogues";
+import { getLoadingCodes, getTerritorialUnits, getWaste, getWasteCompaniesTypes, getZipCodes } from "@api/templates/catalogues";
 import { LoadingCode, TerritorialUnit, Waste, WasteCompanyType, Zipcode } from "@api/templates/types";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -76,13 +70,7 @@ export function useCatalogue(): UseCatalogueReturnType {
 			setZipcodes(data);
 		});
 
-		Promise.all([
-			loadingCodesPromise,
-			territorialUnitsPromise,
-			wastesCompanyTypesPromise,
-			wastesPromise,
-			zipcodePromise,
-		]).then(() => {
+		Promise.all([loadingCodesPromise, territorialUnitsPromise, wastesCompanyTypesPromise, wastesPromise, zipcodePromise]).then(() => {
 			setIsLoading(false);
 		});
 	}, []);

@@ -7,12 +7,7 @@ interface NewTemplateFormSectionProps {
 	description: string;
 }
 
-export const NewTemplateFormSection: FC<NewTemplateFormSectionProps> = ({
-	children,
-	className,
-	description,
-	title,
-}) => {
+export const NewTemplateFormSection: FC<NewTemplateFormSectionProps> = ({ children, className, description, title }) => {
 	return (
 		<div className={className}>
 			<div className="mb-6">

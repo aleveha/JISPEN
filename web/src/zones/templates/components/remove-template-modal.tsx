@@ -24,8 +24,8 @@ export const RemoveTemplateModal: FC<Props> = ({ isOpen, onClose, onDelete, temp
 		<DialogContent>
 			<p className="mb-2 text-xl font-bold text-red">Tato akce je&nbsp;nevratná!</p>
 			<p className="text-gray-800">
-				Pokud šablonu &quot;<span className="font-bold">{templateTitle}</span>&quot; opravdu chcete smazat,
-				klikněte na&nbsp;tlačítko &quot;Smazat&quot;.
+				Pokud šablonu &quot;<span className="font-bold">{templateTitle}</span>&quot; opravdu chcete smazat, klikněte na&nbsp;tlačítko
+				&quot;Smazat&quot;.
 			</p>
 		</DialogContent>
 		<DialogActions className="space-x-4">

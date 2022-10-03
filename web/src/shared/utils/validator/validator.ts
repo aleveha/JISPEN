@@ -14,7 +14,7 @@ function onlyPositiveNumber(value: string) {
 	if (Validator.isOnlySpaces(value)) {
 		return "Zadejte platnou hodnotu";
 	}
-	
+
 	if (parseFloat(formatDecimal(value)) < 0) {
 		return "Zadejte kladnou hodnotu";
 	}

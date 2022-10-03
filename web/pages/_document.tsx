@@ -10,16 +10,10 @@ export default class MyDocument extends Document {
 		return (
 			<Html lang="cs">
 				<Head>
-					<meta
-						name="description"
-						content="Program pro pro evidenci odpadů v nemocnicích a ve zdravotnických zařízeních"
-					/>
+					<meta name="description" content="Program pro pro evidenci odpadů v nemocnicích a ve zdravotnických zařízeních" />
 					<link rel="preconnect" href="https://fonts.googleapis.com" />
 					<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-					<link
-						href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700&display=swap"
-						rel="stylesheet"
-					/>
+					<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700&display=swap" rel="stylesheet" />
 					<link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
 					<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" />
 					<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />

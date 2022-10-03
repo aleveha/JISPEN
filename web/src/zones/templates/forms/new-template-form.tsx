@@ -8,11 +8,7 @@ import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { mapTemplateValues } from "@zones/templates/forms/mapper";
 import { NewTemplateFormSection } from "@zones/templates/forms/new-template-form-section";
-import {
-	newTemplateFormDefaultValues,
-	NewTemplateFormValues,
-	wasteCompanyDefaultValue,
-} from "@zones/templates/forms/types";
+import { newTemplateFormDefaultValues, NewTemplateFormValues, wasteCompanyDefaultValue } from "@zones/templates/forms/types";
 import { useCatalogue } from "@zones/templates/hooks/useCatalogue";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -102,23 +98,12 @@ export const NewTemplateForm = memo(() => {
 						<Input control={control} label="Město" name="medicalCompany.address.city" required />
 						<Input control={control} label="Ulice" name="medicalCompany.address.street" required />
 						<div className="flex space-x-6">
-							<Input
-								className="min-w-[5rem]"
-								control={control}
-								label="Č.P."
-								name="medicalCompany.address.registryNumber"
-							/>
-							<Input
-								className="min-w-[5rem]"
-								control={control}
-								label="Č.0."
-								name="medicalCompany.address.buildingNumber"
-							/>
+							<Input className="min-w-[5rem]" control={control} label="Č.P." name="medicalCompany.address.registryNumber" />
+							<Input className="min-w-[5rem]" control={control} label="Č.0." name="medicalCompany.address.buildingNumber" />
 						</div>
 						<Autocomplete
 							autocompleteProps={{
-								getOptionLabel: (option: TerritorialUnit) =>
-									option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`,
+								getOptionLabel: (option: TerritorialUnit) => (option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`),
 								noOptionsText: "Žádný ZÚJ nebyl nalezen",
 							}}
 							control={control}
@@ -129,8 +114,7 @@ export const NewTemplateForm = memo(() => {
 						/>
 						<Autocomplete
 							autocompleteProps={{
-								getOptionLabel: (option: Zipcode) =>
-									option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`,
+								getOptionLabel: (option: Zipcode) => (option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`),
 								noOptionsText: "Žádný PSČ nebyl nalezen",
 							}}
 							control={control}
@@ -142,18 +126,8 @@ export const NewTemplateForm = memo(() => {
 					</div>
 					<div className="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
 						<p className="mb-2 text-xl font-medium text-primary">Kontaktní osoba</p>
-						<Input
-							className="col-span-1 col-start-1"
-							control={control}
-							label="Jméno"
-							name="medicalCompany.contactFirstName"
-						/>
-						<Input
-							className="col-span-1 col-start-2"
-							control={control}
-							label="Příjmení"
-							name="medicalCompany.contactLastName"
-						/>
+						<Input className="col-span-1 col-start-1" control={control} label="Jméno" name="medicalCompany.contactFirstName" />
+						<Input className="col-span-1 col-start-2" control={control} label="Příjmení" name="medicalCompany.contactLastName" />
 						<Input
 							className="col-span-1 col-start-1"
 							control={control}
@@ -162,13 +136,7 @@ export const NewTemplateForm = memo(() => {
 							name="medicalCompany.contactPhone"
 							type="tel"
 						/>
-						<Input
-							className="col-span-1 col-start-2"
-							control={control}
-							label="E-mail"
-							name="medicalCompany.contactEmail"
-							type="email"
-						/>
+						<Input className="col-span-1 col-start-2" control={control} label="E-mail" name="medicalCompany.contactEmail" type="email" />
 					</div>
 				</NewTemplateFormSection>
 				<Divider />
@@ -190,11 +158,7 @@ export const NewTemplateForm = memo(() => {
 					{isLoading ? (
 						<CircularProgress />
 					) : catalogue.loadingCodes ? (
-						<LoadingCodesSectionTable
-							control={control}
-							name="loadingCodes"
-							loadingCodes={catalogue.loadingCodes}
-						/>
+						<LoadingCodesSectionTable control={control} name="loadingCodes" loadingCodes={catalogue.loadingCodes} />
 					) : null}
 				</NewTemplateFormSection>
 				<Divider />

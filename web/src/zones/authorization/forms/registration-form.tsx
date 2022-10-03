@@ -75,14 +75,7 @@ export const RegistrationForm = memo<RegistrationFormProps>(({ onSuccess }) => {
 		>
 			<Input control={control} fullWidth label="Uživatelské jméno (e-mail)" name="email" required type="email" />
 			<Input control={control} fullWidth name="password" label="Heslo" required type="password" />
-			<Input
-				control={control}
-				fullWidth
-				name="repeatedPassword"
-				label="Zopakujte heslo"
-				required
-				type="password"
-			/>
+			<Input control={control} fullWidth name="repeatedPassword" label="Zopakujte heslo" required type="password" />
 			<Button className="w-full" loading={isLoading} type="submit">
 				Vytvořit účet
 			</Button>

@@ -66,10 +66,7 @@ export const NewRecordForm: FC = () => {
 		[massUnit, router]
 	);
 	const onExit = useCallback(() => router.back(), [router]);
-	const onMassUnitChange = useCallback(
-		(_: MouseEvent<HTMLElement>, value: string) => setMassUnit(value as MassUnit),
-		[]
-	);
+	const onMassUnitChange = useCallback((_: MouseEvent<HTMLElement>, value: string) => setMassUnit(value as MassUnit), []);
 
 	const selectedTemplate = watch("template");
 	const loadingCode = watch("loadingCode");
@@ -163,16 +160,11 @@ export const NewRecordForm: FC = () => {
 				<Autocomplete
 					autocompleteProps={{
 						disabled: !selectedTemplate || !loadingCode?.requireWasteCompany,
-						getOptionLabel: (option: WasteCompany) =>
-							option.name ?? `Občané obce ${option.territorialUnit.name}`,
+						getOptionLabel: (option: WasteCompany) => option.name ?? `Občané obce ${option.territorialUnit.name}`,
 						noOptionsText: "Žadná oprávněná osoba nebyla nalezena",
 					}}
 					control={control}
-					label={
-						loadingCode?.requireWasteCompany
-							? "Vyberte oprávněnou osobu"
-							: "Oprávněná osoba není vyžadována"
-					}
+					label={loadingCode?.requireWasteCompany ? "Vyberte oprávněnou osobu" : "Oprávněná osoba není vyžadována"}
 					name="wasteCompany"
 					options={selectedTemplate?.wasteCompanies ?? []}
 					required={loadingCode?.requireWasteCompany}

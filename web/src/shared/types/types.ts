@@ -10,6 +10,4 @@ interface ErrorResponse<ErrorType> {
 	error: ErrorType;
 }
 
-export type DiscriminatedUnion<DataType, ErrorType extends ApiError = ApiError> =
-	| DataResponse<DataType>
-	| ErrorResponse<ErrorType>;
+export type DiscriminatedUnion<DataType, ErrorType extends ApiError = ApiError> = DataResponse<DataType> | ErrorResponse<ErrorType>;

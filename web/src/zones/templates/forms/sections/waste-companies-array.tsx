@@ -1,5 +1,5 @@
 import { TerritorialUnit, WasteCompanyType, Zipcode } from "@api/templates/types";
-import ClearIcon from "@mui/icons-material/Clear";
+import { Icons } from "@icons/icons.config";
 import { IconButton } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
@@ -40,14 +40,13 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 			key={field.id}
 		>
 			{showDeleteButton && (
-				<IconButton className="absolute top-0 right-0" onClick={handleRemoveButton(index)}>
-					<ClearIcon color="error" fontSize="small" />
+				<IconButton className="absolute top-0 right-0 hover:text-red" onClick={handleRemoveButton(index)}>
+					{Icons.cross}
 				</IconButton>
 			)}
 			<Autocomplete
 				autocompleteProps={{
-					getOptionLabel: (option: TerritorialUnit) =>
-						option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`,
+					getOptionLabel: (option: TerritorialUnit) => (option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`),
 					noOptionsText: "Žádný typ nebyl nalezen",
 				}}
 				control={control}
@@ -103,24 +102,13 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				required={isRequired}
 			/>
 			<div className="row-start-7 flex space-x-6 md:row-start-4 lg:row-start-3">
-				<Input
-					control={control}
-					disabled={!isRequired}
-					label="Č.P."
-					name={`wasteCompanies.${index}.address.registryNumber`}
-				/>
-				<Input
-					control={control}
-					disabled={!isRequired}
-					label="Č.0."
-					name={`wasteCompanies.${index}.address.buildingNumber`}
-				/>
+				<Input control={control} disabled={!isRequired} label="Č.P." name={`wasteCompanies.${index}.address.registryNumber`} />
+				<Input control={control} disabled={!isRequired} label="Č.0." name={`wasteCompanies.${index}.address.buildingNumber`} />
 			</div>
 			<Autocomplete
 				autocompleteProps={{
 					className: "row-start-8 md:row-start-5 lg:row-span-4",
-					getOptionLabel: (option: TerritorialUnit) =>
-						option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`,
+					getOptionLabel: (option: TerritorialUnit) => (option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`),
 					noOptionsText: "Žádný ZÚJ nebyl nalezen",
 				}}
 				control={control}
@@ -133,8 +121,7 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				autocompleteProps={{
 					className: "md:row-start-5 lg:row-span-4",
 					disabled: !isRequired,
-					getOptionLabel: (option: Zipcode) =>
-						option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`,
+					getOptionLabel: (option: Zipcode) => (option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`),
 					noOptionsText: "Žádný PSČ nebyl nalezen",
 				}}
 				control={control}

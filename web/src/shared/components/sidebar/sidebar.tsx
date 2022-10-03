@@ -1,40 +1,45 @@
-import ClearIcon from "@mui/icons-material/Clear";
-import { Drawer, IconButton } from "@mui/material";
+import { Icons } from "@icons/icons.config";
+import { IconButton } from "@mui/material";
+import { SidebarMenuItem } from "@shared/components/sidebar/sidebar-menu-item";
+import { userState } from "@state/user/user-state";
+import clsx from "clsx";
+import { useAtom } from "jotai";
 import packageJson from "package.json";
 import React, { memo } from "react";
-import { SidebarContent } from "./sidebar-content";
 
 interface SideBarProps {
-	onClose: () => void;
+	onClick: () => void;
 	open: boolean;
 }
 
-export const Sidebar = memo<SideBarProps>(({ onClose, open }) => {
-	const container = typeof window !== undefined ? () => window.document.body : undefined;
-	const className = "bg-primary-dark text-white w-72";
+export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
+	const [user] = useAtom(userState);
 
 	return (
-		<>
-			<Drawer
-				ModalProps={{ keepMounted: true }}
-				PaperProps={{ className }}
-				anchor="left"
-				className="relative block md:hidden"
-				container={container}
-				onClose={onClose}
-				open={open}
-				variant="temporary"
-			>
-				<IconButton className="absolute top-1 right-1" onClick={onClose}>
-					<ClearIcon className="text-white" fontSize="large" />
+		<div
+			className={clsx(
+				"fixed top-0 bottom-0 left-0 z-10 min-h-full bg-primary-dark transition-[width] duration-300 ease-in-out md:relative",
+				open ? "w-80 px-3" : "w-20"
+			)}
+		>
+			<div className="sticky top-0 left-0 flex flex-col overflow-hidden text-white">
+				<IconButton className={clsx("w-fit py-6 text-white", !open && "px-6")} disableTouchRipple onClick={onClick}>
+					{open ? Icons.chevronLeft : Icons.menu}
 				</IconButton>
-				<SidebarContent />
-			</Drawer>
-			<Drawer PaperProps={{ className }} className="hidden w-72 shrink-0 md:block" open variant="permanent">
-				<span className="mt-2 px-6 text-sm">Verze: {packageJson.version}</span>
-				<SidebarContent />
-			</Drawer>
-		</>
+				<div className={clsx("flex flex-col border-t border-white border-opacity-20", open && "space-y-8 pt-4")}>
+					{user && (
+						<>
+							<SidebarMenuItem href="/templates" iconName="template" isOpen={open} label="Šablony" />
+							<SidebarMenuItem href="/records" iconName="record" isOpen={open} label="Evidence" />
+							<SidebarMenuItem href="/404" iconName="export" isOpen={open} label="Export" />
+						</>
+					)}
+					<SidebarMenuItem href="/login" iconName="login" isOpen={open} label={!user ? "Přihlášení" : "Odhlášení"} />
+					<SidebarMenuItem href="/static/files/user_documentation.pdf" iconName="info" isOpen={open} label="Nápověda" target="_blank" />
+				</div>
+			</div>
+			{open && <span className="absolute bottom-2 left-0 mt-2 whitespace-nowrap px-6 text-sm text-white">Verze: {packageJson.version}</span>}
+		</div>
 	);
 });
 

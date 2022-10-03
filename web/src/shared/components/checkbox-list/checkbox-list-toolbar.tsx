@@ -1,4 +1,4 @@
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Icons } from "@icons/icons.config";
 import { IconButton, Toolbar as MuiToolbar, Tooltip } from "@mui/material";
 import clsx from "clsx";
 import React, { memo } from "react";
@@ -32,9 +32,7 @@ function getEnhancedTableToolbarTitlePlural(numSelected: number): string {
 }
 
 export const CheckboxListToolbar = memo<Props>(({ isError, numSelected, onDeleteClick, title }) => (
-	<MuiToolbar
-		className={clsx("flex justify-between bg-opacity-10", numSelected > 0 && "bg-secondary", isError && "bg-red")}
-	>
+	<MuiToolbar className={clsx("flex justify-between bg-opacity-10", numSelected > 0 && "bg-secondary", isError && "bg-red")}>
 		<div className="py-2 font-medium md:text-lg">
 			{isError ? (
 				<p className="text-red">Musite vybrat alespon jednu polozku</p>
@@ -46,8 +44,8 @@ export const CheckboxListToolbar = memo<Props>(({ isError, numSelected, onDelete
 		</div>
 		{numSelected > 0 && (
 			<Tooltip title="Smazat vsechny">
-				<IconButton onClick={onDeleteClick}>
-					<DeleteIcon className="text-red text-opacity-90" />
+				<IconButton className="text-red text-opacity-90" onClick={onDeleteClick}>
+					{Icons.delete}
 				</IconButton>
 			</Tooltip>
 		)}

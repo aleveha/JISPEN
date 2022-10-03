@@ -1,6 +1,6 @@
 {
 	"name": "web",
-	"version": "3.1.7",
+	"version": "3.1.8",
 	"private": true,
 	"description": "Web application for waste registration in hospitals and medical institutions (JISPEN)",
 	"scripts": {
@@ -12,9 +12,7 @@
 	"dependencies": {
 		"@emotion/react": "^11.9.3",
 		"@emotion/styled": "^11.9.3",
-		"@headlessui/react": "^1.5.0",
 		"@hookform/resolvers": "^2.9.7",
-		"@mui/icons-material": "^5.8.4",
 		"@mui/material": "^5.9.1",
 		"clsx": "^1.1.1",
 		"jotai": "^1.8.2",

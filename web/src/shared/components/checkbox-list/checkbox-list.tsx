@@ -1,13 +1,4 @@
-import {
-	Checkbox,
-	Paper,
-	Table as MuiTable,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableRow,
-	Tooltip,
-} from "@mui/material";
+import { Checkbox, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TableRow, Tooltip } from "@mui/material";
 import clsx from "clsx";
 import React, { ChangeEventHandler, useCallback, useState } from "react";
 import { CheckboxHead } from "./checkbox-list-head";
@@ -43,9 +34,7 @@ function getComparator<Key extends keyof any>(
 	order: Order,
 	orderBy: Key
 ): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-	return order === "desc"
-		? (a, b) => descendingComparator(a, b, orderBy)
-		: (a, b) => -descendingComparator(a, b, orderBy);
+	return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 export const CheckboxList = <T extends TableDefaultType>({
@@ -112,12 +101,7 @@ export const CheckboxList = <T extends TableDefaultType>({
 
 	return (
 		<Paper className={className} variant="outlined">
-			<CheckboxListToolbar
-				isError={isError}
-				numSelected={selected.length}
-				onDeleteClick={handleDeleteAll}
-				title={title}
-			/>
+			<CheckboxListToolbar isError={isError} numSelected={selected.length} onDeleteClick={handleDeleteAll} title={title} />
 			<TableContainer className="max-h-[50vh]">
 				<MuiTable stickyHeader>
 					<CheckboxHead
@@ -135,14 +119,7 @@ export const CheckboxList = <T extends TableDefaultType>({
 							.slice()
 							.sort(getComparator(order, orderBy))
 							.map(row => (
-								<TableRow
-									hover
-									key={row.id}
-									onClick={handleClick(row)}
-									role="checkbox"
-									selected={isSelected(row)}
-									tabIndex={-1}
-								>
+								<TableRow hover key={row.id} onClick={handleClick(row)} role="checkbox" selected={isSelected(row)} tabIndex={-1}>
 									<TableCell sx={{ border: "none" }} padding="checkbox">
 										<Checkbox checked={isSelected(row)} className={clsx(isError && "text-red")} />
 									</TableCell>

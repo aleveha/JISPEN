@@ -10,12 +10,7 @@ interface EnhancedTableHeadProps<T> {
 	orderBy: keyof T;
 }
 
-export const DataGridHead = <T extends Record<string, any>>({
-	headCells,
-	order,
-	orderBy,
-	onSortClick,
-}: EnhancedTableHeadProps<T>) => {
+export const DataGridHead = <T extends Record<string, any>>({ headCells, order, orderBy, onSortClick }: EnhancedTableHeadProps<T>) => {
 	return (
 		<MuiTableHead>
 			<TableRow sx={{ backgroundColor: THEME.palette.primary.main }}>
@@ -31,18 +26,9 @@ export const DataGridHead = <T extends Record<string, any>>({
 							},
 						}}
 					>
-						<TableSortLabel
-							active={orderBy === id}
-							direction={orderBy === id ? order : "asc"}
-							onClick={onSortClick(id)}
-							tabIndex={-1}
-						>
+						<TableSortLabel active={orderBy === id} direction={orderBy === id ? order : "asc"} onClick={onSortClick(id)} tabIndex={-1}>
 							<span className="font-medium uppercase">{label}</span>
-							{orderBy === id ? (
-								<span className="sr-only">
-									{order === "desc" ? "sorted descending" : "sorted ascending"}
-								</span>
-							) : null}
+							{orderBy === id ? <span className="sr-only">{order === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
 						</TableSortLabel>
 					</TableCell>
 				))}

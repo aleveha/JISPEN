@@ -31,11 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 		return (
 			<MuiButton
-				className={clsx(
-					"relative rounded-lg py-3 px-6 text-lg font-medium tracking-wider",
-					_className,
-					className
-				)}
+				className={clsx("relative rounded-lg py-3 px-6 text-lg font-medium tracking-wider", _className, className)}
 				component={href ? "a" : "button"}
 				disabled={disabled || loading}
 				href={href}

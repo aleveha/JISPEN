@@ -4,12 +4,7 @@ import { useEffect } from "react";
 import { Control, Path, useController } from "react-hook-form";
 import { FieldValues } from "react-hook-form/dist/types/fields";
 
-export type AutocompleteElementProps<
-	F extends FieldValues,
-	T,
-	M extends boolean | undefined,
-	D extends boolean | undefined
-> = {
+export type AutocompleteElementProps<F extends FieldValues, T, M extends boolean | undefined, D extends boolean | undefined> = {
 	autocompleteProps?: Omit<AutocompleteProps<T, M, D, any>, "name" | "options" | "loading" | "renderInput">;
 	control?: Control<F>;
 	label?: TextFieldProps["label"];
@@ -57,11 +52,7 @@ export const Autocomplete = <FormData extends FieldValues>({
 	return (
 		<MuiAutocomplete
 			{...autocompleteProps}
-			getOptionLabel={
-				autocompleteProps?.getOptionLabel
-					? autocompleteProps.getOptionLabel
-					: option => `${option?.label || option}`
-			}
+			getOptionLabel={autocompleteProps?.getOptionLabel ? autocompleteProps.getOptionLabel : option => `${option?.label || option}`}
 			isOptionEqualToValue={
 				autocompleteProps?.isOptionEqualToValue
 					? autocompleteProps.isOptionEqualToValue
@@ -94,6 +85,7 @@ export const Autocomplete = <FormData extends FieldValues>({
 					variant="outlined"
 				/>
 			)}
+			value={value}
 		/>
 	);
 };
