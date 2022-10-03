@@ -1,5 +1,6 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import { Drawer, IconButton } from "@mui/material";
+import packageJson from "package.json";
 import React, { memo } from "react";
 import { SidebarContent } from "./sidebar-content";
 
@@ -30,6 +31,7 @@ export const Sidebar = memo<SideBarProps>(({ onClose, open }) => {
 				<SidebarContent />
 			</Drawer>
 			<Drawer PaperProps={{ className }} className="hidden w-72 shrink-0 md:block" open variant="permanent">
+				<span className="mt-2 px-6 text-sm">Verze: {packageJson.version}</span>
 				<SidebarContent />
 			</Drawer>
 		</>

@@ -1,8 +1,8 @@
 {
 	"name": "web",
-	"version": "0.1.0",
+	"version": "3.1.6",
 	"private": true,
-	"description": "Web for JISPEN application",
+	"description": "Web application for waste registration in hospitals and medical institutions (JISPEN)",
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev",
