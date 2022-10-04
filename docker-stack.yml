@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+    web:
+        image: registry.dev.uxf.cz/jispen/web:${TAG}
+        deploy:
+            labels:
+                - traefik.enable=true
+                - traefik.http.routers.jispen.rule=Host(`jispen-dev.pluto.uxf.cz`)
+                - traefik.http.routers.jispen.entrypoints=https
+                - traefik.http.routers.jispen.tls.certresolver=le
+                - traefik.http.services.jispen.loadbalancer.server.port=3000
+        networks:
+            - default
+            - traefik
+        environment:
+            NEXT_PUBLIC_API_URL: https://api.jispen-dev.pluto.uxf.cz
+
+    api:
+        image: registry.dev.uxf.cz/jispen/api:${TAG}
+        deploy:
+            labels:
+                - traefik.enable=true
+                - traefik.http.routers.jispen.rule=Host(`api.jispen-dev.pluto.uxf.cz`)
+                - traefik.http.routers.jispen.entrypoints=https
+                - traefik.http.routers.jispen.tls.certresolver=le
+                - traefik.http.services.jispen.loadbalancer.server.port=3000
+        networks:
+            - default
+            - traefik
+        environment:
+            STAGE: "prod"
+            DATABASE_USER: "jispen"
+            DATABASE_PASS: "jispen"
+            DATABASE_HOST: "db"
+            DATABASE_NAME: "jispen"
+            DATABASE_PORT: 5432
+
+    db:
+        image: postgres:14.1-alpine
+        environment:
+            POSTGRES_USER: "jispen"
+            POSTGRES_PASSWORD: "jispen"
+            POSTGRES_DB: "jispen"
+        volumes:
+            - db:/var/lib/postgresql/data
+
+    adminer:
+        image: adminer:latest
+        networks:
+            - default
+            - traefik
+        deploy:
+            labels:
+                - traefik.enable=true
+                - traefik.http.routers.ignat-admin-dev.rule=Host(`adminer.jispen-dev.pluto.uxf.cz`)
+                - traefik.http.routers.ignat-admin-dev.entrypoints=https
+                - traefik.http.routers.ignat-admin-dev.tls.certresolver=le
+                - traefik.http.services.ignat-admin-dev.loadbalancer.server.port=8080
+
+volumes:
+    db:
+    rabbitmq:
+networks:
+    traefik:
+        external: true

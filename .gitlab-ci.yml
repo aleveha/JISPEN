@@ -1,0 +1,45 @@
+stages:
+    - test-web
+    - test-api
+    - deploy
+
+variables:
+    TAG: $CI_PIPELINE_IID
+
+test-web:
+    stage: test-web
+    image: node:18-alpine
+    tags:
+        - pluto-docker
+    before_script:
+        - cd web
+        - yarn install
+    script:
+        - yarn check
+        - yarn test
+
+test-api:
+    stage: test-api
+    image: node:18-alpine
+    tags:
+        - pluto-docker
+    before_script:
+        - cd api
+        - yarn install
+    script:
+        - yarn check
+        - yarn test
+
+deploy:dev:
+    stage: deploy
+    tags:
+        - pluto
+    rules:
+        -   if: $CI_COMMIT_BRANCH == "develop"
+    script:
+        - docker build -t registry.dev.uxf.cz/jispen/web:${TAG} ./web
+        - docker push registry.dev.uxf.cz/ignat/bot:${TAG}
+        - docker build -t registry.dev.uxf.cz/jispen/api:${TAG} ./api
+        - docker push registry.dev.uxf.cz/ignat/api:${TAG}
+        - docker -H pluto.uxf.cz:2376 --tlsverify stack deploy -c docker-stack.yml jispen-dev --with-registry-auth
+
