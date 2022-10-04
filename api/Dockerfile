@@ -11,4 +11,5 @@ FROM node:16-alpine as prod
 COPY --from=deps /home/node /home/node
 WORKDIR /home/node/dist
 ENTRYPOINT ["/home/node/entrypoint.sh"]
+EXPOSE 8000
 CMD ["node", "src/main.js"]

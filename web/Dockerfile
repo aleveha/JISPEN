@@ -11,4 +11,5 @@ RUN mv public .next/standalone/public && \
 FROM node:16-alpine AS prod
 COPY --from=deps /home/node /home/node
 WORKDIR /home/node/standalone
+EXPOSE 3000
 CMD ["node", "server.js"]
