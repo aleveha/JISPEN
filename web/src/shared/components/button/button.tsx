@@ -42,7 +42,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			>
 				<div className={clsx(loading && "text-transparent")}>{children}</div>
 				<div className={clsx(loading ? "absolute inset-0 flex items-center justify-center" : "hidden")}>
-					<CircularProgress size={28} />
+					<CircularProgress className="text-white" size={28} />
 				</div>
 			</MuiButton>
 		);
