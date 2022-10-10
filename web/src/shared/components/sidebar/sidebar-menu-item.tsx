@@ -3,17 +3,18 @@ import { Button } from "@mui/material";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { HTMLAttributeAnchorTarget, memo, useEffect, useState } from "react";
+import React, { HTMLAttributeAnchorTarget, memo, MouseEventHandler, useEffect, useState } from "react";
 
 interface Props {
 	href: string;
 	iconName?: IconsType;
 	isOpen: boolean;
 	label: string;
+	onClick?: MouseEventHandler<HTMLAnchorElement>;
 	target?: HTMLAttributeAnchorTarget;
 }
 
-export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, target }) => {
+export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, onClick, target }) => {
 	const { pathname } = useRouter();
 	const [disableFocus, setDisableFocus] = useState(false);
 
@@ -33,6 +34,7 @@ export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, tar
 				)}
 				component="a"
 				disableFocusRipple={disableFocus}
+				onClick={onClick}
 				tabIndex={disableFocus ? -1 : 0}
 				target={target}
 			>

@@ -1,6 +1,6 @@
 import { Button as MuiButton, CircularProgress } from "@mui/material";
 import clsx from "clsx";
-import React, { forwardRef, ReactNode } from "react";
+import React, { forwardRef, MouseEventHandler, ReactNode } from "react";
 
 const ButtonType = {
 	primary: "primary",
@@ -14,7 +14,7 @@ export interface ButtonProps {
 	disabled?: boolean;
 	href?: string;
 	loading?: boolean;
-	onClick?: () => void;
+	onClick?: MouseEventHandler<HTMLButtonElement>;
 	type?: "submit" | "button";
 	variant?: keyof typeof ButtonType;
 }

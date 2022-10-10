@@ -2,10 +2,12 @@ import { Icons } from "@icons/icons.config";
 import { IconButton } from "@mui/material";
 import { SidebarMenuItem } from "@shared/components/sidebar/sidebar-menu-item";
 import { userState } from "@state/user/user-state";
+import { LogoutModal } from "@zones/authorization/components/logout-modal";
 import clsx from "clsx";
 import { useAtom } from "jotai";
+import { useRouter } from "next/router";
 import packageJson from "package.json";
-import React, { memo } from "react";
+import React, { memo, MouseEventHandler, useCallback, useState } from "react";
 
 interface SideBarProps {
 	onClick: () => void;
@@ -14,6 +16,17 @@ interface SideBarProps {
 
 export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
 	const [user] = useAtom(userState);
+	const [isLogoutPopupOpen, setLogoutPopupOpen] = useState(false);
+	const router = useRouter();
+
+	const onLogoutClick = useCallback(async () => await router.push("/login"), [router]);
+
+	const handleModalOpen = useCallback<MouseEventHandler<HTMLAnchorElement>>(event => {
+		event.preventDefault();
+		setLogoutPopupOpen(true);
+	}, []);
+
+	const handleModalClose = useCallback(() => setLogoutPopupOpen(false), []);
 
 	return (
 		<div
@@ -34,11 +47,18 @@ export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
 							<SidebarMenuItem href="/404" iconName="export" isOpen={open} label="Export" />
 						</>
 					)}
-					<SidebarMenuItem href="/login" iconName="login" isOpen={open} label={!user ? "Přihlášení" : "Odhlášení"} />
+					<SidebarMenuItem
+						href="/login"
+						iconName="login"
+						isOpen={open}
+						label={!user ? "Přihlášení" : "Odhlášení"}
+						onClick={user ? handleModalOpen : undefined}
+					/>
 					<SidebarMenuItem href="/static/files/user_documentation.pdf" iconName="info" isOpen={open} label="Nápověda" target="_blank" />
 				</div>
 			</div>
 			{open && <span className="absolute bottom-2 left-0 mt-2 whitespace-nowrap px-6 text-sm text-white">Verze: {packageJson.version}</span>}
+			{isLogoutPopupOpen && <LogoutModal isOpen={isLogoutPopupOpen} onClose={handleModalClose} onLogout={onLogoutClick} />}
 		</div>
 	);
 });
