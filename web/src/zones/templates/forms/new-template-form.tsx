@@ -125,18 +125,34 @@ export const NewTemplateForm = memo(() => {
 						/>
 					</div>
 					<div className="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
-						<p className="mb-2 text-xl font-medium text-primary">Kontaktní osoba</p>
-						<Input className="col-span-1 col-start-1" control={control} label="Jméno" name="medicalCompany.contactFirstName" />
-						<Input className="col-span-1 col-start-2" control={control} label="Příjmení" name="medicalCompany.contactLastName" />
+						<p className="col-span-2 mb-2 text-xl font-medium text-primary">Kontaktní osoba</p>
 						<Input
-							className="col-span-1 col-start-1"
+							className="col-span-2 md:col-span-1 md:col-start-1"
+							control={control}
+							label="Jméno"
+							name="medicalCompany.contactFirstName"
+						/>
+						<Input
+							className="col-span-2 md:col-span-1 md:col-start-2"
+							control={control}
+							label="Příjmení"
+							name="medicalCompany.contactLastName"
+						/>
+						<Input
+							className="col-span-2 md:col-span-1 md:col-start-1"
 							control={control}
 							inputMode="numeric"
 							label="Telefon"
 							name="medicalCompany.contactPhone"
 							type="tel"
 						/>
-						<Input className="col-span-1 col-start-2" control={control} label="E-mail" name="medicalCompany.contactEmail" type="email" />
+						<Input
+							className="col-span-2 md:col-span-1 md:col-start-2"
+							control={control}
+							label="E-mail"
+							name="medicalCompany.contactEmail"
+							type="email"
+						/>
 					</div>
 				</NewTemplateFormSection>
 				<Divider />
