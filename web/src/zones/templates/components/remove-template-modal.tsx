@@ -6,10 +6,21 @@ interface Props {
 	isOpen: boolean;
 	onClose: () => void;
 	onDelete: () => void;
+	recordsCount?: number;
 	templateTitle: string;
 }
 
-export const RemoveTemplateModal: FC<Props> = ({ isOpen, onClose, onDelete, templateTitle }) => (
+function formatRecordsCount(count: number) {
+	if (count === 1) {
+		return "1\xa0záznam";
+	} else if (count > 1 && count < 5) {
+		return `${count}\xa0záznamy`;
+	} else {
+		return `${count}\xa0záznamů`;
+	}
+}
+
+export const RemoveTemplateModal: FC<Props> = ({ isOpen, onClose, onDelete, recordsCount, templateTitle }) => (
 	<Dialog
 		onClose={onClose}
 		open={isOpen}
@@ -23,6 +34,12 @@ export const RemoveTemplateModal: FC<Props> = ({ isOpen, onClose, onDelete, temp
 		<DialogTitle className="text-2xl font-medium text-primary">Opravdu chcete smazat tuto šablonu?</DialogTitle>
 		<DialogContent>
 			<p className="mb-2 text-xl font-bold text-red">Tato akce je&nbsp;nevratná!</p>
+			{recordsCount && recordsCount > 0 && (
+				<p className="mb-2 text-gray-800">
+					Opravdu si přejete smazat šablonu i&nbsp;přesto, že se&nbsp;tím vymaže{" "}
+					<span className="font-bold">{formatRecordsCount(recordsCount)}</span> v&nbsp;evidenci odpadů?
+				</p>
+			)}
 			<p className="text-gray-800">
 				Pokud šablonu &quot;<span className="font-bold">{templateTitle}</span>&quot; opravdu chcete smazat, klikněte na&nbsp;tlačítko
 				&quot;Smazat&quot;.

@@ -1,8 +1,11 @@
+import { getRecords } from "@api/records";
 import { deleteTemplate } from "@api/templates";
 import { Template } from "@api/templates/types";
 import { HeadCell } from "@shared/components/checkbox-list/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
+import { userState } from "@state/user/user-state";
 import { RemoveTemplateModal } from "@zones/templates/components/remove-template-modal";
+import { useAtom } from "jotai";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -33,6 +36,8 @@ interface Props {
 export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedTemplate, setSelectedTemplate] = useState<TemplatesTable | null>();
+	const [recordsCount, setRecordsCount] = useState<number | undefined>(undefined);
+	const [user] = useAtom(userState);
 
 	const handleModalClose = useCallback(() => setIsModalOpen(false), []);
 
@@ -48,10 +53,21 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 		[data]
 	);
 
-	const handleSelectedChange = useCallback((template: TemplatesTable) => {
-		setSelectedTemplate(template);
-		setIsModalOpen(true);
-	}, []);
+	const handleSelectedChange = useCallback(
+		async (template: TemplatesTable) => {
+			setSelectedTemplate(template);
+			setIsModalOpen(true);
+			if (user) {
+				const { data: records } = await getRecords(user.id);
+				if (!records) {
+					toast.error("Nepodařilo se načíst počet evidence");
+					return;
+				}
+				setRecordsCount(records.filter(record => record.templateId === template.id).length);
+			}
+		},
+		[user]
+	);
 
 	const onDelete = useCallback(() => {
 		if (!selectedTemplate) {
@@ -77,7 +93,13 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 		<>
 			<DataGrid headCells={HEADER_CELLS} handleSelectedChange={handleSelectedChange} orderedBy="title" rows={rows} />
 			{selectedTemplate && (
-				<RemoveTemplateModal isOpen={isModalOpen} onClose={handleModalClose} onDelete={onDelete} templateTitle={selectedTemplate.title} />
+				<RemoveTemplateModal
+					isOpen={isModalOpen}
+					onClose={handleModalClose}
+					onDelete={onDelete}
+					recordsCount={recordsCount}
+					templateTitle={selectedTemplate.title}
+				/>
 			)}
 		</>
 	);
