@@ -77,8 +77,8 @@ export const DataGrid = <T extends DataGridDefaultType>({
 
 	return (
 		<Paper className={clsx("overflow-hidden rounded-lg", className)} variant="outlined">
-			<TableContainer className="max-h-[50vh]">
-				<MuiTable>
+			<TableContainer className="max-h-[60vh]">
+				<MuiTable stickyHeader>
 					<DataGridHead headCells={headCells} onSortClick={handleRequestSort} order={order} orderBy={orderBy} />
 					<TableBody>
 						{rows
