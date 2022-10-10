@@ -103,7 +103,7 @@ export const NewRecordForm: FC = () => {
 					options={templates}
 					required
 				/>
-				<DatePickerInput control={control} disabled={!selectedTemplate} name="date" required />
+				<DatePickerInput control={control} disabled={!selectedTemplate} label="Datum" name="date" required />
 				<div className="relative">
 					<Input
 						className="w-full"
