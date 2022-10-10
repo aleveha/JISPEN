@@ -5,6 +5,7 @@ import { LoadingCode, Template, Waste, WasteCompany } from "@api/templates/types
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
+import { DatePickerInput } from "@shared/components/inputs/date-picker";
 import { Input } from "@shared/components/inputs/text-input";
 import { formatDecimal } from "@shared/utils/validator/helpers";
 import { Validator } from "@shared/utils/validator/validator";
@@ -102,7 +103,7 @@ export const NewRecordForm: FC = () => {
 					options={templates}
 					required
 				/>
-				<Input control={control} disabled={!selectedTemplate} name="date" required type="date" />
+				<DatePickerInput control={control} disabled={!selectedTemplate} name="date" required />
 				<div className="relative">
 					<Input
 						className="w-full"

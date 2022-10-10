@@ -34,7 +34,7 @@ export const RemoveTemplateModal: FC<Props> = ({ isOpen, onClose, onDelete, reco
 		<DialogTitle className="text-2xl font-medium text-primary">Opravdu chcete smazat tuto šablonu?</DialogTitle>
 		<DialogContent>
 			<p className="mb-2 text-xl font-bold text-red">Tato akce je&nbsp;nevratná!</p>
-			{recordsCount && recordsCount > 0 && (
+			{!!recordsCount && recordsCount > 0 && (
 				<p className="mb-2 text-gray-800">
 					Opravdu si přejete smazat šablonu i&nbsp;přesto, že se&nbsp;tím vymaže{" "}
 					<span className="font-bold">{formatRecordsCount(recordsCount)}</span> v&nbsp;evidenci odpadů?
