@@ -19,9 +19,7 @@ export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, onC
 	const [disableFocus, setDisableFocus] = useState(false);
 
 	useEffect(() => {
-		if (new RegExp("/(templates|records)/.+").test(pathname)) {
-			setDisableFocus(true);
-		}
+		setDisableFocus(new RegExp("/?(templates|records).*").test(pathname));
 	}, [pathname]);
 
 	return (
@@ -29,7 +27,7 @@ export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, onC
 			<Button
 				className={clsx(
 					"transition duration-300 hover:bg-white hover:bg-opacity-20",
-					pathname === href && "bg-white bg-opacity-10",
+					pathname.includes(href) && "bg-white bg-opacity-10",
 					isOpen ? "w-full py-3 px-4" : "w-fit rounded-none py-7 px-7"
 				)}
 				component="a"
