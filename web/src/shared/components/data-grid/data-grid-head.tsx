@@ -13,12 +13,13 @@ interface EnhancedTableHeadProps<T> {
 export const DataGridHead = <T extends Record<string, any>>({ headCells, order, orderBy, onSortClick }: EnhancedTableHeadProps<T>) => {
 	return (
 		<MuiTableHead>
-			<TableRow sx={{ backgroundColor: THEME.palette.primary.main }}>
+			<TableRow>
 				{headCells.map(({ id, label, width }) => (
 					<TableCell
 						key={id.toString()}
 						sortDirection={orderBy === id ? order : false}
 						sx={{
+							backgroundColor: THEME.palette.primary.main,
 							border: "none",
 							minWidth: width,
 							".MuiTableSortLabel-root, .MuiTableSortLabel-icon": {
@@ -32,7 +33,13 @@ export const DataGridHead = <T extends Record<string, any>>({ headCells, order, 
 						</TableSortLabel>
 					</TableCell>
 				))}
-				<TableCell sx={{ border: "none", color: THEME.palette.primary.contrastText }}>
+				<TableCell
+					sx={{
+						backgroundColor: THEME.palette.primary.main,
+						border: "none",
+						color: THEME.palette.primary.contrastText,
+					}}
+				>
 					<span className="font-medium uppercase">AKCE</span>
 				</TableCell>
 			</TableRow>
