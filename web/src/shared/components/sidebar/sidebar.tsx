@@ -57,7 +57,13 @@ export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
 					<SidebarMenuItem href="/static/files/user_documentation.pdf" iconName="info" isOpen={open} label="Nápověda" target="_blank" />
 				</div>
 			</div>
-			{open && <span className="absolute bottom-2 left-0 mt-2 whitespace-nowrap px-6 text-sm text-white">Verze: {packageJson.version}</span>}
+			{open && (
+				<div className="absolute bottom-2 left-0 mt-2 flex flex-col px-6">
+					<span className="whitespace-nowrap text-xs text-white">API: {packageJson.versions.api}</span>
+					<span className="whitespace-nowrap text-xs text-white">DB: {packageJson.versions.db}</span>
+					<span className="whitespace-nowrap text-xs text-white">WEB: {packageJson.versions.web}</span>
+				</div>
+			)}
 			{isLogoutPopupOpen && <LogoutModal isOpen={isLogoutPopupOpen} onClose={handleModalClose} onLogout={onLogoutClick} />}
 		</div>
 	);
