@@ -1,6 +1,7 @@
 import { apiClient } from "@api/config";
 import { fetcher } from "@api/index";
-import { CreateRecordDto, Record } from "@api/records/types";
+import { CreateRecordDto } from "@api/records/dto";
+import { Record } from "@api/records/types";
 import { LoadingCode, Template, Waste, WasteCompany } from "@api/templates/types";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Button } from "@shared/components/button/button";

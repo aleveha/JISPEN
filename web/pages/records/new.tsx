@@ -9,7 +9,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	const { data, error } = await fetcher<Template[]>({
 		axiosInstance: apiServer,
 		method: "get",
-		url: "/template/all",
+		url: "/templates/all",
 		accessToken,
 	});
 

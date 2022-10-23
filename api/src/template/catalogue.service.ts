@@ -6,6 +6,7 @@ import { TerritorialUnitModel } from "../models/territorialUnit.model";
 import { WasteModel } from "../models/waste.model";
 import { WasteCompanyTypeModel } from "../models/wasteCompanyType.model";
 import { ZipcodeModel } from "../models/zipcode.model";
+import { CataloguesDto } from "./dto/template.dto";
 
 @Injectable()
 export class CatalogueService {
@@ -22,23 +23,13 @@ export class CatalogueService {
 		private readonly zipCodeRepository: Repository<ZipcodeModel>
 	) {}
 
-	public async getLoadingCodes(): Promise<LoadingCodeModel[]> {
-		return await this.loadingCodeRepository.find();
-	}
-
-	public async getTerritorialUnits(): Promise<TerritorialUnitModel[]> {
-		return await this.territorialUnitRepository.find();
-	}
-
-	public async getWaste(): Promise<WasteModel[]> {
-		return await this.wasteRepository.find();
-	}
-
-	public async getWasteCompanyTypes(): Promise<WasteCompanyTypeModel[]> {
-		return await this.wasteCompanyTypeRepository.find();
-	}
-
-	public async getZipCodes(): Promise<ZipcodeModel[]> {
-		return await this.zipCodeRepository.find();
+	public async getCatalogues(): Promise<CataloguesDto> {
+		return {
+			loadingCodes: await this.loadingCodeRepository.find(),
+			territorialUnits: await this.territorialUnitRepository.find(),
+			wasteCompanyTypes: await this.wasteCompanyTypeRepository.find(),
+			wastes: await this.wasteRepository.find(),
+			zipcodes: await this.zipCodeRepository.find(),
+		};
 	}
 }

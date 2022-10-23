@@ -1,17 +1,12 @@
 import { Body, Controller, Delete, Get, HttpCode, Post, Query, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { UserEmail } from "../decorators/user-email.decorator";
-import { LoadingCodeModel } from "../models/loadingCode.model";
 import { TemplateModel } from "../models/template.model";
-import { TerritorialUnitModel } from "../models/territorialUnit.model";
-import { WasteModel } from "../models/waste.model";
-import { WasteCompanyTypeModel } from "../models/wasteCompanyType.model";
-import { ZipcodeModel } from "../models/zipcode.model";
 import { CatalogueService } from "./catalogue.service";
-import { TemplateDto } from "./dto/template.dto";
+import { CataloguesDto, TemplateDto } from "./dto/template.dto";
 import { TemplatesService } from "./templates.service";
 
-@Controller("template")
+@Controller("templates")
 export class TemplatesController {
 	constructor(private readonly catalogueService: CatalogueService, private readonly templateService: TemplatesService) {}
 
@@ -35,28 +30,9 @@ export class TemplatesController {
 		return await this.templateService.delete(templateId);
 	}
 
-	@Get("loading-codes")
-	async getLoadingCodes(): Promise<LoadingCodeModel[]> {
-		return await this.catalogueService.getLoadingCodes();
-	}
-
-	@Get("territorial-units")
-	async getTerritorialUnits(): Promise<TerritorialUnitModel[]> {
-		return await this.catalogueService.getTerritorialUnits();
-	}
-
-	@Get("waste")
-	async getWaste(): Promise<WasteModel[]> {
-		return await this.catalogueService.getWaste();
-	}
-
-	@Get("waste-company-types")
-	async getWasteCompanyTypes(): Promise<WasteCompanyTypeModel[]> {
-		return await this.catalogueService.getWasteCompanyTypes();
-	}
-
-	@Get("zipcodes")
-	async getZipcodes(): Promise<ZipcodeModel[]> {
-		return await this.catalogueService.getZipCodes();
+	@UseGuards(JwtAuthGuard)
+	@Get("catalogues")
+	async getLoadingCodes(): Promise<CataloguesDto> {
+		return await this.catalogueService.getCatalogues();
 	}
 }

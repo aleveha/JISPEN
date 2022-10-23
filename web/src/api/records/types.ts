@@ -13,12 +13,3 @@ export interface Record {
 	wasteCompany?: WasteCompany;
 	wasteCompanyId?: number;
 }
-
-export interface CreateRecordDto {
-	amount: number;
-	date: Date;
-	loadingCodeId: number;
-	templateId: number;
-	wasteId: number;
-	wasteCompanyId: number | null;
-}
