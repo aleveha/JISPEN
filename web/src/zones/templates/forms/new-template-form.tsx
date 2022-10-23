@@ -1,5 +1,7 @@
-import { createTemplate } from "@api/templates";
-import { TerritorialUnit, Zipcode } from "@api/templates/types";
+import { apiClient } from "@api/config";
+import { fetcher } from "@api/index";
+import { TemplateDTO } from "@api/templates/dto";
+import { Template, TerritorialUnit, Zipcode } from "@api/templates/types";
 import { CircularProgress, Divider } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
@@ -22,12 +24,12 @@ import { WasteCompaniesArray } from "./sections/waste-companies-array";
 import { WasteSectionTable } from "./sections/waste-section-table";
 
 export const NewTemplateForm = memo(() => {
-	const user = useAuth();
+	const [accessToken] = useAuth();
 	const router = useRouter();
-	const { isLoading, catalogue } = useCatalogue();
+	const { isLoading, catalogue } = useCatalogue(); // TODO move to server side
 	const {
 		control,
-		formState: { isDirty },
+		formState: { isDirty, isSubmitSuccessful },
 		handleSubmit,
 		watch,
 	} = useForm<NewTemplateFormValues>({
@@ -35,15 +37,21 @@ export const NewTemplateForm = memo(() => {
 		mode: "onChange",
 	});
 
-	const [showModal, handleFormLeave] = useFormLeave(isDirty);
+	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitSuccessful);
 
 	const onSubmit = useCallback<SubmitHandler<NewTemplateFormValues>>(
 		values => {
-			if (!user) {
+			if (!accessToken) {
 				return;
 			}
 
-			createTemplate(mapTemplateValues(values, user))
+			fetcher<Template, TemplateDTO>({
+				axiosInstance: apiClient,
+				method: "post",
+				url: "/template/create",
+				data: mapTemplateValues(values),
+				accessToken,
+			})
 				.then(res => {
 					if (res.data) {
 						router.push("/templates").then(() => {
@@ -57,7 +65,7 @@ export const NewTemplateForm = memo(() => {
 					toast.error("Nepodařilo se vytvořit šablonu");
 				});
 		},
-		[router, user]
+		[router, accessToken]
 	);
 
 	const onExit = useCallback(() => {

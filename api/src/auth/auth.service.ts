@@ -1,52 +1,23 @@
-import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { UserModel } from "../models/user.model";
-import { Repository } from "typeorm";
-import { AuthorizationDto, ConfirmRegistrationDto } from "./dto/authorizationDto";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { compare, genSalt, hash } from "bcryptjs";
+import { UserModel } from "../models/user.model";
+import { UserService } from "../user/user.service";
+import { AccessTokenResponse, AuthorizationDto } from "./dto/authorizationDto";
 
 @Injectable()
 export class AuthService {
-	public constructor(
-		@InjectRepository(UserModel)
-		private authRepository: Repository<UserModel>
-	) {}
+	public constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
 	public async createUser(userDto: AuthorizationDto): Promise<UserModel> {
-		const existedUser = await this.findUserByEmail(userDto.email);
-		if (existedUser) {
-			throw new BadRequestException();
-		}
-
-		const newUser = this.authRepository.create({
+		return await this.userService.createUser({
 			email: userDto.email,
-			passwordHash: await AuthService.generatePasswordHash(userDto.password),
-			verifiedAt: new Date(), // TODO remove after JWT will be added
+			passwordHash: await hash(userDto.password, await genSalt()),
 		});
-		// TODO send email to user with verification code
-		return await this.authRepository.save(newUser);
 	}
 
-	public async confirmRegistration(confirmDto: ConfirmRegistrationDto): Promise<UserModel> {
-		const existedUser = await this.findUserByEmail(confirmDto.email);
-		if (!existedUser) {
-			throw new BadRequestException();
-		}
-
-		if (existedUser.serviceCode !== confirmDto.confirmationCode) {
-			throw new BadRequestException();
-		}
-
-		const { affected } = await this.authRepository.update({ email: existedUser.email }, { verifiedAt: new Date(), serviceCode: null });
-		if (affected === 0) {
-			throw new InternalServerErrorException();
-		}
-
-		return await this.findUserByEmail(confirmDto.email);
-	}
-
-	public async verifyUser(userDto: AuthorizationDto): Promise<UserModel> {
-		const existedUser = await this.findUserByEmail(userDto.email);
+	public async getUser(userDto: AuthorizationDto): Promise<UserModel> {
+		const existedUser = await this.userService.getUserByEmail(userDto.email);
 		if (!existedUser) {
 			throw new UnauthorizedException();
 		}
@@ -56,18 +27,13 @@ export class AuthService {
 			throw new UnauthorizedException();
 		}
 
-		if (!existedUser.verifiedAt) {
-			throw new ForbiddenException();
-		}
-
 		return existedUser;
 	}
 
-	private async findUserByEmail(email: string): Promise<UserModel> {
-		return this.authRepository.findOne({ email: email });
-	}
-
-	private static async generatePasswordHash(password: string): Promise<string> {
-		return await hash(password, await genSalt());
+	public async login(email: string): Promise<AccessTokenResponse> {
+		const payload = { email };
+		return {
+			accessToken: await this.jwtService.signAsync(payload),
+		};
 	}
 }

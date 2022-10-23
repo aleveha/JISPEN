@@ -1,8 +1,8 @@
-import { Repository } from "typeorm";
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { RecordDto } from "./dto/recordDto";
+import { Repository } from "typeorm";
 import { RecordModel } from "../models/record.model";
+import { RecordDto } from "./dto/recordDto";
 
 @Injectable()
 export class RecordsService {
@@ -11,11 +11,11 @@ export class RecordsService {
 		private readonly recordsRepository: Repository<RecordModel>
 	) {}
 
-	public async getAll(userId: number): Promise<RecordModel[]> {
+	public async getAll(email: string): Promise<RecordModel[]> {
 		return await this.recordsRepository.find({
 			where: {
 				template: {
-					userId: userId,
+					user: { email },
 				},
 			},
 			relations: [

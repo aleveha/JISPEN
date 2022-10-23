@@ -1,12 +1,13 @@
-import { loginUser } from "@api/authorization";
+import { apiClient } from "@api/config";
 import { ApiError } from "@api/config/types";
+import { fetcher } from "@api/index";
+import { AccessTokenResponse } from "@api/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@shared/components/button/button";
 import { Input } from "@shared/components/inputs/text-input";
-import { userState } from "@state/user/user-state";
-import { useAtom } from "jotai";
+import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { useRouter } from "next/router";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { object, string } from "yup";
@@ -33,7 +34,7 @@ function errorHelper(error: ApiError): string {
 }
 
 export const LoginForm = memo(() => {
-	const [user, setUser] = useAtom(userState);
+	const [, setUser] = useAuth();
 	const router = useRouter();
 
 	const { control, handleSubmit } = useForm<LoginFormValues>({
@@ -45,33 +46,30 @@ export const LoginForm = memo(() => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const onSubmit = useCallback<SubmitHandler<LoginFormValues>>(
-		async values => {
+		values => {
 			setIsLoading(true);
 			const loadingToastId = toast.loading("Probíhá přihlášení...");
-			const { data: user, error } = await loginUser(values);
-			setIsLoading(false);
+			fetcher<AccessTokenResponse, LoginFormValues>({
+				axiosInstance: apiClient,
+				method: "post",
+				url: "/auth/login",
+				data: values,
+			})
+				.then(({ data, error }) => {
+					setIsLoading(false);
 
-			if (error) {
-				toast.error(errorHelper(error ?? { statusCode: 500 }), { id: loadingToastId });
-				return;
-			}
+					if (error || !data) {
+						toast.error(errorHelper(error), { id: loadingToastId });
+						return;
+					}
 
-			router.push("/").then(() => {
-				setUser(user);
-				toast.success("Vítejte v aplikaci JISPEN", { id: loadingToastId });
-			});
+					setUser(data.accessToken);
+					router.push("/").then(() => toast.success("Vítejte v aplikaci JISPEN", { id: loadingToastId }));
+				})
+				.catch(() => toast.error("Vyskytla se chyba během přihlašování", { id: loadingToastId }));
 		},
 		[router, setUser]
 	);
-
-	useEffect(() => {
-		if (user) {
-			router.push("/").then(() => {
-				setUser(null);
-				toast.success("Byli jste úspěšně odhlášeni");
-			});
-		}
-	}, [router, setUser, user]);
 
 	return (
 		<form

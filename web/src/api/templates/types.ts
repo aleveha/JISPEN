@@ -1,5 +1,3 @@
-import { User } from "@api/authorization/types";
-
 export interface Zipcode {
 	id: number;
 	uid: number;
@@ -44,7 +42,6 @@ export interface Template {
 	medicalCompanyId: number;
 	userId: number;
 	expiredAt: Date | null;
-	user: User;
 	medicalCompany: MedicalCompany;
 	loadingCodes: LoadingCode[];
 	wastes: Waste[];

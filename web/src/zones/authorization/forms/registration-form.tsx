@@ -1,5 +1,7 @@
-import { registerUser } from "@api/authorization";
+import { apiClient } from "@api/config";
 import { ApiError } from "@api/config/types";
+import { fetcher } from "@api/index";
+import { AccessTokenResponse } from "@api/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@shared/components/button/button";
 import { Input } from "@shared/components/inputs/text-input";
@@ -18,7 +20,7 @@ interface RegistrationFormValues {
 	repeatedPassword: string;
 }
 
-async function errorHelper(error: ApiError): Promise<string> {
+function errorHelper(error: ApiError): string {
 	switch (error.statusCode) {
 		case 400:
 			return "Uživatel se stejným e-mailem již existuje";
@@ -49,20 +51,28 @@ export const RegistrationForm = memo<RegistrationFormProps>(({ onSuccess }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const onSubmit = useCallback<SubmitHandler<RegistrationFormValues>>(
-		async values => {
+		values => {
 			const loadingToastId = toast.loading("Probíhá registrace...");
 			setIsLoading(true);
-			const { data: user, error } = await registerUser(values);
-			setIsLoading(false);
+			fetcher<AccessTokenResponse, RegistrationFormValues>({
+				axiosInstance: apiClient,
+				method: "post",
+				url: "/auth/register",
+				data: values,
+			})
+				.then(({ data: success, error }) => {
+					setIsLoading(false);
 
-			if (error || !user) {
-				toast.error(await errorHelper(error ?? { statusCode: 500 }), { id: loadingToastId });
-				return;
-			}
+					if (error || !success) {
+						toast.error(errorHelper(error), { id: loadingToastId });
+						return;
+					}
 
-			toast.success("Registrace proběhla uspěšně", { id: loadingToastId });
-			onSuccess();
-			reset();
+					toast.success("Registrace proběhla uspěšně", { id: loadingToastId });
+					onSuccess();
+					reset();
+				})
+				.catch(() => toast.error("Neznámá chyba", { id: loadingToastId }));
 		},
 		[onSuccess, reset]
 	);

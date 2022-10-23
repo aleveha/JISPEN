@@ -25,6 +25,7 @@ services:
             DATABASE_HOST: "db"
             DATABASE_NAME: "jispen"
             DATABASE_PORT: 5432
+            JWT_SECRET: "jispen"
 
     db:
         image: postgres:14.1-alpine

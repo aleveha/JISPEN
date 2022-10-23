@@ -1,7 +1,7 @@
 import { apiClient } from "@api/config";
 import { ApiError, ApiReturnType } from "@api/config/types";
+import { axiosErrorHelper } from "@api/index";
 import { LoadingCode, TerritorialUnit, Waste, WasteCompanyType, Zipcode } from "@api/templates/types";
-import { axiosErrorHelper } from "@api/utils/apiErrorHelper";
 import { AxiosError } from "axios";
 
 export async function getLoadingCodes(): Promise<ApiReturnType<LoadingCode[]>> {

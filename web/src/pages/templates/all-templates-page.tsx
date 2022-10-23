@@ -1,47 +1,31 @@
-import { getUserTemplates } from "@api/templates";
 import { Template } from "@api/templates/types";
 import { Button } from "@shared/components/button/button";
 import { withDashboardLayout } from "@shared/components/layout/layout";
 import { DiscriminatedUnion } from "@shared/types/types";
-import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { TemplatesTable } from "@zones/templates/components/templates-table";
 import { NextPage } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-interface TemplatePageProps {
-	templates: string[];
-}
-
-const AllTemplatesPageComponent: NextPage<DiscriminatedUnion<TemplatePageProps>> = () => {
-	const user = useAuth();
-	const [templates, setTemplates] = useState<Template[] | null>(null);
-
+const AllTemplatesPageComponent: NextPage<DiscriminatedUnion<Template[]>> = ({ data, error }) => {
+	const router = useRouter();
+	const [templates, setTemplates] = useState<Template[] | null>(data ?? null);
 	const onDataChanged = useCallback((templates: Template[]) => setTemplates(templates), []);
 
 	useEffect(() => {
-		if (!user) {
-			return;
+		if (error) {
+			if (error.statusCode === 401) {
+				router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
+				return;
+			}
+
+			toast.error("Vyskytla se\xa0chyba během načítání šablon");
 		}
-		getUserTemplates(user.id)
-			.then(response => {
-				if (response.data) {
-					setTemplates(response.data);
-					return;
-				}
+	}, [error, router]);
 
-				if (response.error) {
-					toast.error("Vyskytla se\xa0chyba během načítání šablon");
-					return;
-				}
-			})
-			.catch(() => {
-				toast.error("Vyskytla se\xa0chyba během načítání šablon");
-			});
-	}, [user]);
-
-	if (!templates) {
+	if (!templates || error) {
 		return null;
 	}
 

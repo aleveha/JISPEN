@@ -1,7 +1,9 @@
-import { deleteRecord } from "@api/records";
+import { apiClient } from "@api/config";
+import { fetcher } from "@api/index";
 import { Record } from "@api/records/types";
 import { HeadCell } from "@shared/components/checkbox-list/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
+import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveRecordModal } from "@zones/records/components/remove-record-modal";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -40,6 +42,7 @@ interface Props {
 }
 
 export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
+	const [accessToken] = useAuth();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<RecordsTable | null>();
 
@@ -66,10 +69,17 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 	}, []);
 
 	const onDelete = useCallback(() => {
-		if (!selectedRecord) {
+		if (!selectedRecord || !accessToken) {
 			return;
 		}
-		deleteRecord(selectedRecord.id)
+
+		fetcher<Record>({
+			axiosInstance: apiClient,
+			method: "delete",
+			url: "/records/delete",
+			accessToken,
+			config: { params: { id: selectedRecord.id } },
+		})
 			.then(res => {
 				if (res.data && res.data.id === selectedRecord.id) {
 					onDataChange(data.filter(template => template.id !== selectedRecord.id));
@@ -83,7 +93,7 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 				toast.error("Vyskytla se\xa0chyba během mazání šablony");
 				setIsModalOpen(false);
 			});
-	}, [data, onDataChange, selectedRecord]);
+	}, [accessToken, data, onDataChange, selectedRecord]);
 
 	return (
 		<>

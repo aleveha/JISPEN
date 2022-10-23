@@ -1,11 +1,12 @@
-import { getRecords } from "@api/records";
-import { deleteTemplate } from "@api/templates";
+import { apiClient } from "@api/config";
+import { fetcher } from "@api/index";
+import { Record } from "@api/records/types";
 import { Template } from "@api/templates/types";
 import { HeadCell } from "@shared/components/checkbox-list/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
-import { userState } from "@state/user/user-state";
+import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveTemplateModal } from "@zones/templates/components/remove-template-modal";
-import { useAtom } from "jotai";
+import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -37,7 +38,8 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedTemplate, setSelectedTemplate] = useState<TemplatesTable | null>();
 	const [recordsCount, setRecordsCount] = useState<number | undefined>(undefined);
-	const [user] = useAtom(userState);
+	const [accessToken] = useAuth();
+	const router = useRouter();
 
 	const handleModalClose = useCallback(() => setIsModalOpen(false), []);
 
@@ -57,23 +59,45 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 		async (template: TemplatesTable) => {
 			setSelectedTemplate(template);
 			setIsModalOpen(true);
-			if (user) {
-				const { data: records } = await getRecords(user.id);
-				if (!records) {
-					toast.error("Nepodařilo se načíst počet evidence");
-					return;
-				}
-				setRecordsCount(records.filter(record => record.templateId === template.id).length);
+
+			if (!accessToken) {
+				router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
+				return;
 			}
+
+			const { data: records } = await fetcher<Record[]>({
+				axiosInstance: apiClient,
+				method: "get",
+				url: "/records/all",
+				accessToken,
+			});
+
+			if (!records) {
+				toast.error("Nepodařilo se načíst počet evidence");
+				return;
+			}
+			setRecordsCount(records.filter(record => record.templateId === template.id).length);
 		},
-		[user]
+		[accessToken, router]
 	);
 
 	const onDelete = useCallback(() => {
 		if (!selectedTemplate) {
 			return;
 		}
-		deleteTemplate(selectedTemplate.id)
+
+		if (!accessToken) {
+			router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
+			return;
+		}
+
+		fetcher<Template>({
+			axiosInstance: apiClient,
+			method: "delete",
+			url: "/template/delete",
+			accessToken,
+			config: { params: { id: selectedTemplate.id } },
+		})
 			.then(res => {
 				if (res.data && res.data.id === selectedTemplate.id) {
 					onDataChange(data.filter(template => template.id !== selectedTemplate.id));
@@ -87,7 +111,7 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 				toast.error("Vyskytla se\xa0chyba během mazání šablony");
 				setIsModalOpen(false);
 			});
-	}, [data, onDataChange, selectedTemplate]);
+	}, [accessToken, data, onDataChange, router, selectedTemplate]);
 
 	return (
 		<>

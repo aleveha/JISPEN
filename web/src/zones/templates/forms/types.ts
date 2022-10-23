@@ -6,7 +6,7 @@ export type DefaultValues<T extends Record<string, any>> = {
 
 export interface NewTemplateFormValues {
 	loadingCodes: LoadingCode[];
-	medicalCompany: DefaultValues<Omit<MedicalCompany, "id" | "address">> & {
+	medicalCompany: DefaultValues<Omit<MedicalCompany, "id" | "address" | "userId">> & {
 		address: DefaultValues<Omit<Address, "id" | "zipcodeId">>;
 	};
 	title: string;
@@ -31,7 +31,6 @@ export const newTemplateFormDefaultValues: NewTemplateFormValues = {
 		contactLastName: "",
 		contactPhone: "",
 		contactEmail: "",
-		userId: "",
 		address: {
 			city: "",
 			street: "",

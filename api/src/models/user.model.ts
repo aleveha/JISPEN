@@ -13,12 +13,6 @@ export class UserModel extends BaseEntity {
 	@Column({ name: "password" })
 	passwordHash: string;
 
-	@Column({ name: "service_code", nullable: true })
-	serviceCode?: string;
-
-	@Column({ name: "verified_at" })
-	verifiedAt?: Date;
-
 	@OneToMany(() => TemplateModel, template => template.user, { cascade: ["update", "remove"] })
 	templates: TemplateModel[];
 

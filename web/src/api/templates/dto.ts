@@ -2,7 +2,6 @@ import { LoadingCode, Waste } from "@api/templates/types";
 
 export interface TemplateDTO {
 	title: string;
-	userId: number;
 	expiredAt?: Date;
 	medicalCompany: MedicalCompanyDTO;
 	loadingCodes: LoadingCode[];
@@ -18,7 +17,6 @@ export interface MedicalCompanyDTO {
 	contactPersonLastName?: string;
 	contactPersonPhone?: string;
 	contactPersonEmail?: string;
-	userId: number;
 	address: AddressDTO;
 	territorialUnitId: number;
 }

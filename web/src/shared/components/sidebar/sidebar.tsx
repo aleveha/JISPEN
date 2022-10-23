@@ -1,13 +1,13 @@
 import { Icons } from "@icons/icons.config";
 import { IconButton } from "@mui/material";
 import { SidebarMenuItem } from "@shared/components/sidebar/sidebar-menu-item";
-import { userState } from "@state/user/user-state";
 import { LogoutModal } from "@zones/authorization/components/logout-modal";
+import { useAuth } from "@zones/authorization/hooks/useAuth";
 import clsx from "clsx";
-import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import packageJson from "package.json";
 import React, { memo, MouseEventHandler, useCallback, useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface SideBarProps {
 	onClick: () => void;
@@ -15,11 +15,15 @@ interface SideBarProps {
 }
 
 export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
-	const [user] = useAtom(userState);
+	const [user, setUser] = useAuth();
 	const [isLogoutPopupOpen, setLogoutPopupOpen] = useState(false);
 	const router = useRouter();
 
-	const onLogoutClick = useCallback(async () => await router.push("/login"), [router]);
+	const onLogoutClick = useCallback(() => {
+		setUser(null);
+		setLogoutPopupOpen(false);
+		router.push("/login").then(() => toast.success("Odhlášení proběhlo úspěšně"));
+	}, [router, setUser]);
 
 	const handleModalOpen = useCallback<MouseEventHandler<HTMLAnchorElement>>(event => {
 		event.preventDefault();
