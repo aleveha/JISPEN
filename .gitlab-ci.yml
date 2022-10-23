@@ -12,7 +12,8 @@ deploy:dev:
         -   if: $CI_COMMIT_BRANCH == "develop"
     script:
         - echo "\n\n# Variables from .gitlab-ci\n" >> web/.env.production
-        - echo "NEXT_PUBLIC_API_URL=https://jispen.uxf.dev" >> web/.env.production
+        - echo "NEXT_PUBLIC_API_URL=https://jispen.uxf.dev\n" >> web/.env.production
+        - echo "API_URL=http://nginx:80\n" >> web/.env.production
 
         - docker build -t registry.dev.uxf.cz/jispen/web:${TAG} ./web
         - docker push registry.dev.uxf.cz/jispen/web:${TAG}
