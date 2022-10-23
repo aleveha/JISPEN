@@ -51,8 +51,11 @@ function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit): Creat
 	};
 }
 
-export const NewRecordForm: FC = () => {
-	const [templates, setTemplates] = useState<Template[]>([]);
+interface Props {
+	templates: Template[];
+}
+
+export const NewRecordForm: FC<Props> = ({ templates }) => {
 	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
 	const [accessToken] = useAuth();
 	const router = useRouter();
@@ -95,24 +98,6 @@ export const NewRecordForm: FC = () => {
 	const loadingCode = watch("loadingCode");
 
 	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitSuccessful);
-
-	useEffect(() => {
-		if (!accessToken) {
-			return;
-		}
-
-		// TODO move server side
-		fetcher<Template[]>({
-			axiosInstance: apiClient,
-			method: "get",
-			url: "/template/all",
-			accessToken,
-		}).then(res => {
-			if (res.data) {
-				setTemplates(res.data);
-			}
-		});
-	}, [accessToken]);
 
 	useEffect(() => {
 		if (!selectedTemplate) {
