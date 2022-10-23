@@ -10,13 +10,10 @@ export class AuthorizationDto {
 	password: string;
 }
 
-export class ConfirmRegistrationDto {
-	@IsString()
-	@MaxLength(200)
-	@MinLength(5)
-	email: string;
+export interface AccessTokenResponse {
+	accessToken: string;
+}
 
-	@IsString()
-	@MinLength(4)
-	confirmationCode: string;
+export interface RegistrationResponse {
+	success: boolean;
 }

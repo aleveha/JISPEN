@@ -5,6 +5,7 @@ import { AuthModule } from "./auth/auth.module";
 import { postgresConfig } from "./configs/postgres.config";
 import { RecordsModule } from "./records/records.module";
 import { TemplateModule } from "./template/template.module";
+import { UserModule } from "./user/user.module";
 
 const STAGE = process.env.NODE_ENV;
 
@@ -22,6 +23,7 @@ const STAGE = process.env.NODE_ENV;
 		AuthModule,
 		RecordsModule,
 		TemplateModule,
+		UserModule,
 	],
 })
 export class AppModule {}

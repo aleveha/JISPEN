@@ -1,4 +1,3 @@
-import { User } from "@api/authorization/types";
 import { AddressDTO, TemplateDTO } from "@api/templates/dto";
 import { NewTemplateFormValues } from "@zones/templates/forms/types";
 
@@ -12,7 +11,7 @@ function mapAddress(address: NewTemplateFormValues["medicalCompany"]["address"])
 	};
 }
 
-export function mapTemplateValues(values: NewTemplateFormValues, user: User): TemplateDTO {
+export function mapTemplateValues(values: NewTemplateFormValues): TemplateDTO {
 	return {
 		loadingCodes: values.loadingCodes,
 		medicalCompany: {
@@ -21,10 +20,8 @@ export function mapTemplateValues(values: NewTemplateFormValues, user: User): Te
 			name: values.medicalCompany.name,
 			territorialUnitId: parseInt(values.medicalCompany.territorialUnit?.id ?? "0"),
 			uid: parseInt(values.medicalCompany.uid),
-			userId: user.id,
 		},
 		title: values.title,
-		userId: user.id,
 		wasteCompanies: values.wasteCompanies.map(value => {
 			const valuesRequired = value.type ? parseInt(value.type?.uid) !== 3 : true;
 			return {
@@ -36,7 +33,6 @@ export function mapTemplateValues(values: NewTemplateFormValues, user: User): Te
 				territorialUnitId: parseInt(value.territorialUnit?.id ?? "0"),
 				typeId: parseInt(value.type?.id ?? "0"),
 				uid: valuesRequired ? parseInt(value.uid) ?? undefined : undefined,
-				userId: user.id,
 			};
 		}),
 		wastes: values.wastes.filter(value => !!value.id),

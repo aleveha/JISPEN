@@ -1,7 +1,6 @@
 import { Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from "@nestjs/common";
-import { AuthorizationDto, ConfirmRegistrationDto } from "./dto/authorizationDto";
 import { AuthService } from "./auth.service";
-import { UserModel } from "../models/user.model";
+import { AccessTokenResponse, AuthorizationDto, RegistrationResponse } from "./dto/authorizationDto";
 
 @Controller("auth")
 export class AuthController {
@@ -9,21 +8,17 @@ export class AuthController {
 
 	@UsePipes(new ValidationPipe())
 	@Post("register")
-	async register(@Body() request: AuthorizationDto): Promise<UserModel> {
-		return await this.authService.createUser(request);
-	}
-
-	@UsePipes(new ValidationPipe())
-	@HttpCode(200)
-	@Post("confirm")
-	async confirmRegistration(@Body() request: ConfirmRegistrationDto): Promise<UserModel> {
-		return this.authService.confirmRegistration(request);
+	async register(@Body() request: AuthorizationDto): Promise<RegistrationResponse> {
+		return {
+			success: !!(await this.authService.createUser(request)),
+		};
 	}
 
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
 	@Post("login")
-	async login(@Body() request: AuthorizationDto): Promise<UserModel> {
-		return this.authService.verifyUser(request);
+	async login(@Body() request: AuthorizationDto): Promise<AccessTokenResponse> {
+		const { email } = await this.authService.getUser(request);
+		return this.authService.login(email);
 	}
 }

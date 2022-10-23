@@ -39,7 +39,7 @@ export const DatePickerInput = <FormData extends Record<string, any>>({
 				label={label}
 				onChange={handleChange}
 				renderInput={params => (
-					<TextField {...params} error={!!error} helperText={error?.message ?? " "} inputProps={{ placeholder: "dd.mm.rrrr" }} />
+					<TextField helperText={error?.message ?? " "} inputProps={{ placeholder: "dd.mm.rrrr" }} {...params} error={!!error} />
 				)}
 				value={value}
 			/>

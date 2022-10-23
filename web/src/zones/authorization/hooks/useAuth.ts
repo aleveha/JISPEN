@@ -1,20 +1,31 @@
-import { User } from "@api/authorization/types";
-import { userState } from "@state/user/user-state";
+import { userJwtState } from "@state/user/user-jwt-state";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { toast } from "react-hot-toast";
+import { useCallback, useEffect } from "react";
 
-export const useAuth = (): User | null => {
+export const useAuth = () => {
 	const router = useRouter();
-	const [user] = useAtom(userState);
+	const [userAccessToken, setUserAccessToken] = useAtom(userJwtState);
+	const accessToken = getCookie("accessToken") as string;
+
+	const setUser = useCallback(
+		(accessToken: string | null) => {
+			if (!accessToken) {
+				deleteCookie("accessToken");
+			} else {
+				setCookie("accessToken", accessToken);
+			}
+			setUserAccessToken(accessToken);
+		},
+		[setUserAccessToken]
+	);
 
 	useEffect(() => {
-		if (!user) {
-			router.push("/login").then(() => toast.error("Nejdříve se musíte přihlásit"));
-			return;
+		if (accessToken && !userAccessToken) {
+			setUserAccessToken(accessToken);
 		}
-	}, [router, user]);
+	}, [accessToken, router, setUserAccessToken, userAccessToken]);
 
-	return user;
+	return [userAccessToken, setUser] as const;
 };

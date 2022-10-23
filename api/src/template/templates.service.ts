@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { AddressModel } from "../models/address.model";
 import { MedicalCompanyModel } from "../models/medicalCompany.model";
 import { TemplateModel } from "../models/template.model";
+import { UserService } from "../user/user.service";
 import { MedicalCompanyDto, TemplateDto } from "./dto/template.dto";
 
 @Injectable()
@@ -27,12 +28,13 @@ export class TemplatesService {
 		@InjectRepository(MedicalCompanyModel)
 		private readonly medicalCompanyRepository: Repository<MedicalCompanyModel>,
 		@InjectRepository(TemplateModel)
-		private readonly templateRepository: Repository<TemplateModel>
+		private readonly templateRepository: Repository<TemplateModel>,
+		private readonly userService: UserService
 	) {}
 
-	public async getAll(userId: number): Promise<TemplateModel[]> {
+	public async getAll(email: string): Promise<TemplateModel[]> {
 		return await this.templateRepository.find({
-			where: { userId: userId },
+			where: { user: { email } },
 			relations: this.TEMPLATE_RELATIONS,
 			order: {
 				id: "DESC",
@@ -40,27 +42,34 @@ export class TemplatesService {
 		});
 	}
 
-	public async create(template: TemplateDto): Promise<TemplateModel> {
-		const existedTemplate = await this.getUserTemplateByTitle(template.title, template.userId);
+	public async create(template: TemplateDto, userEmail: string): Promise<TemplateModel> {
+		const existedTemplate = await this.getUserTemplateByTitle(template.title, userEmail);
 		if (existedTemplate) {
 			return existedTemplate;
 		}
 
-		const existedUserMedicalCompany = await this.getUserMedicalCompany(template.userId, template.medicalCompany.companyId, template.medicalCompany.uid);
+		const { id: userId } = await this.userService.getUserByEmail(userEmail);
+
+		const existedUserMedicalCompany = await this.getUserMedicalCompany(userEmail, template.medicalCompany.companyId, template.medicalCompany.uid);
 		if (existedUserMedicalCompany) {
-			return await this.createTemplate({
-				...template,
-				medicalCompanyId: existedUserMedicalCompany.id,
-				medicalCompany: existedUserMedicalCompany,
+			template.medicalCompany = existedUserMedicalCompany;
+			template.medicalCompanyId = existedUserMedicalCompany.id;
+		} else {
+			const newMedicalCompany = await this.createMedicalCompany({
+				...template.medicalCompany,
+				userId,
 			});
+			template.medicalCompany = newMedicalCompany;
+			template.medicalCompanyId = newMedicalCompany.id;
 		}
 
-		const createdMedicalCompany = await this.createMedicalCompany(template.medicalCompany);
-		return await this.createTemplate({
-			...template,
-			medicalCompanyId: createdMedicalCompany.id,
-			medicalCompany: createdMedicalCompany,
-		});
+		return await this.createTemplate(
+			{
+				...template,
+				userId,
+			},
+			userEmail
+		);
 	}
 
 	public async delete(templateId: number): Promise<TemplateModel> {
@@ -75,7 +84,9 @@ export class TemplatesService {
 		}
 
 		for (const wasteCompany of templateToBeDeleted.wasteCompanies) {
-			await this.addressRepository.delete(wasteCompany.addressId);
+			if (wasteCompany.addressId) {
+				await this.addressRepository.delete(wasteCompany.addressId);
+			}
 		}
 
 		if (templateToBeDeleted.medicalCompany.templates.length === 1 && templateToBeDeleted.medicalCompany.templates[0].id === templateToBeDeleted.id) {
@@ -86,24 +97,24 @@ export class TemplatesService {
 		return templateToBeDeleted;
 	}
 
-	private async getUserTemplateByTitle(title: string, userId: number): Promise<TemplateModel> {
+	private async getUserTemplateByTitle(title: string, userEmail: string): Promise<TemplateModel> {
 		return await this.templateRepository.findOne(
 			{
 				title: title,
-				userId: userId,
+				user: { email: userEmail },
 			},
 			{ relations: this.TEMPLATE_RELATIONS }
 		);
 	}
 
-	private async getUserMedicalCompany(userId: number, medicalCompanyId: string, medicalCompanyUid: number): Promise<MedicalCompanyModel> {
+	private async getUserMedicalCompany(userEmail: string, medicalCompanyId: string, medicalCompanyUid: number): Promise<MedicalCompanyModel> {
 		return await this.medicalCompanyRepository.findOne(
 			{
 				companyId: medicalCompanyId,
 				uid: medicalCompanyUid,
-				userId: userId,
+				user: { email: userEmail },
 			},
-			{ relations: ["address", "address.zipcode", "territorialUnit"] }
+			{ relations: ["address", "address.zipcode", "territorialUnit", "user"] }
 		);
 	}
 
@@ -112,9 +123,9 @@ export class TemplatesService {
 		return await this.medicalCompanyRepository.save(newMedicalCompany);
 	}
 
-	private async createTemplate(template: TemplateDto): Promise<TemplateModel> {
+	private async createTemplate(template: TemplateDto, userEmail: string): Promise<TemplateModel> {
 		const newTemplate = await this.templateRepository.create(template);
 		await this.templateRepository.save(newTemplate);
-		return await this.getUserTemplateByTitle(newTemplate.title, newTemplate.userId);
+		return await this.getUserTemplateByTitle(newTemplate.title, userEmail);
 	}
 }

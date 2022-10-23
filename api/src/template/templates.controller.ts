@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Post, Query, UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { UserEmail } from "../decorators/user-email.decorator";
 import { LoadingCodeModel } from "../models/loadingCode.model";
 import { TemplateModel } from "../models/template.model";
 import { TerritorialUnitModel } from "../models/territorialUnit.model";
@@ -13,17 +15,20 @@ import { TemplatesService } from "./templates.service";
 export class TemplatesController {
 	constructor(private readonly catalogueService: CatalogueService, private readonly templateService: TemplatesService) {}
 
+	@UseGuards(JwtAuthGuard)
 	@Get("all")
-	async getAllUserTemplates(@Query("userId") userId: number): Promise<TemplateModel[]> {
-		return await this.templateService.getAll(userId);
+	async getAllUserTemplates(@UserEmail() email: string): Promise<TemplateModel[]> {
+		return await this.templateService.getAll(email);
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Post("create")
 	@HttpCode(200)
-	async createNewTemplate(@Body() request: TemplateDto): Promise<TemplateModel> {
-		return await this.templateService.create(request);
+	async createNewTemplate(@Body() request: TemplateDto, @UserEmail() email: string): Promise<TemplateModel> {
+		return await this.templateService.create(request, email);
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Delete("delete")
 	@HttpCode(200)
 	async deleteTemplate(@Query("id") templateId: number): Promise<TemplateModel> {

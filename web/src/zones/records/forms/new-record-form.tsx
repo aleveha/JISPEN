@@ -1,6 +1,6 @@
-import { createRecord } from "@api/records";
-import { CreateRecordDto } from "@api/records/types";
-import { getUserTemplates } from "@api/templates";
+import { apiClient } from "@api/config";
+import { fetcher } from "@api/index";
+import { CreateRecordDto, Record } from "@api/records/types";
 import { LoadingCode, Template, Waste, WasteCompany } from "@api/templates/types";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Button } from "@shared/components/button/button";
@@ -12,6 +12,7 @@ import { formatDecimal } from "@shared/utils/validator/helpers";
 import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { LeaveEditorModal } from "@zones/common/components/leave-editor-modal";
+import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import React, { FC, MouseEvent, useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -39,9 +40,10 @@ const defaultValues: NewRecordFormValues = {
 
 function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit): CreateRecordDto {
 	const formattedAmount = parseFloat(formatDecimal(values.amount));
+	const dayjsDate = dayjs(values.date);
 	return {
 		amount: massUnit === "t" ? formattedAmount : formattedAmount / 1000,
-		date: new Date(values.date),
+		date: dayjsDate.set("minute", dayjsDate.utcOffset()).toDate(),
 		loadingCodeId: values.loadingCode?.id ?? 0,
 		templateId: values.template?.id ?? 0,
 		wasteId: values.waste?.id ?? 0,
@@ -52,11 +54,11 @@ function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit): Creat
 export const NewRecordForm: FC = () => {
 	const [templates, setTemplates] = useState<Template[]>([]);
 	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
-	const user = useAuth();
+	const [accessToken] = useAuth();
 	const router = useRouter();
 	const {
 		control,
-		formState: { isDirty },
+		formState: { isDirty, isSubmitSuccessful },
 		handleSubmit,
 		reset,
 		watch,
@@ -64,15 +66,27 @@ export const NewRecordForm: FC = () => {
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
 		values => {
-			createRecord(mapRecordValues(values, massUnit)).then(res => {
-				if (res.data) {
-					router.push("/records").then(() => toast.success("Záznam byl úspěšně vytvořen"));
-					return;
-				}
-				toast.error("Nepodařilo se vytvořit záznam");
-			});
+			if (!accessToken) {
+				return;
+			}
+
+			fetcher<Record, CreateRecordDto>({
+				axiosInstance: apiClient,
+				method: "post",
+				url: "/records/create",
+				accessToken,
+				data: mapRecordValues(values, massUnit),
+			})
+				.then(res => {
+					if (res.data) {
+						router.push("/records").then(() => toast.success("Záznam byl úspěšně vytvořen"));
+						return;
+					}
+					toast.error("Nepodařilo se vytvořit záznam");
+				})
+				.catch(() => toast.error("Nepodařilo se vytvořit záznam"));
 		},
-		[massUnit, router]
+		[accessToken, massUnit, router]
 	);
 	const onExit = useCallback(() => router.back(), [router]);
 	const onMassUnitChange = useCallback((_: MouseEvent<HTMLElement>, value: string) => setMassUnit(value as MassUnit), []);
@@ -80,18 +94,25 @@ export const NewRecordForm: FC = () => {
 	const selectedTemplate = watch("template");
 	const loadingCode = watch("loadingCode");
 
-	const [showModal, handleFormLeave] = useFormLeave(isDirty);
+	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitSuccessful);
 
 	useEffect(() => {
-		if (!user) {
+		if (!accessToken) {
 			return;
 		}
-		getUserTemplates(user.id).then(res => {
+
+		// TODO move server side
+		fetcher<Template[]>({
+			axiosInstance: apiClient,
+			method: "get",
+			url: "/template/all",
+			accessToken,
+		}).then(res => {
 			if (res.data) {
 				setTemplates(res.data);
 			}
 		});
-	}, [user]);
+	}, [accessToken]);
 
 	useEffect(() => {
 		if (!selectedTemplate) {
