@@ -1,6 +1,9 @@
 import { LoadingCodeModel } from "../../models/loadingCode.model";
+import { TerritorialUnitModel } from "../../models/territorialUnit.model";
 import { WasteModel } from "../../models/waste.model";
 import { WasteCompanyModel } from "../../models/wasteCompany.model";
+import { WasteCompanyTypeModel } from "../../models/wasteCompanyType.model";
+import { ZipcodeModel } from "../../models/zipcode.model";
 
 export interface AddressDto {
 	city: string;
@@ -33,4 +36,12 @@ export interface TemplateDto {
 	loadingCodes: LoadingCodeModel[];
 	wastes: WasteModel[];
 	wasteCompanies?: WasteCompanyModel[];
+}
+
+export interface CataloguesDto {
+	loadingCodes: LoadingCodeModel[];
+	territorialUnits: TerritorialUnitModel[];
+	wasteCompanyTypes: WasteCompanyTypeModel[];
+	wastes: WasteModel[];
+	zipcodes: ZipcodeModel[];
 }

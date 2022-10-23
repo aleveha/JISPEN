@@ -94,7 +94,7 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 		fetcher<Template>({
 			axiosInstance: apiClient,
 			method: "delete",
-			url: "/template/delete",
+			url: "/templates/delete",
 			accessToken,
 			config: { params: { id: selectedTemplate.id } },
 		})

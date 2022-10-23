@@ -1,8 +1,8 @@
 import { apiClient } from "@api/config";
 import { fetcher } from "@api/index";
-import { TemplateDTO } from "@api/templates/dto";
+import { CataloguesDto, TemplateDTO } from "@api/templates/dto";
 import { Template, TerritorialUnit, Zipcode } from "@api/templates/types";
-import { CircularProgress, Divider } from "@mui/material";
+import { Divider } from "@mui/material";
 import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { Input } from "@shared/components/inputs/text-input";
@@ -13,7 +13,6 @@ import { LeaveEditorModal } from "@zones/common/components/leave-editor-modal";
 import { mapTemplateValues } from "@zones/templates/forms/mapper";
 import { NewTemplateFormSection } from "@zones/templates/forms/new-template-form-section";
 import { newTemplateFormDefaultValues, NewTemplateFormValues, wasteCompanyDefaultValue } from "@zones/templates/forms/types";
-import { useCatalogue } from "@zones/templates/hooks/useCatalogue";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { memo, useCallback } from "react";
@@ -23,10 +22,14 @@ import { LoadingCodesSectionTable } from "./sections/loading-codes-section-table
 import { WasteCompaniesArray } from "./sections/waste-companies-array";
 import { WasteSectionTable } from "./sections/waste-section-table";
 
-export const NewTemplateForm = memo(() => {
+interface Props {
+	catalogues: CataloguesDto;
+}
+
+export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 	const [accessToken] = useAuth();
 	const router = useRouter();
-	const { isLoading, catalogue } = useCatalogue(); // TODO move to server side
+
 	const {
 		control,
 		formState: { isDirty, isSubmitSuccessful },
@@ -48,7 +51,7 @@ export const NewTemplateForm = memo(() => {
 			fetcher<Template, TemplateDTO>({
 				axiosInstance: apiClient,
 				method: "post",
-				url: "/template/create",
+				url: "/templates/create",
 				data: mapTemplateValues(values),
 				accessToken,
 			})
@@ -127,7 +130,7 @@ export const NewTemplateForm = memo(() => {
 								control={control}
 								label="ZÚJ"
 								name="medicalCompany.territorialUnit"
-								options={catalogue.territorialUnits ?? []}
+								options={catalogues.territorialUnits ?? []}
 								required
 							/>
 							<Autocomplete
@@ -138,7 +141,7 @@ export const NewTemplateForm = memo(() => {
 								control={control}
 								label="PSČ"
 								name="medicalCompany.address.zipcode"
-								options={catalogue.zipcodes ?? []}
+								options={catalogues.zipcodes ?? []}
 								required
 							/>
 						</div>
@@ -178,22 +181,14 @@ export const NewTemplateForm = memo(() => {
 						description="Vyberte, prosím, odpady ze&nbsp;seznamu, které&nbsp;budou povolené při&nbsp;evidovaní za&nbsp;tuto provozovnu"
 						title="Povolené odpady"
 					>
-						{isLoading ? (
-							<CircularProgress />
-						) : catalogue.wastes ? (
-							<WasteSectionTable control={control} name="wastes" wastes={catalogue.wastes} />
-						) : null}
+						<WasteSectionTable control={control} name="wastes" wastes={catalogues.wastes} />
 					</NewTemplateFormSection>
 					<Divider />
 					<NewTemplateFormSection
 						description="Vyberte, prosím, kódy nakladání ze&nbsp;seznamu, které&nbsp;budou povolené při&nbsp;evidovaní za&nbsp;tuto provozovnu"
 						title="Kódy nakládání"
 					>
-						{isLoading ? (
-							<CircularProgress />
-						) : catalogue.loadingCodes ? (
-							<LoadingCodesSectionTable control={control} name="loadingCodes" loadingCodes={catalogue.loadingCodes} />
-						) : null}
+						<LoadingCodesSectionTable control={control} name="loadingCodes" loadingCodes={catalogues.loadingCodes} />
 					</NewTemplateFormSection>
 					<Divider />
 					<NewTemplateFormSection
@@ -201,23 +196,15 @@ export const NewTemplateForm = memo(() => {
 						description="Zadejte, prosím, všechny opravněné osoby, které&nbsp;mohou z&nbsp;provozovny převzít odpad, nebo jej na&nbsp;provozovnu předat"
 						title="Oprávněné osoby (partner)"
 					>
-						{isLoading ? (
-							<CircularProgress />
-						) : (
-							catalogue.territorialUnits &&
-							catalogue.zipcodes &&
-							catalogue.wasteCompanyTypes && (
-								<WasteCompaniesArray
-									control={control}
-									name="wasteCompanies"
-									requireWasteCompany={requireWasteCompany}
-									territorialUnits={catalogue.territorialUnits}
-									wasteCompanyDefaultValue={wasteCompanyDefaultValue}
-									wasteCompanyTypes={catalogue.wasteCompanyTypes}
-									zipcodes={catalogue.zipcodes}
-								/>
-							)
-						)}
+						<WasteCompaniesArray
+							control={control}
+							name="wasteCompanies"
+							requireWasteCompany={requireWasteCompany}
+							territorialUnits={catalogues.territorialUnits}
+							wasteCompanyDefaultValue={wasteCompanyDefaultValue}
+							wasteCompanyTypes={catalogues.wasteCompanyTypes}
+							zipcodes={catalogues.zipcodes}
+						/>
 					</NewTemplateFormSection>
 					<Divider className={clsx(!requireWasteCompany && "hidden")} />
 				</div>

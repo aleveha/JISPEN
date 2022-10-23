@@ -1,4 +1,4 @@
-import { LoadingCode, Waste } from "@api/templates/types";
+import { LoadingCode, TerritorialUnit, Waste, WasteCompanyType, Zipcode } from "@api/templates/types";
 
 export interface TemplateDTO {
 	title: string;
@@ -37,4 +37,12 @@ export interface AddressDTO {
 	registryNumber?: string;
 	buildingNumber?: string;
 	zipcodeId: number;
+}
+
+export interface CataloguesDto {
+	loadingCodes: LoadingCode[];
+	territorialUnits: TerritorialUnit[];
+	wasteCompanyTypes: WasteCompanyType[];
+	wastes: Waste[];
+	zipcodes: Zipcode[];
 }
