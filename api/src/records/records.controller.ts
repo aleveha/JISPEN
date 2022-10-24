@@ -16,14 +16,20 @@ export class RecordsController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Post("create")
+	@Post("insert")
 	public async create(@Body() request: RecordDto): Promise<RecordModel> {
-		return await this.recordsService.create(request);
+		return await this.recordsService.insert(request);
 	}
 
 	@UseGuards(JwtAuthGuard)
 	@Delete("delete")
 	public async delete(@Query("id") id: number): Promise<RecordModel> {
 		return await this.recordsService.delete(id);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get("get")
+	public async getByRecordId(@Query("id") id: number, @UserEmail() email: string): Promise<RecordModel> {
+		return await this.recordsService.getByRecordId(id, email);
 	}
 }

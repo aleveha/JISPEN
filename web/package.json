@@ -1,9 +1,9 @@
 {
 	"name": "web",
 	"versions": {
-		"api": "23.10.2022",
+		"api": "24.10.2022",
 		"db": "23.10.2022",
-		"web": "23.10.2022"
+		"web": "24.10.2022"
 	},
 	"private": true,
 	"description": "Web application for waste registration in hospitals and medical institutions (JISPEN)",

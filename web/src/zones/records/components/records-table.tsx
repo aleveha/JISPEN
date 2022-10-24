@@ -5,6 +5,7 @@ import { HeadCell } from "@shared/components/checkbox-list/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveRecordModal } from "@zones/records/components/remove-record-modal";
+import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -42,11 +43,12 @@ interface Props {
 }
 
 export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
+	const router = useRouter();
 	const [accessToken] = useAuth();
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<RecordsTable | null>();
 
-	const handleModalClose = useCallback(() => setIsModalOpen(false), []);
+	const handleModalClose = useCallback(() => setIsDeleteModalOpen(false), []);
 
 	const rows: RecordsTable[] = useMemo(
 		() =>
@@ -63,9 +65,11 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 		[data]
 	);
 
-	const handleSelectedChange = useCallback((template: RecordsTable) => {
-		setSelectedRecord(template);
-		setIsModalOpen(true);
+	const handleEditButtonClick = useCallback(async (record: RecordsTable) => await router.push(`/records/edit?id=${record.id}`), [router]);
+
+	const handleDeleteButtonClick = useCallback((record: RecordsTable) => {
+		setSelectedRecord(record);
+		setIsDeleteModalOpen(true);
 	}, []);
 
 	const onDelete = useCallback(() => {
@@ -87,22 +91,28 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 				} else if (res.error) {
 					toast.error("Vyskytla se\xa0chyba během mazání šablony");
 				}
-				setIsModalOpen(false);
+				setIsDeleteModalOpen(false);
 			})
 			.catch(() => {
 				toast.error("Vyskytla se\xa0chyba během mazání šablony");
-				setIsModalOpen(false);
+				setIsDeleteModalOpen(false);
 			});
 	}, [accessToken, data, onDataChange, selectedRecord]);
 
 	return (
 		<>
-			<DataGrid headCells={HEADER_CELLS} handleSelectedChange={handleSelectedChange} orderedBy="id" rows={rows} />
+			<DataGrid
+				headCells={HEADER_CELLS}
+				handleDeleteButtonClick={handleDeleteButtonClick}
+				handleEditButtonClick={handleEditButtonClick}
+				orderedBy="id"
+				rows={rows}
+			/>
 			{selectedRecord && (
 				<RemoveRecordModal
 					amount={selectedRecord.amount}
 					date={selectedRecord.date}
-					isOpen={isModalOpen}
+					isOpen={isDeleteModalOpen}
 					onClose={handleModalClose}
 					onDelete={onDelete}
 					wasteUid={selectedRecord.wasteUid}

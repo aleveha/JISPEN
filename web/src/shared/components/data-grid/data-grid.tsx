@@ -11,8 +11,9 @@ interface DataGridDefaultType extends Record<string, any> {
 
 interface EnhancedDataGridProps<T extends DataGridDefaultType> {
 	className?: string;
+	handleDeleteButtonClick?: (value: T) => void;
+	handleEditButtonClick?: (value: T) => void;
 	headCells: HeadCell<T>[];
-	handleSelectedChange?: (value: T) => void;
 	orderedBy: keyof T;
 	rows: T[];
 }
@@ -36,8 +37,9 @@ function getComparator<Key extends keyof any>(
 
 export const DataGrid = <T extends DataGridDefaultType>({
 	className,
+	handleDeleteButtonClick,
+	handleEditButtonClick,
 	headCells,
-	handleSelectedChange,
 	orderedBy,
 	rows,
 }: EnhancedDataGridProps<T>) => {
@@ -67,7 +69,8 @@ export const DataGrid = <T extends DataGridDefaultType>({
 		[rows]
 	);
 
-	const handleDelete = useCallback((value: T) => () => handleSelectedChange && handleSelectedChange(value), [handleSelectedChange]);
+	const handleEdit = useCallback((value: T) => () => handleEditButtonClick && handleEditButtonClick(value), [handleEditButtonClick]);
+	const handleDelete = useCallback((value: T) => () => handleDeleteButtonClick && handleDeleteButtonClick(value), [handleDeleteButtonClick]);
 
 	const emptyRows = useMemo(() => rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage), [page, rows, rowsPerPage]);
 
@@ -101,10 +104,17 @@ export const DataGrid = <T extends DataGridDefaultType>({
 											</Tooltip>
 										</TableCell>
 									))}
-									<TableCell>
-										<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleDelete(row)}>
-											{Icons.delete}
-										</IconButton>
+									<TableCell className="space-x-1">
+										{handleEditButtonClick && (
+											<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleEdit(row)}>
+												{Icons.edit}
+											</IconButton>
+										)}
+										{handleDeleteButtonClick && (
+											<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleDelete(row)}>
+												{Icons.delete}
+											</IconButton>
+										)}
 									</TableCell>
 								</TableRow>
 							))}
