@@ -6,6 +6,21 @@ import { RecordDto } from "./dto/recordDto";
 
 @Injectable()
 export class RecordsService {
+	private readonly RECORD_RELATIONS = [
+		"loadingCode",
+		"template",
+		"template.medicalCompany",
+		"template.medicalCompany.user",
+		"template.medicalCompany.address",
+		"template.medicalCompany.address.zipcode",
+		"waste",
+		"wasteCompany",
+		"wasteCompany.territorialUnit",
+		"wasteCompany.address",
+		"wasteCompany.address.zipcode",
+		"wasteCompany.template",
+	];
+
 	constructor(
 		@InjectRepository(RecordModel)
 		private readonly recordsRepository: Repository<RecordModel>
@@ -18,27 +33,14 @@ export class RecordsService {
 					user: { email },
 				},
 			},
-			relations: [
-				"loadingCode",
-				"template",
-				"template.medicalCompany",
-				"template.medicalCompany.user",
-				"template.medicalCompany.address",
-				"template.medicalCompany.address.zipcode",
-				"waste",
-				"wasteCompany",
-				"wasteCompany.territorialUnit",
-				"wasteCompany.address",
-				"wasteCompany.address.zipcode",
-				"wasteCompany.template",
-			],
+			relations: this.RECORD_RELATIONS,
 			order: {
 				id: "DESC",
 			},
 		});
 	}
 
-	public async create(record: RecordDto): Promise<RecordModel> {
+	public async insert(record: RecordDto): Promise<RecordModel> {
 		return await this.recordsRepository.save(record);
 	}
 
@@ -54,5 +56,23 @@ export class RecordsService {
 		}
 
 		return recordToBeDeleted;
+	}
+
+	public async getByRecordId(recordId: number, email: string): Promise<RecordModel> {
+		const record = await this.recordsRepository.findOne({
+			where: {
+				id: recordId,
+				template: {
+					user: { email },
+				},
+			},
+			relations: [...this.RECORD_RELATIONS, "template.loadingCodes", "template.wastes", "template.wasteCompanies"],
+		});
+
+		if (!record) {
+			throw new BadRequestException();
+		}
+
+		return record;
 	}
 }

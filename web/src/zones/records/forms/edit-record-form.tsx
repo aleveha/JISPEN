@@ -1,6 +1,6 @@
 import { apiClient } from "@api/config";
 import { fetcher } from "@api/index";
-import { CreateRecordDto } from "@api/records/dto";
+import { InsertRecordDto } from "@api/records/dto";
 import { Record } from "@api/records/types";
 import { LoadingCode, Template, Waste, WasteCompany } from "@api/templates/types";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
@@ -14,37 +14,39 @@ import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { LeaveEditorModal } from "@zones/common/components/leave-editor-modal";
 import dayjs from "dayjs";
+import { isEqual } from "lodash";
 import { useRouter } from "next/router";
 import React, { FC, MouseEvent, useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 interface NewRecordFormValues {
+	amount: string;
+	date: Date | string;
+	loadingCode: LoadingCode | null;
 	template: Template | null;
 	waste: Waste | null;
-	loadingCode: LoadingCode | null;
 	wasteCompany: WasteCompany | null;
-	amount: string;
-	date: string;
 }
 
 type MassUnit = "kg" | "t";
 
-const defaultValues: NewRecordFormValues = {
-	template: null,
-	waste: null,
-	loadingCode: null,
-	wasteCompany: null,
+const DEFAULT_VALUES: NewRecordFormValues = {
 	amount: "",
 	date: "",
+	loadingCode: null,
+	template: null,
+	waste: null,
+	wasteCompany: null,
 };
 
-function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit): CreateRecordDto {
+function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit, recordId?: number): InsertRecordDto {
 	const formattedAmount = parseFloat(formatDecimal(values.amount));
 	const dayjsDate = dayjs(values.date);
 	return {
 		amount: massUnit === "t" ? formattedAmount : formattedAmount / 1000,
 		date: dayjsDate.set("minute", dayjsDate.utcOffset()).toDate(),
+		id: recordId ?? null,
 		loadingCodeId: values.loadingCode?.id ?? 0,
 		templateId: values.template?.id ?? 0,
 		wasteId: values.waste?.id ?? 0,
@@ -52,17 +54,32 @@ function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit): Creat
 	};
 }
 
-interface Props {
-	templates: Template[];
+function mapRecordToDefaultValues(record: Record): NewRecordFormValues {
+	return {
+		amount: `${record.amount * 1000}`,
+		date: dayjs(record.date).toDate(),
+		loadingCode: record.loadingCode,
+		template: record.template,
+		waste: record.waste,
+		wasteCompany: record.wasteCompany ?? null,
+	};
 }
 
-export const NewRecordForm: FC<Props> = ({ templates }) => {
+interface Props {
+	templates: Template[];
+	record?: Record;
+}
+
+export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
 	const [accessToken] = useAuth();
 	const router = useRouter();
+	const defaultValues = record ? mapRecordToDefaultValues(record) : DEFAULT_VALUES;
 	const {
 		control,
-		formState: { isDirty, isSubmitSuccessful },
+		formState: { isDirty, isValid, isSubmitSuccessful },
 		handleSubmit,
 		reset,
 		watch,
@@ -70,27 +87,37 @@ export const NewRecordForm: FC<Props> = ({ templates }) => {
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
 		values => {
+			setIsSubmitting(true);
 			if (!accessToken) {
 				return;
 			}
 
-			fetcher<Record, CreateRecordDto>({
+			if (record?.id && isEqual(values, defaultValues)) {
+				toast.error("Nebyly provedeny žádné změny");
+				return;
+			}
+
+			fetcher<Record, InsertRecordDto>({
 				axiosInstance: apiClient,
 				method: "post",
-				url: "/records/create",
+				url: "/records/insert",
 				accessToken,
-				data: mapRecordValues(values, massUnit),
+				data: mapRecordValues(values, massUnit, record?.id),
 			})
 				.then(res => {
 					if (res.data) {
-						router.push("/records").then(() => toast.success("Záznam byl úspěšně vytvořen"));
+						router.push("/records").then(() => toast.success(`Záznam byl úspěšně ${record ? "upraven" : "vytvořen"}`));
 						return;
 					}
-					toast.error("Nepodařilo se vytvořit záznam");
+					toast.error(`Nepodařilo se ${record ? "upravit" : "vytvořit"} záznam`);
+					setIsSubmitting(false);
 				})
-				.catch(() => toast.error("Nepodařilo se vytvořit záznam"));
+				.catch(() => {
+					toast.error(`Nepodařilo se ${record ? "upravit" : "vytvořit"} záznam`);
+					setIsSubmitting(false);
+				});
 		},
-		[accessToken, massUnit, router]
+		[accessToken, defaultValues, massUnit, record, router]
 	);
 	const onExit = useCallback(() => router.back(), [router]);
 	const onMassUnitChange = useCallback((_: MouseEvent<HTMLElement>, value: string) => setMassUnit(value as MassUnit), []);
@@ -98,7 +125,7 @@ export const NewRecordForm: FC<Props> = ({ templates }) => {
 	const selectedTemplate = watch("template");
 	const loadingCode = watch("loadingCode");
 
-	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitSuccessful);
+	const [showModal, handleFormLeave] = useFormLeave((isDirty || isValid) && (!isSubmitSuccessful || !isSubmitting));
 
 	useEffect(() => {
 		if (!selectedTemplate) {
@@ -195,7 +222,7 @@ export const NewRecordForm: FC<Props> = ({ templates }) => {
 							Zpět
 						</Button>
 						<Button type="submit" variant="secondary">
-							Vytvořit záznam
+							{record ? "Uložit změny" : "Vytvořit záznam"}
 						</Button>
 					</div>
 				</div>

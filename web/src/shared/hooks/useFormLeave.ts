@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Nprogress from "nprogress";
 import { useCallback, useEffect, useState } from "react";
 
 const useBeforeUnload = (enabled: boolean, message?: string) => {
@@ -30,16 +31,16 @@ const useBeforeUnload = (enabled: boolean, message?: string) => {
 	}, [enabled, handler]);
 };
 
-export const useFormLeave = (isDirty: boolean) => {
+export const useFormLeave = (enable: boolean) => {
 	const router = useRouter();
 	const [showLeaveModal, setShowLeaveModal] = useState(false);
 	const [pathname, setPathname] = useState<string | null>(null);
 
-	useBeforeUnload(isDirty, "Are you sure you want to leave?");
+	useBeforeUnload(enable, "Are you sure you want to leave?");
 
 	const onRouteChangeStart = useCallback(
 		(pathname: string) => {
-			if (!isDirty) {
+			if (!enable) {
 				return;
 			}
 
@@ -47,7 +48,7 @@ export const useFormLeave = (isDirty: boolean) => {
 			setPathname(pathname);
 			throw "\nRoute change aborted. Please ignore this error";
 		},
-		[isDirty]
+		[enable]
 	);
 	const removeRouteChangeStart = useCallback(() => router.events.off("routeChangeStart", onRouteChangeStart), [router.events, onRouteChangeStart]);
 
@@ -57,6 +58,7 @@ export const useFormLeave = (isDirty: boolean) => {
 
 			if (!leave) {
 				setPathname(null);
+				Nprogress.done();
 				return;
 			}
 

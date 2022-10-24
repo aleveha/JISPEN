@@ -115,7 +115,7 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 
 	return (
 		<>
-			<DataGrid headCells={HEADER_CELLS} handleSelectedChange={handleSelectedChange} orderedBy="title" rows={rows} />
+			<DataGrid headCells={HEADER_CELLS} handleDeleteButtonClick={handleSelectedChange} orderedBy="title" rows={rows} />
 			{selectedTemplate && (
 				<RemoveTemplateModal
 					isOpen={isModalOpen}
