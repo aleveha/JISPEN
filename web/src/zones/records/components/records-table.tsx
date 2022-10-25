@@ -62,7 +62,9 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 				loadingCodeUid: record.loadingCode.uid,
 				medicalCompanyName: record.template.medicalCompany.name,
 				templateName: record.template.title,
-				wasteCompanyName: record.wasteCompany?.name ?? "—",
+				wasteCompanyName:
+					record.wasteCompany?.name ??
+					(record.wasteCompany?.type.uid === 3 ? `Občané obce ${record.wasteCompany.territorialUnit.name}` : "—"),
 				wasteUid: record.waste.uid,
 			})),
 		[records]
