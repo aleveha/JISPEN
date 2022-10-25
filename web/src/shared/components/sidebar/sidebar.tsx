@@ -48,7 +48,7 @@ export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
 						<>
 							<SidebarMenuItem href="/templates" iconName="template" isOpen={open} label="Šablony" />
 							<SidebarMenuItem href="/records" iconName="record" isOpen={open} label="Evidence" />
-							<SidebarMenuItem href="/404" iconName="export" isOpen={open} label="Export" />
+							<SidebarMenuItem href="/export" iconName="export" isOpen={open} label="Export" />
 						</>
 					)}
 					<SidebarMenuItem

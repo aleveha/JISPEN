@@ -29,7 +29,7 @@ export function mapTemplateValues(values: NewTemplateFormValues): TemplateDTO {
 				address: valuesRequired ? mapAddress(value.address) : undefined,
 				companyId: valuesRequired ? value.companyId ?? undefined : undefined,
 				expiredAt: value.expiredAt ? new Date(value.expiredAt) : undefined,
-				name: valuesRequired ? value.companyId ?? undefined : undefined,
+				name: valuesRequired ? value.name ?? undefined : undefined,
 				territorialUnitId: parseInt(value.territorialUnit?.id ?? "0"),
 				typeId: parseInt(value.type?.id ?? "0"),
 				uid: valuesRequired ? parseInt(value.uid) ?? undefined : undefined,
