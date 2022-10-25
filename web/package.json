@@ -3,7 +3,7 @@
 	"versions": {
 		"api": "24.10.2022",
 		"db": "23.10.2022",
-		"web": "24.10.2022"
+		"web": "25.10.2022"
 	},
 	"private": true,
 	"description": "Web application for waste registration in hospitals and medical institutions (JISPEN)",
@@ -27,7 +27,8 @@
 		"nprogress": "^0.2.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-hook-form": "^7.33.1"
+		"react-hook-form": "^7.33.1",
+		"swr": "^1.3.0"
 	},
 	"devDependencies": {
 		"@types/node": "^16.11.26",
