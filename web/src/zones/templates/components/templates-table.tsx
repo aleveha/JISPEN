@@ -9,6 +9,7 @@ import { RemoveTemplateModal } from "@zones/templates/components/remove-template
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
+import { mutate } from "swr";
 
 interface TemplatesTable {
 	id: Template["id"];
@@ -30,11 +31,10 @@ const HEADER_CELLS: HeadCell<TemplatesTable>[] = [
 ];
 
 interface Props {
-	data: Template[];
-	onDataChange: (data: Template[]) => void;
+	templates: Template[];
 }
 
-export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
+export const TemplatesTable: FC<Props> = ({ templates }) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedTemplate, setSelectedTemplate] = useState<TemplatesTable | null>();
 	const [recordsCount, setRecordsCount] = useState<number | undefined>(undefined);
@@ -45,14 +45,14 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 
 	const rows: TemplatesTable[] = useMemo(
 		() =>
-			data.map(template => ({
+			templates.map(template => ({
 				id: template.id,
 				title: template.title,
 				medicalCompanyUid: template.medicalCompany.uid,
 				medicalCompanyCompanyId: template.medicalCompany.companyId,
 				medicalCompanyName: template.medicalCompany.name,
 			})),
-		[data]
+		[templates]
 	);
 
 	const handleSelectedChange = useCallback(
@@ -81,6 +81,9 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 		[accessToken, router]
 	);
 
+	const errorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
+	const successToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
+
 	const onDelete = useCallback(() => {
 		if (!selectedTemplate) {
 			return;
@@ -100,18 +103,17 @@ export const TemplatesTable: FC<Props> = ({ data, onDataChange }) => {
 		})
 			.then(res => {
 				if (res.data && res.data.id === selectedTemplate.id) {
-					onDataChange(data.filter(template => template.id !== selectedTemplate.id));
-					toast.success("Šablona byla úspěšně smazána");
+					mutate("/templates/all").then(successToast).catch(errorToast);
 				} else if (res.error) {
-					toast.error("Vyskytla se\xa0chyba během mazání šablony");
+					errorToast();
 				}
 				setIsModalOpen(false);
 			})
 			.catch(() => {
-				toast.error("Vyskytla se\xa0chyba během mazání šablony");
+				errorToast();
 				setIsModalOpen(false);
 			});
-	}, [accessToken, data, onDataChange, router, selectedTemplate]);
+	}, [selectedTemplate, accessToken, router, successToast, errorToast]);
 
 	return (
 		<>

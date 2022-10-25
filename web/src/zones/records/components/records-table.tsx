@@ -8,6 +8,7 @@ import { RemoveRecordModal } from "@zones/records/components/remove-record-modal
 import { useRouter } from "next/router";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useSWRConfig } from "swr";
 
 interface RecordsTable {
 	amount: string;
@@ -38,21 +39,23 @@ function formatDate(date: Date): string {
 }
 
 interface Props {
-	data: Record[];
-	onDataChange: (data: Record[]) => void;
+	records: Record[];
 }
 
-export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
+export const RecordsTable: FC<Props> = ({ records }) => {
+	const { mutate } = useSWRConfig();
 	const router = useRouter();
 	const [accessToken] = useAuth();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<RecordsTable | null>();
 
+	const errorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
+	const successToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
 	const handleModalClose = useCallback(() => setIsDeleteModalOpen(false), []);
 
 	const rows: RecordsTable[] = useMemo(
 		() =>
-			data.map(record => ({
+			records.map(record => ({
 				amount: `${record.amount} t`,
 				date: formatDate(record.date),
 				id: record.id,
@@ -62,7 +65,7 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 				wasteCompanyName: record.wasteCompany?.name ?? "—",
 				wasteUid: record.waste.uid,
 			})),
-		[data]
+		[records]
 	);
 
 	const handleEditButtonClick = useCallback(async (record: RecordsTable) => await router.push(`/records/edit?id=${record.id}`), [router]);
@@ -86,18 +89,17 @@ export const RecordsTable: FC<Props> = ({ data, onDataChange }) => {
 		})
 			.then(res => {
 				if (res.data && res.data.id === selectedRecord.id) {
-					onDataChange(data.filter(template => template.id !== selectedRecord.id));
-					toast.success("Šablona byla úspěšně smazána");
+					mutate("/records/all").then(successToast).catch(errorToast);
 				} else if (res.error) {
-					toast.error("Vyskytla se\xa0chyba během mazání šablony");
+					errorToast();
 				}
 				setIsDeleteModalOpen(false);
 			})
 			.catch(() => {
-				toast.error("Vyskytla se\xa0chyba během mazání šablony");
+				errorToast();
 				setIsDeleteModalOpen(false);
 			});
-	}, [accessToken, data, onDataChange, selectedRecord]);
+	}, [accessToken, errorToast, mutate, selectedRecord, successToast]);
 
 	return (
 		<>
