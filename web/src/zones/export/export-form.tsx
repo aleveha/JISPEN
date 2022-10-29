@@ -21,6 +21,12 @@ interface Props {
 	medicalCompanies: MedicalCompany[];
 }
 
+const createFileName = (medicalCompany: MedicalCompany, dateFrom: Date | string, dateTo: Date | string) => {
+	const dateFromStr = dayjs(dateFrom).format("DD-MM-YYYY");
+	const dateToStr = dayjs(dateTo).format("DD-MM-YYYY");
+	return `ICO_${medicalCompany.uid}_${dateFromStr}_${dateToStr}.xml`;
+};
+
 export const ExportForm = memo<Props>(({ medicalCompanies }) => {
 	const accessToken = getCookie("accessToken") as string;
 
@@ -54,7 +60,7 @@ export const ExportForm = memo<Props>(({ medicalCompanies }) => {
 					}
 
 					if (res.data) {
-						fileDownload(res.data, "export.xml");
+						fileDownload(res.data, createFileName(medicalCompany, dateFrom, dateTo));
 					}
 				})
 				.catch(() => toast.error("Nastala chyba při exportu"));
