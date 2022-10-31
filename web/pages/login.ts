@@ -1,4 +1,4 @@
-import { AuthorizationPage } from "@pages/authorization-page";
+import { Page } from "@pages/auth/login-page";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -17,4 +17,4 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	};
 };
 
-export default AuthorizationPage;
+export default Page;

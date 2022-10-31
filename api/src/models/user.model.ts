@@ -7,7 +7,7 @@ export class UserModel extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id?: number;
 
-	@Column()
+	@Column({ unique: true })
 	email: string;
 
 	@Column({ name: "password" })

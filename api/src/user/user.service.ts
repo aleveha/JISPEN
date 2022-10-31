@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserModel } from "../models/user.model";
@@ -12,15 +12,13 @@ export class UserService {
 	) {}
 
 	public async createUser(userDto: UserDto): Promise<UserModel> {
-		const existedUser = await this.getUserByEmail(userDto.email);
-		if (existedUser) {
-			throw new BadRequestException();
+		const user = await this.getUserByEmail(userDto.email);
+		if (user) {
+			await this.userRepository.update(user.id, userDto);
+			return await this.getUserByEmail(userDto.email);
 		}
 
-		const newUser = this.userRepository.create({
-			email: userDto.email,
-			passwordHash: userDto.passwordHash,
-		});
+		const newUser = await this.userRepository.create(userDto);
 		return await this.userRepository.save(newUser);
 	}
 

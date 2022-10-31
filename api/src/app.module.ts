@@ -1,7 +1,9 @@
+import { MailerModule } from "@nestjs-modules/mailer";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
+import { mailerConfig } from "./configs/mailer.config";
 import { postgresConfig } from "./configs/postgres.config";
 import { ExportModule } from "./export/export.module";
 import { RecordsModule } from "./records/records.module";
@@ -19,6 +21,11 @@ const STAGE = process.env.NODE_ENV;
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			useFactory: postgresConfig,
+			inject: [ConfigService],
+		}),
+		MailerModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: mailerConfig,
 			inject: [ConfigService],
 		}),
 		AuthModule,
