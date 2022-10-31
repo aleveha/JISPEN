@@ -11,18 +11,18 @@ const AuthorizationPageComponent: NextPage = () => {
 	const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
 
 	return (
-		<div className="flex h-full flex-col sm:grid sm:grid-rows-5">
+		<div className="flex h-full flex-col sm:grid sm:grid-rows-6">
 			<div className="row-span-2 flex flex-col items-center justify-end space-y-12">
 				<h1 className="text-5xl font-medium text-primary">JISPEN</h1>
 			</div>
-			<div className="row-span-3 flex flex-col items-center justify-start space-y-4">
+			<div className="row-span-4 flex flex-col items-center justify-start space-y-6">
 				<LoginForm />
-				<div className="flex w-full justify-between sm:w-96">
-					<a className="cursor-pointer text-primary underline" onClick={handleOpenModal}>
-						Zapomněli jste heslo?
+				<div className="flex w-full flex-col justify-between space-y-2 sm:w-96">
+					<a className="w-fit cursor-pointer text-primary underline hover:text-primary-dark" onClick={handleOpenModal}>
+						Chcete založit nový účet?
 					</a>
-					<a className="cursor-pointer text-primary underline" onClick={handleOpenModal}>
-						Nemáte účet?
+					<a className="w-fit cursor-pointer text-primary underline hover:text-primary-dark" onClick={handleOpenModal}>
+						Zapomněli jste heslo?
 					</a>
 				</div>
 				<PasswordResetModal isOpen={isModalOpen} onClose={handleCloseModal} />

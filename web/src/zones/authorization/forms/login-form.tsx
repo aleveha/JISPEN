@@ -73,7 +73,7 @@ export const LoginForm = memo(() => {
 
 	return (
 		<form
-			className="mt-8 flex w-full flex-col items-center justify-center space-y-3 text-xl sm:w-96 md:space-y-6"
+			className="mt-8 flex w-full flex-col items-center justify-center space-y-4 text-xl sm:w-96"
 			noValidate
 			onSubmit={handleSubmit(onSubmit)}
 		>
