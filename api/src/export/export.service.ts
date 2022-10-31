@@ -148,7 +148,7 @@ export class ExportService {
 			Datum: record.date.toISOString().split("T")[0],
 			Mnozstvi: record.amount,
 			KatalogKod: record.waste.uid,
-			Kategorie: record.waste.category,
+			Kategorie: record.waste.category.includes("/") ? record.waste.category.split("/")[1] : record.waste.category,
 			KodNakladaniKod: record.loadingCode.uid,
 			IdSubjektPartner: record.wasteCompany ? (record.wasteCompany.uid ? record.wasteCompany.uid.toString() : `${record.wasteCompany.templateId}${record.wasteCompany.id}`) : undefined,
 		};
