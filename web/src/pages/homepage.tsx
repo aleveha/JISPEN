@@ -7,9 +7,16 @@ const HomePageComponent: NextPage = () => {
 		<div className="h-full space-y-8">
 			<h1 className="text-3xl font-medium text-primary md:text-4xl">Vítejte v&nbsp;aplikaci JISPEN</h1>
 			<p className="max-w-3xl text-grey">
-				Program pro&nbsp;evidenci odpadů v&nbsp;nemocnicích a&nbsp;ve&nbsp;zdravotnických zařízeních s&nbsp;možností exportu dat
-				do&nbsp;specializovaného software ENVITA pro&nbsp;následnou automatizovanou tvorbu Ročního hlášení o&nbsp;produkci a&nbsp;nakládání
-				s&nbsp;odpady resp. Souhrnných údajů z&nbsp;průběžné evidence&nbsp;dle platné vyhlášky zákona o&nbsp;odpadech 541/2020&nbsp;Sb.
+				Systém JISPEN (Jednoduchý informační systém pro evidenci odpadů v&nbsp;nemocnicích) je určen pro jednoduché vytváření podkladů
+				do&nbsp;průběžné evidence odpadů v&nbsp;nemocnicích i&nbsp;v dalších typech zdravotnických zařízeních s&nbsp;možností exportu dat
+				do&nbsp;specializovaného software ENVITA pro následnou automatizovanou tvorbu předepsané průběžné evidence a&nbsp;Ročního hlášení
+				o&nbsp;produkci a&nbsp;nakládání s&nbsp;odpady resp. Souhrnných údajů z&nbsp;průběžné evidence dle platné vyhlášky 273/2021 Sb.
+				k&nbsp;zákonu o&nbsp;odpadech 541/2020 Sb. Alternativně je možné podklady přenést do&nbsp;tabulkového editoru MS Excel.
+			</p>
+			<p className="max-w-3xl text-grey">
+				Systém umožňuje vytváření podkladů na&nbsp;základě předem připravených šablon bez nutnosti odborné znalosti rozsahu zákonné průběžné
+				evidence odpadů. JISPEN obsahuje všechny potřebné číselníky, druhy odpadů ze&nbsp;zdravotnictví i&nbsp;kódy přípustných způsobů
+				nakládání.
 			</p>
 		</div>
 	);
