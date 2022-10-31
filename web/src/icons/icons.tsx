@@ -87,6 +87,17 @@ export const EditIcon = () => (
 	</svg>
 );
 
+export const CopyIcon = () => (
+	<svg fill="none" stroke="currentColor" height="20" strokeWidth={2} viewBox="0 0 24 24" width="20">
+		<path
+			d="M5.12 15.7A2.12 2.12 0 0 1 3 13.6V5.12C3 3.95 3.95 3 5.12 3h8.47c1.17 0 2.12.95 2.12 2.12v.53"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<rect x="8.29" y="8.29" width="12.71" height="12.71" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+	</svg>
+);
+
 export const CopyrightIcon = () => (
 	<svg fill="currentColor" height="20" viewBox="0 0 276.71 276.71" width="20">
 		<path d="M138.36 0C62.06 0 0 62.07 0 138.36S62.07 276.7 138.36 276.7 276.7 214.65 276.7 138.36 214.65 0 138.36 0zm0 258.71C71.99 258.71 18 204.72 18 138.36S72 18 138.36 18 258.7 72 258.7 138.36 204.72 258.7 138.36 258.7z" />

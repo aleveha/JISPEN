@@ -36,9 +36,9 @@ export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, onC
 				tabIndex={disableFocus ? -1 : 0}
 				target={target}
 			>
-				<div className={clsx("w-full items-center text-white", isOpen ? "grid grid-cols-5" : "relative flex w-fit justify-start")}>
+				<div className={clsx("w-full items-center text-white", isOpen ? "grid grid-cols-6" : "relative flex w-fit justify-start")}>
 					{iconName && Icons[iconName]}
-					<span className={clsx("col-span-4 col-start-2 -mt-[2px] h-6 text-start text-lg", isOpen ? "ml-3 inline-block" : "hidden")}>
+					<span className={clsx("col-span-5 col-start-2 -mt-[2px] h-6 text-start text-lg", isOpen ? "ml-3 inline-block" : "hidden")}>
 						{label}
 					</span>
 				</div>

@@ -2,7 +2,7 @@ import { Icons } from "@icons/icons.config";
 import { IconButton, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TablePagination, TableRow, Tooltip } from "@mui/material";
 import { DataGridHead } from "@shared/components/data-grid/data-grid-head";
 import clsx from "clsx";
-import React, { ChangeEventHandler, MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import React, { ChangeEventHandler, MouseEvent, useCallback, useEffect, useState } from "react";
 import { HeadCell, Order } from "./types";
 
 interface DataGridDefaultType extends Record<string, any> {
@@ -11,6 +11,7 @@ interface DataGridDefaultType extends Record<string, any> {
 
 interface EnhancedDataGridProps<T extends DataGridDefaultType> {
 	className?: string;
+	handleCopyButtonClick?: (value: T) => void;
 	handleDeleteButtonClick?: (value: T) => void;
 	handleEditButtonClick?: (value: T) => void;
 	headCells: HeadCell<T>[];
@@ -37,6 +38,7 @@ function getComparator<Key extends keyof any>(
 
 export const DataGrid = <T extends DataGridDefaultType>({
 	className,
+	handleCopyButtonClick,
 	handleDeleteButtonClick,
 	handleEditButtonClick,
 	headCells,
@@ -69,10 +71,9 @@ export const DataGrid = <T extends DataGridDefaultType>({
 		[rows]
 	);
 
-	const handleEdit = useCallback((value: T) => () => handleEditButtonClick && handleEditButtonClick(value), [handleEditButtonClick]);
+	const handleCopy = useCallback((value: T) => () => handleCopyButtonClick && handleCopyButtonClick(value), [handleCopyButtonClick]);
 	const handleDelete = useCallback((value: T) => () => handleDeleteButtonClick && handleDeleteButtonClick(value), [handleDeleteButtonClick]);
-
-	const emptyRows = useMemo(() => rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage), [page, rows, rowsPerPage]);
+	const handleEdit = useCallback((value: T) => () => handleEditButtonClick && handleEditButtonClick(value), [handleEditButtonClick]);
 
 	useEffect(() => {
 		setRowsPerPage(rows.length > 10 ? 10 : rows.length);
@@ -104,25 +105,31 @@ export const DataGrid = <T extends DataGridDefaultType>({
 											</Tooltip>
 										</TableCell>
 									))}
-									<TableCell className="space-x-1">
+									<TableCell className="flex space-x-1">
 										{handleEditButtonClick && (
-											<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleEdit(row)}>
-												{Icons.edit}
-											</IconButton>
+											<Tooltip arrow title="Upravit">
+												<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleEdit(row)}>
+													{Icons.edit}
+												</IconButton>
+											</Tooltip>
+										)}
+										{handleCopyButtonClick && (
+											<Tooltip arrow title="Duplikovat">
+												<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleCopy(row)}>
+													{Icons.copy}
+												</IconButton>
+											</Tooltip>
 										)}
 										{handleDeleteButtonClick && (
-											<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleDelete(row)}>
-												{Icons.delete}
-											</IconButton>
+											<Tooltip arrow title="Smazat">
+												<IconButton className="-ml-2 hover:text-primary-dark" onClick={handleDelete(row)}>
+													{Icons.delete}
+												</IconButton>
+											</Tooltip>
 										)}
 									</TableCell>
 								</TableRow>
 							))}
-						{emptyRows > 0 && (
-							<TableRow style={{ height: 53 * emptyRows }}>
-								<TableCell colSpan={headCells.length + 1} />
-							</TableRow>
-						)}
 					</TableBody>
 				</MuiTable>
 			</TableContainer>

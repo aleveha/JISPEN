@@ -46,6 +46,15 @@ export class RecordsService {
 		return await this.recordsRepository.save(record);
 	}
 
+	public async duplicate(id: number, email: string): Promise<RecordModel> {
+		const record = await this.getByRecordId(id, email);
+		if (!record) {
+			throw new BadRequestException();
+		}
+		delete record.id;
+		return await this.recordsRepository.save(record);
+	}
+
 	public async delete(recordId: number): Promise<RecordModel> {
 		const recordToBeDeleted = await this.recordsRepository.findOne({ id: recordId });
 		if (!recordToBeDeleted) {

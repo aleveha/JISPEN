@@ -22,6 +22,12 @@ export class RecordsController {
 	}
 
 	@UseGuards(JwtAuthGuard)
+	@Get("duplicate")
+	public async duplicate(@Query("id") id: number, @UserEmail() email: string): Promise<RecordModel> {
+		return await this.recordsService.duplicate(id, email);
+	}
+
+	@UseGuards(JwtAuthGuard)
 	@Delete("delete")
 	public async delete(@Query("id") id: number): Promise<RecordModel> {
 		return await this.recordsService.delete(id);

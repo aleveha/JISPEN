@@ -31,7 +31,7 @@ const HEADER_CELLS: HeadCell<RecordsTable>[] = [
 		id: "medicalCompanyName",
 		label: "Provozovna",
 	},
-	{ id: "wasteCompanyName", label: "Oprávněná osoba", width: 200 },
+	{ id: "wasteCompanyName", label: "Oprávněná osoba", width: 240 },
 ];
 
 function formatDate(date: Date): string {
@@ -49,8 +49,12 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<RecordsTable | null>();
 
-	const errorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
-	const successToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
+	const deleteErrorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
+	const deleteSuccessToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
+
+	const duplicateErrorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během duplikovaní šablony"), []);
+	const duplicateSuccessToast = useCallback(() => toast.success("Šablona byla úspěšně duplikovaná"), []);
+
 	const handleModalClose = useCallback(() => setIsDeleteModalOpen(false), []);
 
 	const rows: RecordsTable[] = useMemo(
@@ -70,12 +74,39 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 		[records]
 	);
 
-	const handleEditButtonClick = useCallback(async (record: RecordsTable) => await router.push(`/records/edit?id=${record.id}`), [router]);
+	const handleCopyButtonClick = useCallback(
+		async (record: RecordsTable) => {
+			if (!accessToken) {
+				router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
+				return;
+			}
+
+			fetcher<Record>({
+				axiosInstance: apiClient,
+				method: "get",
+				url: `/records/duplicate?id=${record.id}`,
+				accessToken,
+			})
+				.then(res => {
+					if (res.data) {
+						mutate("/records/all").then(duplicateSuccessToast).catch(duplicateErrorToast);
+					} else if (res.error) {
+						duplicateErrorToast();
+					}
+				})
+				.catch(() => {
+					duplicateErrorToast();
+				});
+		},
+		[accessToken, router, mutate, duplicateSuccessToast, duplicateErrorToast]
+	);
 
 	const handleDeleteButtonClick = useCallback((record: RecordsTable) => {
 		setSelectedRecord(record);
 		setIsDeleteModalOpen(true);
 	}, []);
+
+	const handleEditButtonClick = useCallback(async (record: RecordsTable) => await router.push(`/records/edit?id=${record.id}`), [router]);
 
 	const onDelete = useCallback(() => {
 		if (!selectedRecord || !accessToken) {
@@ -91,22 +122,23 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 		})
 			.then(res => {
 				if (res.data && res.data.id === selectedRecord.id) {
-					mutate("/records/all").then(successToast).catch(errorToast);
+					mutate("/records/all").then(deleteSuccessToast).catch(deleteErrorToast);
 				} else if (res.error) {
-					errorToast();
+					deleteErrorToast();
 				}
 				setIsDeleteModalOpen(false);
 			})
 			.catch(() => {
-				errorToast();
+				deleteErrorToast();
 				setIsDeleteModalOpen(false);
 			});
-	}, [accessToken, errorToast, mutate, selectedRecord, successToast]);
+	}, [accessToken, deleteErrorToast, mutate, selectedRecord, deleteSuccessToast]);
 
 	return (
 		<>
 			<DataGrid
 				headCells={HEADER_CELLS}
+				handleCopyButtonClick={handleCopyButtonClick}
 				handleDeleteButtonClick={handleDeleteButtonClick}
 				handleEditButtonClick={handleEditButtonClick}
 				orderedBy="id"

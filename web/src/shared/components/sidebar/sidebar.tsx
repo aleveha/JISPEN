@@ -35,8 +35,8 @@ export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
 	return (
 		<div
 			className={clsx(
-				"fixed top-0 bottom-0 left-0 z-10 min-h-full bg-primary-dark transition-[width] duration-300 ease-in-out md:relative",
-				open ? "w-80 px-3" : "w-20"
+				"fixed top-0 bottom-0 left-0 z-10 min-h-full bg-primary-dark transition-[width] duration-300 ease-in-out",
+				open ? "w-72 px-3" : "w-20"
 			)}
 		>
 			<div className="sticky top-0 left-0 flex flex-col overflow-hidden text-white">

@@ -1,5 +1,6 @@
 import {
 	ChevronLeft,
+	CopyIcon,
 	CopyrightIcon,
 	CrossIcon,
 	DeleteIcon,
@@ -14,6 +15,7 @@ import {
 
 export const Icons = {
 	chevronLeft: <ChevronLeft />,
+	copy: <CopyIcon />,
 	copyright: <CopyrightIcon />,
 	cross: <CrossIcon />,
 	delete: <DeleteIcon />,
