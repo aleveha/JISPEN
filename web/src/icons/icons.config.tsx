@@ -1,7 +1,20 @@
-import { ChevronLeft, CrossIcon, DeleteIcon, EditIcon, ExportIcon, InfoIcon, LoginIcon, MenuIcon, RecordIcon, TemplateIcon } from "./icons";
+import {
+	ChevronLeft,
+	CopyrightIcon,
+	CrossIcon,
+	DeleteIcon,
+	EditIcon,
+	ExportIcon,
+	InfoIcon,
+	LoginIcon,
+	MenuIcon,
+	RecordIcon,
+	TemplateIcon,
+} from "./icons";
 
 export const Icons = {
 	chevronLeft: <ChevronLeft />,
+	copyright: <CopyrightIcon />,
 	cross: <CrossIcon />,
 	delete: <DeleteIcon />,
 	edit: <EditIcon />,

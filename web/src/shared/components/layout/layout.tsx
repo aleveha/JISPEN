@@ -15,7 +15,7 @@ const Layout: FC<Props> = ({ children, title }) => {
 		<div className="relative flex min-h-screen w-full justify-end">
 			<Sidebar onClick={onClickSidebar} open={isSidebarOpen} />
 			<main className="w-[calc(100%_-_5rem)]">
-				<div className="flex h-full w-full flex-col px-4 py-20 md:px-6">
+				<div className="flex h-full w-full flex-col px-4 pt-20 pb-4 md:px-6">
 					{title && <h1 className="mb-8 text-3xl font-medium text-primary">{title}</h1>}
 					{children}
 				</div>
