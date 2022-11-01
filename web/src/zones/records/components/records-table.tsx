@@ -53,7 +53,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 	const deleteSuccessToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
 
 	const duplicateErrorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během duplikovaní šablony"), []);
-	const duplicateSuccessToast = useCallback(() => toast.success("Šablona byla úspěšně duplikovaná"), []);
+	const duplicateSuccessToast = useCallback(() => toast.success("Kopie záznamu byla vytvořena"), []);
 
 	const handleModalClose = useCallback(() => setIsDeleteModalOpen(false), []);
 
