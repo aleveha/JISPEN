@@ -8,7 +8,6 @@
 		"incremental": true,
 		"module": "commonjs",
 		"noFallthroughCasesInSwitch": false,
-		"noUnusedLocals": true,
 		"outDir": "./dist",
 		"skipLibCheck": true,
 		"strict": true,

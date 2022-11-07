@@ -7,7 +7,7 @@ export const mailerConfig = async (configService: ConfigService): Promise<Mailer
 	transport: {
 		host: configService.get<string>("MAILER_HOST"),
 		port: configService.get<number>("MAILER_PORT"),
-		secure: true,
+		secure: configService.get<string>("MAILER_SECURE") == "true",
 		auth: {
 			user: configService.get<string>("MAILER_USER"),
 			pass: configService.get<string>("MAILER_PASS"),

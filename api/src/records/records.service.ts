@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Between, Repository } from "typeorm";
+import { Between, FindManyOptions, Repository } from "typeorm";
 import { RecordModel } from "../models/record.model";
 import { RecordDto } from "./dto/recordDto";
 
@@ -87,17 +87,22 @@ export class RecordsService {
 		return record;
 	}
 
-	public async getRecordsByMedicalCompanyIdInPeriod(medicalCompanyId: number, email: string, dateFrom: Date, dateTo: Date): Promise<RecordModel[]> {
-		const records = await this.recordsRepository.find({
-			where: {
-				template: {
-					medicalCompanyId,
-					user: { email },
-				},
-				date: Between(dateFrom, dateTo),
+	public async getUserRecords(email: string, medicalCompanyId?: number, date?: { from: Date; to: Date }): Promise<RecordModel[]> {
+		const where: FindManyOptions<RecordModel>["where"] = {
+			template: {
+				user: { email },
 			},
-			relations: [...this.RECORD_RELATIONS],
-		});
+		};
+
+		if (medicalCompanyId) {
+			where.template.medicalCompanyId = medicalCompanyId;
+		}
+
+		if (date) {
+			where.date = Between(date.from, date.to);
+		}
+
+		const records = await this.recordsRepository.find({ where, relations: [...this.RECORD_RELATIONS] });
 
 		if (!records) {
 			throw new BadRequestException();

@@ -19,7 +19,7 @@ export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, onC
 	const [disableFocus, setDisableFocus] = useState(false);
 
 	useEffect(() => {
-		setDisableFocus(new RegExp("/?(templates|records).*").test(pathname));
+		setDisableFocus(new RegExp("/?(templates|records|export).*").test(pathname));
 	}, [pathname]);
 
 	return (

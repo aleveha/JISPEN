@@ -18,7 +18,7 @@ export const DatePickerInput = <FormData extends Record<string, any>>({
 	disabled,
 	label,
 	name,
-	required,
+	required = false,
 }: DatePickerInputProps<FormData>) => {
 	const {
 		field: { value, onChange },
@@ -26,7 +26,10 @@ export const DatePickerInput = <FormData extends Record<string, any>>({
 	} = useController<FormData>({
 		control,
 		name,
-		rules: { required: required ? "Povinný údaj" : undefined, validate: v => (isValidDate(v) ? undefined : "Vyplňte platnou hodnotu") },
+		rules: {
+			required: required ? "Povinný údaj" : undefined,
+			validate: (v?: string) => (v && v.length > 0 && !isValidDate(v) ? "Vyplňte platnou hodnotu" : undefined),
+		},
 	});
 
 	const handleChange = useCallback((value: Dayjs | null) => onChange(value?.toDate()), [onChange]);
