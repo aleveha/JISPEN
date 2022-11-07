@@ -12,6 +12,9 @@ export const mailerConfig = async (configService: ConfigService): Promise<Mailer
 			user: configService.get<string>("MAILER_USER"),
 			pass: configService.get<string>("MAILER_PASS"),
 		},
+		tls: {
+			rejectUnauthorized: false,
+		},
 	},
 	defaults: {
 		from: "\"nest-modules\" <modules@nestjs.com>",

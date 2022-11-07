@@ -12,13 +12,10 @@ services:
         container_name: jispen-api
         build:
             context: ./api
-        env_file:
-            - ./api/.env
         depends_on:
             - db
         links:
             - db
-        restart: on-failure
 
     web:
         container_name: jispen-web

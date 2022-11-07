@@ -5,6 +5,8 @@ services:
             dockerfile: Dockerfile.dev
         volumes:
             - api:/app
+        env_file:
+            - ./api/.env.local
         command: yarn dev
 
     web:

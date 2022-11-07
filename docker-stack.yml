@@ -26,10 +26,10 @@ services:
             DATABASE_NAME: "jispen"
             DATABASE_PORT: 5432
             JWT_SECRET: "jispen"
-            MAILER_HOST: "smtp.office365.com"
+            MAILER_HOST: "portal.inisoft.cz"
             MAILER_PORT: 587
-            MAILER_USER: "nikita.tashilin@gmail.com"
-            MAILER_PASS: "21022001qQ"
+            MAILER_USER: "jispen@inisoft.cz"
+            MAILER_PASS: "saw.MAjl1.dAAHW.H9aA"
             FRONTEND_URL: "https://jispen.uxf.dev"
 
     db:
