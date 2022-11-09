@@ -13,10 +13,10 @@ export interface MedicalCompanyDTO {
 	uid: number;
 	companyId: string;
 	name: string;
-	contactPersonName?: string;
-	contactPersonLastName?: string;
-	contactPersonPhone?: string;
-	contactPersonEmail?: string;
+	contactFirstName?: string;
+	contactLastName?: string;
+	contactPhone?: string;
+	contactEmail?: string;
 	address: AddressDTO;
 	territorialUnitId: number;
 }

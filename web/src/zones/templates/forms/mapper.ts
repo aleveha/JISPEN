@@ -17,6 +17,10 @@ export function mapTemplateValues(values: NewTemplateFormValues): TemplateDTO {
 		medicalCompany: {
 			address: mapAddress(values.medicalCompany.address),
 			companyId: values.medicalCompany.companyId,
+			contactEmail: values.medicalCompany.contactEmail,
+			contactFirstName: values.medicalCompany.contactFirstName,
+			contactLastName: values.medicalCompany.contactLastName,
+			contactPhone: values.medicalCompany.contactPhone,
 			name: values.medicalCompany.name,
 			territorialUnitId: parseInt(values.medicalCompany.territorialUnit?.id ?? "0"),
 			uid: parseInt(values.medicalCompany.uid),

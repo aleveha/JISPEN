@@ -20,7 +20,7 @@ export interface MedicalCompanyDto {
 	territorialUnitId: number;
 	contactFirstName?: string;
 	contactLastName?: string;
-	contactPhone?: number;
+	contactPhone?: string;
 	contactEmail?: string;
 	userId: number;
 	addressId?: number;

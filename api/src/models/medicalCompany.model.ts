@@ -39,7 +39,7 @@ export class MedicalCompanyModel extends BaseEntity {
 	contactLastName: string;
 
 	@Column({ name: "contact_phone", nullable: true })
-	contactPhone: number;
+	contactPhone: string;
 
 	@Column({ name: "contact_email", nullable: true })
 	contactEmail: string;
