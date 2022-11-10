@@ -201,7 +201,7 @@ export const ExportForm = memo<Props>(({ medicalCompanies }) => {
 					control={<CheckboxInput control={control} name="eightDigitCodesAllowed" />}
 					label={
 						<Tooltip arrow className="w-fit" placement="top" title="Osmimístná katalogová čísla">
-							<span>Zahrnout záznamy s podruhy odpadů</span>
+							<span>Zahrnout záznamy s&nbsp;poddruhy odpadů</span>
 						</Tooltip>
 					}
 				/>
