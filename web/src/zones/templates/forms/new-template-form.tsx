@@ -43,30 +43,34 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitSuccessful);
 
 	const onSubmit = useCallback<SubmitHandler<NewTemplateFormValues>>(
-		values => {
+		async values => {
 			if (!accessToken) {
 				return;
 			}
 
-			fetcher<Template, TemplateDTO>({
+			const { data, error } = await fetcher<Template, TemplateDTO>({
 				axiosInstance: apiClient,
 				method: "post",
 				url: "/templates/create",
 				data: mapTemplateValues(values),
 				accessToken,
-			})
-				.then(res => {
-					if (res.data) {
-						router.push("/templates").then(() => {
-							toast.success("Šablona úspěšně vytvořena");
-						});
-						return;
-					}
-					toast.error("Nepodařilo se vytvořit šablonu");
-				})
-				.catch(() => {
-					toast.error("Nepodařilo se vytvořit šablonu");
+			});
+
+			if (error) {
+				if (error.statusCode === 400) {
+					toast.error("Šablona s tímto názvem již existuje");
+					return;
+				}
+
+				toast.error("Nepodařilo se vytvořit šablonu");
+			}
+
+			if (data) {
+				router.push("/templates").then(() => {
+					toast.success("Šablona úspěšně vytvořena");
 				});
+				return;
+			}
 		},
 		[router, accessToken]
 	);

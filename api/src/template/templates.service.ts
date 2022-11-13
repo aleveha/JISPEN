@@ -45,7 +45,7 @@ export class TemplatesService {
 	public async create(template: TemplateDto, userEmail: string): Promise<TemplateModel> {
 		const existedTemplate = await this.getUserTemplateByTitle(template.title, userEmail);
 		if (existedTemplate) {
-			return existedTemplate;
+			throw new BadRequestException();
 		}
 
 		const { id: userId } = await this.userService.getUserByEmail(userEmail);
