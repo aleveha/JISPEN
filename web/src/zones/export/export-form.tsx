@@ -157,7 +157,7 @@ export const ExportForm = memo<Props>(({ medicalCompanies }) => {
 				<Autocomplete
 					autocompleteProps={{
 						disabled: exportAll,
-						getOptionLabel: (option: MedicalCompany) => `${option.name} (IČO: ${option.uid})`,
+						getOptionLabel: (option: MedicalCompany) => `${option.name} (IČO:\xa0${option.uid}, IČZ/IČS/IČP:\xa0${option.companyId})`,
 						noOptionsText: "Žádná provozovna nebyla nalezena",
 					}}
 					control={control}
