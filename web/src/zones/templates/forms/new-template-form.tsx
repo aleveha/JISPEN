@@ -15,7 +15,7 @@ import { NewTemplateFormSection } from "@zones/templates/forms/new-template-form
 import { newTemplateFormDefaultValues, NewTemplateFormValues, wasteCompanyDefaultValue } from "@zones/templates/forms/types";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { LoadingCodesSectionTable } from "./sections/loading-codes-section-table";
@@ -29,10 +29,11 @@ interface Props {
 export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 	const [accessToken] = useAuth();
 	const router = useRouter();
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const {
 		control,
-		formState: { isDirty, isSubmitSuccessful },
+		formState: { isDirty, isSubmitSuccessful, isValid },
 		handleSubmit,
 		watch,
 	} = useForm<NewTemplateFormValues>({
@@ -40,15 +41,14 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 		mode: "onChange",
 	});
 
-	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitSuccessful);
-
 	const onSubmit = useCallback<SubmitHandler<NewTemplateFormValues>>(
 		async values => {
+			setIsSubmitting(true);
 			if (!accessToken) {
 				return;
 			}
 
-			const { data, error } = await fetcher<Template, TemplateDTO>({
+			const { error } = await fetcher<Template, TemplateDTO>({
 				axiosInstance: apiClient,
 				method: "post",
 				url: "/templates/create",
@@ -57,23 +57,23 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 			});
 
 			if (error) {
+				setIsSubmitting(false);
 				if (error.statusCode === 400) {
 					toast.error("Šablona s tímto názvem již existuje");
 					return;
 				}
 
 				toast.error("Nepodařilo se vytvořit šablonu");
-			}
-
-			if (data) {
-				router.push("/templates").then(() => {
-					toast.success("Šablona úspěšně vytvořena");
-				});
 				return;
 			}
+
+			setIsSubmitting(false);
+			router.push("/templates").then(() => toast.success("Šablona úspěšně vytvořena"));
 		},
 		[router, accessToken]
 	);
+
+	const [showModal, handleFormLeave] = useFormLeave((isDirty || isValid) && (!isSubmitSuccessful || !isSubmitting));
 
 	const onExit = useCallback(() => {
 		router.back();
