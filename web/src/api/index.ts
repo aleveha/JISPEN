@@ -33,7 +33,8 @@ export async function fetcher<T, K = any>({ axiosInstance, method, url, data, ac
 
 export async function axiosErrorHelper(error: Error | AxiosError): Promise<ApiError> {
 	if (axios.isAxiosError(error) && error.response) {
-		return error.response?.data;
+		const { data } = error.response;
+		return data instanceof Blob ? JSON.parse(await data.text()) : data;
 	}
 
 	console.error(error);

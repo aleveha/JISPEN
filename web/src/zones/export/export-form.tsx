@@ -98,48 +98,46 @@ export const ExportForm = memo<Props>(({ medicalCompanies }) => {
 	const { control, handleSubmit, watch, resetField } = useForm<ExportFormValues>({ defaultValues, mode: "onChange" });
 
 	const onSubmit = useCallback<SubmitHandler<ExportFormValues>>(
-		values => {
+		async values => {
+			if (values.dateTo && values.dateFrom && dayjs(values.dateTo).isBefore(values.dateFrom)) {
+				return toast.error("Datum do musí být větší než datum od");
+			}
+
 			setIsLoading(true);
 
 			const loadingToastId = toast.loading("Exportuji...");
-			const data = mapFormValuesToDto(values);
+			const dataDto = mapFormValuesToDto(values);
 
-			fetcher<string, ExportDto>({
+			const { data, error } = await fetcher<Blob, ExportDto>({
 				axiosInstance: apiClient,
 				method: "post",
 				url: "/export",
-				data,
+				data: dataDto,
 				accessToken,
 				config: {
 					responseType: "blob",
 				},
-			})
-				.then(res => {
-					if (res.error) {
-						toast.error(res.error.statusCode === 404 ? "Žádné záznamy nebyly nalezeny" : "Nastala chyba při exportu", {
-							id: loadingToastId,
-						});
-						setIsLoading(false);
-						return;
-					}
+			});
 
-					if (res && res.data) {
-						switch (values.exportType) {
-							case "download":
-								toast.success("Soubor byl úspěšně stažen", { id: loadingToastId });
-								fileDownload(res.data, createFileName(values.fileType, values.medicalCompany, data.date));
-								break;
-							case "email":
-								toast.success("Soubor byl úspěšně odeslán", { id: loadingToastId });
-								break;
-						}
-					}
-					setIsLoading(false);
-				})
-				.catch(() => {
-					toast.error("Nastala chyba při exportu", { id: loadingToastId });
-					setIsLoading(false);
+			if (error) {
+				toast.error(error.statusCode === 404 ? "Žádné záznamy nebyly nalezeny" : "Nastala chyba při exportu", {
+					id: loadingToastId,
 				});
+				setIsLoading(false);
+				return;
+			}
+
+			switch (values.exportType) {
+				case "download":
+					toast.success("Soubor byl úspěšně stažen", { id: loadingToastId });
+					fileDownload(data, createFileName(values.fileType, values.medicalCompany, dataDto.date));
+					break;
+				case "email":
+					toast.success("Soubor byl úspěšně odeslán", { id: loadingToastId });
+					break;
+			}
+
+			setIsLoading(false);
 		},
 		[accessToken]
 	);

@@ -28,7 +28,7 @@ export const DatePickerInput = <FormData extends Record<string, any>>({
 		name,
 		rules: {
 			required: required ? "Povinný údaj" : undefined,
-			validate: (v?: string) => (v && v.length > 0 && !isValidDate(v) ? "Vyplňte platnou hodnotu" : undefined),
+			validate: (v?: string) => (v && !isValidDate(v) ? "Vyplňte platnou hodnotu" : undefined),
 		},
 	});
 
