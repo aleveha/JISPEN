@@ -1,9 +1,10 @@
 import { Checkbox, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TableRow, Tooltip } from "@mui/material";
+import { getComparator } from "@shared/components/shared/comparator-util";
 import clsx from "clsx";
-import React, { ChangeEventHandler, useCallback, useState } from "react";
+import React, { ChangeEventHandler, useCallback, useEffect, useState } from "react";
+import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 import { CheckboxHead } from "./checkbox-list-head";
 import { CheckboxListToolbar } from "./checkbox-list-toolbar";
-import { HeadCell, Order } from "./types";
 
 interface TableDefaultType extends Record<string, any> {
 	id: number;
@@ -20,30 +21,6 @@ interface EnhancedTableProps<T extends TableDefaultType> {
 	title: string;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T, sortAsString = false): number {
-	if (sortAsString) {
-		return String(a[orderBy]).localeCompare(String(b[orderBy]));
-	}
-
-	if (b[orderBy] < a[orderBy]) {
-		return -1;
-	}
-	if (b[orderBy] > a[orderBy]) {
-		return 1;
-	}
-	return 0;
-}
-
-function getComparator<Key extends keyof any>(
-	order: Order,
-	orderBy: Key,
-	sortAsString = false
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-	return order === "desc"
-		? (a, b) => descendingComparator(a, b, orderBy, sortAsString)
-		: (a, b) => -descendingComparator(a, b, orderBy, sortAsString);
-}
-
 export const CheckboxList = <T extends TableDefaultType>({
 	className,
 	headCells,
@@ -54,18 +31,17 @@ export const CheckboxList = <T extends TableDefaultType>({
 	rows,
 	title,
 }: EnhancedTableProps<T>) => {
-	const [order, setOrder] = useState<Order>("desc");
+	const [order, setOrder] = useState<Order>("asc");
 	const [orderBy, setOrderBy] = useState<keyof T>(orderedBy);
-	const [sortAsString, setSortAsString] = useState<boolean>(true);
+	const [sortAs, setSortAs] = useState<SortAs | undefined>();
 	const [selected, setSelected] = useState<T[]>([]);
 
 	const handleRequestSort = useCallback(
-		(property: keyof T, sortAsString = false) =>
-			() => {
-				setOrder(orderBy === property && order === "asc" ? "desc" : "asc");
-				setOrderBy(property);
-				setSortAsString(sortAsString);
-			},
+		(property: keyof T, sortAs?: SortAs) => () => {
+			setOrder(orderBy === property && order === "asc" ? "desc" : "asc");
+			setOrderBy(property);
+			setSortAs(sortAs);
+		},
 		[order, orderBy]
 	);
 
@@ -109,6 +85,10 @@ export const CheckboxList = <T extends TableDefaultType>({
 
 	const isSelected = useCallback((value: T) => selected.indexOf(value) !== -1, [selected]);
 
+	useEffect(() => {
+		setSortAs(headCells.find(cell => cell.id === orderBy)?.sortAs);
+	}, [headCells, orderBy]);
+
 	return (
 		<Paper className={className} variant="outlined">
 			<CheckboxListToolbar isError={isError} numSelected={selected.length} onDeleteClick={handleDeleteAll} title={title} />
@@ -127,7 +107,7 @@ export const CheckboxList = <T extends TableDefaultType>({
 					<TableBody>
 						{rows
 							.slice()
-							.sort(getComparator(order, orderBy, sortAsString))
+							.sort(getComparator(order, orderBy, sortAs))
 							.map(row => (
 								<TableRow hover key={row.id} onClick={handleClick(row)} role="checkbox" selected={isSelected(row)} tabIndex={-1}>
 									<TableCell sx={{ border: "none" }} padding="checkbox">

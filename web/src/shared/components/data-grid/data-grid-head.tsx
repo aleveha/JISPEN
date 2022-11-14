@@ -1,11 +1,11 @@
 import { TableCell, TableHead as MuiTableHead, TableRow, TableSortLabel } from "@mui/material";
 import { THEME } from "@styles/theme";
 import React from "react";
-import { HeadCell, Order } from "./types";
+import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 
 interface EnhancedTableHeadProps<T> {
 	headCells: HeadCell<T>[];
-	onSortClick: (property: keyof T) => () => void;
+	onSortClick: (property: keyof T, sortAs?: SortAs) => () => void;
 	order: Order;
 	orderBy: keyof T;
 }
@@ -14,7 +14,7 @@ export const DataGridHead = <T extends Record<string, any>>({ headCells, order, 
 	return (
 		<MuiTableHead>
 			<TableRow>
-				{headCells.map(({ id, label, width }) => (
+				{headCells.map(({ id, label, width, sortAs }) => (
 					<TableCell
 						key={id.toString()}
 						sortDirection={orderBy === id ? order : false}
@@ -27,7 +27,12 @@ export const DataGridHead = <T extends Record<string, any>>({ headCells, order, 
 							},
 						}}
 					>
-						<TableSortLabel active={orderBy === id} direction={orderBy === id ? order : "asc"} onClick={onSortClick(id)} tabIndex={-1}>
+						<TableSortLabel
+							active={orderBy === id}
+							direction={orderBy === id ? order : "asc"}
+							onClick={onSortClick(id, sortAs)}
+							tabIndex={-1}
+						>
 							<span className="font-medium uppercase">{label}</span>
 							{orderBy === id ? <span className="sr-only">{order === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
 						</TableSortLabel>

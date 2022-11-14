@@ -1,6 +1,6 @@
 import { LoadingCode } from "@api/templates/types";
 import { CheckboxList } from "@shared/components/checkbox-list/checkbox-list";
-import { HeadCell } from "@shared/components/checkbox-list/types";
+import { HeadCell } from "@shared/components/shared/comparator-util.types";
 import { NewTemplateFormValues } from "@zones/templates/forms/types";
 import React, { FC, useCallback } from "react";
 import { useController, UseControllerProps } from "react-hook-form";

@@ -1,8 +1,8 @@
 import { apiClient } from "@api/config";
 import { fetcher } from "@api/index";
 import { Record } from "@api/records/types";
-import { HeadCell } from "@shared/components/checkbox-list/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
+import { HeadCell } from "@shared/components/shared/comparator-util.types";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveRecordModal } from "@zones/records/components/remove-record-modal";
 import { useRouter } from "next/router";
@@ -22,9 +22,9 @@ interface RecordsTable {
 }
 
 const HEADER_CELLS: HeadCell<RecordsTable>[] = [
-	{ id: "date", label: "Datum" },
+	{ id: "date", label: "Datum", sortAs: "date" },
 	{ id: "templateName", label: "Šablona" },
-	{ id: "wasteUid", label: "Odpad" },
+	{ id: "wasteUid", label: "Odpad", sortAs: "string" },
 	{ id: "amount", label: "Množství" },
 	{ id: "loadingCodeUid", label: "Nakládání" },
 	{
@@ -81,22 +81,19 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 				return;
 			}
 
-			fetcher<Record>({
+			const { error } = await fetcher<Record>({
 				axiosInstance: apiClient,
 				method: "get",
 				url: `/records/duplicate?id=${record.id}`,
 				accessToken,
-			})
-				.then(res => {
-					if (res.data) {
-						mutate("/records/all").then(duplicateSuccessToast).catch(duplicateErrorToast);
-					} else if (res.error) {
-						duplicateErrorToast();
-					}
-				})
-				.catch(() => {
-					duplicateErrorToast();
-				});
+			});
+
+			if (error) {
+				duplicateErrorToast();
+				return;
+			}
+
+			mutate("/records/all").then(duplicateSuccessToast).catch(duplicateErrorToast);
 		},
 		[accessToken, router, mutate, duplicateSuccessToast, duplicateErrorToast]
 	);
@@ -108,30 +105,27 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 
 	const handleEditButtonClick = useCallback(async (record: RecordsTable) => await router.push(`/records/edit?id=${record.id}`), [router]);
 
-	const onDelete = useCallback(() => {
+	const onDelete = useCallback(async () => {
 		if (!selectedRecord || !accessToken) {
 			return;
 		}
 
-		fetcher<Record>({
+		const { error } = await fetcher<Record>({
 			axiosInstance: apiClient,
 			method: "delete",
 			url: "/records/delete",
 			accessToken,
 			config: { params: { id: selectedRecord.id } },
-		})
-			.then(res => {
-				if (res.data && res.data.id === selectedRecord.id) {
-					mutate("/records/all").then(deleteSuccessToast).catch(deleteErrorToast);
-				} else if (res.error) {
-					deleteErrorToast();
-				}
-				setIsDeleteModalOpen(false);
-			})
-			.catch(() => {
-				deleteErrorToast();
-				setIsDeleteModalOpen(false);
-			});
+		});
+
+		if (error) {
+			deleteErrorToast();
+			setIsDeleteModalOpen(false);
+			return;
+		}
+
+		mutate("/records/all").then(deleteSuccessToast).catch(deleteErrorToast);
+		setIsDeleteModalOpen(false);
 	}, [accessToken, deleteErrorToast, mutate, selectedRecord, deleteSuccessToast]);
 
 	return (
@@ -141,7 +135,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 				handleCopyButtonClick={handleCopyButtonClick}
 				handleDeleteButtonClick={handleDeleteButtonClick}
 				handleEditButtonClick={handleEditButtonClick}
-				orderedBy="id"
+				orderedBy="date"
 				rows={rows}
 			/>
 			{selectedRecord && (

@@ -1,14 +1,14 @@
 import { Checkbox, TableCell, TableHead as MuiTableHead, TableRow, TableSortLabel } from "@mui/material";
 import clsx from "clsx";
 import React, { ChangeEventHandler } from "react";
-import { HeadCell, Order } from "./types";
+import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 
 interface EnhancedTableHeadProps<T> {
 	headCells: HeadCell<T>[];
 	isError?: boolean;
 	numSelected: number;
 	onSelectAllClick: ChangeEventHandler<HTMLInputElement>;
-	onSortClick: (property: keyof T, sortAsString: boolean) => () => void;
+	onSortClick: (property: keyof T, sortAs?: SortAs) => () => void;
 	order: Order;
 	orderBy: keyof T;
 	rowCount: number;
@@ -28,13 +28,9 @@ export const CheckboxHead = <T extends Record<string, any>>(props: EnhancedTable
 						onChange={onSelectAllClick}
 					/>
 				</TableCell>
-				{headCells.map(({ id, label, width, sortAsString = false }) => (
+				{headCells.map(({ id, label, width, sortAs }) => (
 					<TableCell key={id.toString()} sortDirection={orderBy === id ? order : false} sx={{ width: width }}>
-						<TableSortLabel
-							active={orderBy === id}
-							direction={orderBy === id ? order : undefined}
-							onClick={onSortClick(id, sortAsString)}
-						>
+						<TableSortLabel active={orderBy === id} direction={orderBy === id ? order : undefined} onClick={onSortClick(id, sortAs)}>
 							<span className="font-medium uppercase">{label}</span>
 							{orderBy === id ? <span className="sr-only">{order === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
 						</TableSortLabel>

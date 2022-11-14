@@ -1,9 +1,10 @@
 import { Icons } from "@icons/icons.config";
 import { IconButton, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TablePagination, TableRow, Tooltip } from "@mui/material";
 import { DataGridHead } from "@shared/components/data-grid/data-grid-head";
+import { getComparator } from "@shared/components/shared/comparator-util";
 import clsx from "clsx";
 import React, { ChangeEventHandler, MouseEvent, useCallback, useEffect, useState } from "react";
-import { HeadCell, Order } from "./types";
+import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 
 interface DataGridDefaultType extends Record<string, any> {
 	id: number;
@@ -19,23 +20,6 @@ interface EnhancedDataGridProps<T extends DataGridDefaultType> {
 	rows: T[];
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T): number {
-	if (b[orderBy] < a[orderBy]) {
-		return -1;
-	}
-	if (b[orderBy] > a[orderBy]) {
-		return 1;
-	}
-	return 0;
-}
-
-function getComparator<Key extends keyof any>(
-	order: Order,
-	orderBy: Key
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-	return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
 export const DataGrid = <T extends DataGridDefaultType>({
 	className,
 	handleCopyButtonClick,
@@ -47,13 +31,15 @@ export const DataGrid = <T extends DataGridDefaultType>({
 }: EnhancedDataGridProps<T>) => {
 	const [order, setOrder] = useState<Order>("asc");
 	const [orderBy, setOrderBy] = useState<keyof T>(orderedBy);
+	const [sortAs, setSortAs] = useState<SortAs | undefined>();
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(rows.length > 10 ? 10 : rows.length);
 
 	const handleRequestSort = useCallback(
-		(property: keyof T) => () => {
+		(property: keyof T, sortAs?: SortAs) => () => {
 			setOrder(orderBy === property && order === "asc" ? "desc" : "asc");
 			setOrderBy(property);
+			setSortAs(sortAs);
 		},
 		[order, orderBy]
 	);
@@ -79,6 +65,10 @@ export const DataGrid = <T extends DataGridDefaultType>({
 		setRowsPerPage(rows.length > 10 ? 10 : rows.length);
 	}, [rows]);
 
+	useEffect(() => {
+		setSortAs(headCells.find(cell => cell.id === orderBy)?.sortAs);
+	}, [headCells, orderBy]);
+
 	return (
 		<Paper className={clsx("overflow-hidden rounded-lg", className)} variant="outlined">
 			<TableContainer className="max-h-[60vh]">
@@ -87,7 +77,7 @@ export const DataGrid = <T extends DataGridDefaultType>({
 					<TableBody>
 						{rows
 							.slice()
-							.sort(getComparator(order, orderBy))
+							.sort(getComparator(order, orderBy, sortAs))
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map(row => (
 								<TableRow key={row.id} role="checkbox" tabIndex={-1}>
