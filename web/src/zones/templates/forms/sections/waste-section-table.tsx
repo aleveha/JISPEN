@@ -10,7 +10,7 @@ interface WasteSectionTableProps extends UseControllerProps<NewTemplateFormValue
 }
 
 const HEADER_CELLS: HeadCell<Waste>[] = [
-	{ id: "uid", label: "Odpad" },
+	{ id: "uid", label: "Odpad", sortAsString: true },
 	{
 		id: "name",
 		label: "Název odpadu",

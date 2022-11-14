@@ -8,7 +8,7 @@ interface EnhancedTableHeadProps<T> {
 	isError?: boolean;
 	numSelected: number;
 	onSelectAllClick: ChangeEventHandler<HTMLInputElement>;
-	onSortClick: (property: keyof T) => () => void;
+	onSortClick: (property: keyof T, sortAsString: boolean) => () => void;
 	order: Order;
 	orderBy: keyof T;
 	rowCount: number;
@@ -28,9 +28,13 @@ export const CheckboxHead = <T extends Record<string, any>>(props: EnhancedTable
 						onChange={onSelectAllClick}
 					/>
 				</TableCell>
-				{headCells.map(({ id, label, width }) => (
+				{headCells.map(({ id, label, width, sortAsString = false }) => (
 					<TableCell key={id.toString()} sortDirection={orderBy === id ? order : false} sx={{ width: width }}>
-						<TableSortLabel active={orderBy === id} direction={orderBy === id ? order : "asc"} onClick={onSortClick(id)}>
+						<TableSortLabel
+							active={orderBy === id}
+							direction={orderBy === id ? order : undefined}
+							onClick={onSortClick(id, sortAsString)}
+						>
 							<span className="font-medium uppercase">{label}</span>
 							{orderBy === id ? <span className="sr-only">{order === "desc" ? "sorted descending" : "sorted ascending"}</span> : null}
 						</TableSortLabel>

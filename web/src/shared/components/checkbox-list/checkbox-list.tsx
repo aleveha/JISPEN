@@ -20,7 +20,11 @@ interface EnhancedTableProps<T extends TableDefaultType> {
 	title: string;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T): number {
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T, sortAsString = false): number {
+	if (sortAsString) {
+		return String(a[orderBy]).localeCompare(String(b[orderBy]));
+	}
+
 	if (b[orderBy] < a[orderBy]) {
 		return -1;
 	}
@@ -32,9 +36,12 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T): number {
 
 function getComparator<Key extends keyof any>(
 	order: Order,
-	orderBy: Key
+	orderBy: Key,
+	sortAsString = false
 ): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-	return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+	return order === "desc"
+		? (a, b) => descendingComparator(a, b, orderBy, sortAsString)
+		: (a, b) => -descendingComparator(a, b, orderBy, sortAsString);
 }
 
 export const CheckboxList = <T extends TableDefaultType>({
@@ -47,15 +54,18 @@ export const CheckboxList = <T extends TableDefaultType>({
 	rows,
 	title,
 }: EnhancedTableProps<T>) => {
-	const [order, setOrder] = useState<Order>("asc");
+	const [order, setOrder] = useState<Order>("desc");
 	const [orderBy, setOrderBy] = useState<keyof T>(orderedBy);
+	const [sortAsString, setSortAsString] = useState<boolean>(true);
 	const [selected, setSelected] = useState<T[]>([]);
 
 	const handleRequestSort = useCallback(
-		(property: keyof T) => () => {
-			setOrder(orderBy === property && order === "asc" ? "desc" : "asc");
-			setOrderBy(property);
-		},
+		(property: keyof T, sortAsString = false) =>
+			() => {
+				setOrder(orderBy === property && order === "asc" ? "desc" : "asc");
+				setOrderBy(property);
+				setSortAsString(sortAsString);
+			},
 		[order, orderBy]
 	);
 
@@ -117,7 +127,7 @@ export const CheckboxList = <T extends TableDefaultType>({
 					<TableBody>
 						{rows
 							.slice()
-							.sort(getComparator(order, orderBy))
+							.sort(getComparator(order, orderBy, sortAsString))
 							.map(row => (
 								<TableRow hover key={row.id} onClick={handleClick(row)} role="checkbox" selected={isSelected(row)} tabIndex={-1}>
 									<TableCell sx={{ border: "none" }} padding="checkbox">
