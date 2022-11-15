@@ -1,8 +1,8 @@
 import { Checkbox, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TableRow, Tooltip } from "@mui/material";
-import { getComparator } from "@shared/components/shared/comparator-util";
+import { getComparator } from "@shared/utils/comparator/comparator";
+import { HeadCell, Order, SortAs } from "@shared/utils/comparator/types";
 import clsx from "clsx";
 import React, { ChangeEventHandler, useCallback, useEffect, useState } from "react";
-import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 import { CheckboxHead } from "./checkbox-list-head";
 import { CheckboxListToolbar } from "./checkbox-list-toolbar";
 

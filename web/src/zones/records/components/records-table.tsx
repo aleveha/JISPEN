@@ -2,7 +2,9 @@ import { apiClient } from "@api/config";
 import { fetcher } from "@api/index";
 import { Record } from "@api/records/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
-import { HeadCell } from "@shared/components/shared/comparator-util.types";
+import { useTableSorting } from "@shared/hooks/useTableSorting";
+import { HeadCell } from "@shared/utils/comparator/types";
+import { Sorting } from "@state/table-sorting/types";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveRecordModal } from "@zones/records/components/remove-record-modal";
 import { useRouter } from "next/router";
@@ -10,7 +12,7 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSWRConfig } from "swr";
 
-interface RecordsTable {
+export interface RecordsTableColumns {
 	amount: string;
 	date: string;
 	id: Record["id"];
@@ -21,16 +23,13 @@ interface RecordsTable {
 	wasteUid: Record["waste"]["uid"];
 }
 
-const HEADER_CELLS: HeadCell<RecordsTable>[] = [
+const HEADER_CELLS: HeadCell<RecordsTableColumns>[] = [
 	{ id: "date", label: "Datum", sortAs: "date" },
 	{ id: "templateName", label: "Šablona" },
 	{ id: "wasteUid", label: "Odpad", sortAs: "string" },
 	{ id: "amount", label: "Množství" },
 	{ id: "loadingCodeUid", label: "Nakládání" },
-	{
-		id: "medicalCompanyName",
-		label: "Provozovna",
-	},
+	{ id: "medicalCompanyName", label: "Provozovna" },
 	{ id: "wasteCompanyName", label: "Oprávněná osoba", width: 240 },
 ];
 
@@ -47,7 +46,8 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 	const router = useRouter();
 	const [accessToken] = useAuth();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const [selectedRecord, setSelectedRecord] = useState<RecordsTable | null>();
+	const [selectedRecord, setSelectedRecord] = useState<RecordsTableColumns | null>();
+	const [tableSorting, setTableSorting] = useTableSorting();
 
 	const deleteErrorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
 	const deleteSuccessToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
@@ -57,7 +57,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 
 	const handleModalClose = useCallback(() => setIsDeleteModalOpen(false), []);
 
-	const rows: RecordsTable[] = useMemo(
+	const rows: RecordsTableColumns[] = useMemo(
 		() =>
 			records.map(record => ({
 				amount: `${record.amount} t`,
@@ -75,7 +75,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 	);
 
 	const handleCopyButtonClick = useCallback(
-		async (record: RecordsTable) => {
+		async (record: RecordsTableColumns) => {
 			if (!accessToken) {
 				router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
 				return;
@@ -98,12 +98,12 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 		[accessToken, router, mutate, duplicateSuccessToast, duplicateErrorToast]
 	);
 
-	const handleDeleteButtonClick = useCallback((record: RecordsTable) => {
+	const handleDeleteButtonClick = useCallback((record: RecordsTableColumns) => {
 		setSelectedRecord(record);
 		setIsDeleteModalOpen(true);
 	}, []);
 
-	const handleEditButtonClick = useCallback(async (record: RecordsTable) => await router.push(`/records/edit?id=${record.id}`), [router]);
+	const handleEditButtonClick = useCallback(async (record: RecordsTableColumns) => await router.push(`/records/edit?id=${record.id}`), [router]);
 
 	const onDelete = useCallback(async () => {
 		if (!selectedRecord || !accessToken) {
@@ -128,14 +128,17 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 		setIsDeleteModalOpen(false);
 	}, [accessToken, deleteErrorToast, mutate, selectedRecord, deleteSuccessToast]);
 
+	const handleOrderChanged = useCallback((value: Sorting<RecordsTableColumns>) => setTableSorting("records", value), [setTableSorting]);
+
 	return (
 		<>
 			<DataGrid
-				headCells={HEADER_CELLS}
 				handleCopyButtonClick={handleCopyButtonClick}
 				handleDeleteButtonClick={handleDeleteButtonClick}
 				handleEditButtonClick={handleEditButtonClick}
-				orderedBy="date"
+				handleOrderChange={handleOrderChanged}
+				headCells={HEADER_CELLS}
+				order={tableSorting?.records ?? { column: "date", direction: "asc" }}
 				rows={rows}
 			/>
 			{selectedRecord && (

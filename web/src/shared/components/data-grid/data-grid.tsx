@@ -1,10 +1,11 @@
 import { Icons } from "@icons/icons.config";
 import { IconButton, Paper, Table as MuiTable, TableBody, TableCell, TableContainer, TablePagination, TableRow, Tooltip } from "@mui/material";
 import { DataGridHead } from "@shared/components/data-grid/data-grid-head";
-import { getComparator } from "@shared/components/shared/comparator-util";
+import { getComparator } from "@shared/utils/comparator/comparator";
+import { HeadCell, SortAs } from "@shared/utils/comparator/types";
+import { Sorting } from "@state/table-sorting/types";
 import clsx from "clsx";
 import React, { ChangeEventHandler, MouseEvent, useCallback, useEffect, useState } from "react";
-import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 
 interface DataGridDefaultType extends Record<string, any> {
 	id: number;
@@ -15,8 +16,9 @@ interface EnhancedDataGridProps<T extends DataGridDefaultType> {
 	handleCopyButtonClick?: (value: T) => void;
 	handleDeleteButtonClick?: (value: T) => void;
 	handleEditButtonClick?: (value: T) => void;
+	handleOrderChange: (order: Sorting<T>) => void;
 	headCells: HeadCell<T>[];
-	orderedBy: keyof T;
+	order: Sorting<T>;
 	rows: T[];
 }
 
@@ -25,23 +27,21 @@ export const DataGrid = <T extends DataGridDefaultType>({
 	handleCopyButtonClick,
 	handleDeleteButtonClick,
 	handleEditButtonClick,
+	handleOrderChange,
 	headCells,
-	orderedBy,
+	order,
 	rows,
 }: EnhancedDataGridProps<T>) => {
-	const [order, setOrder] = useState<Order>("asc");
-	const [orderBy, setOrderBy] = useState<keyof T>(orderedBy);
 	const [sortAs, setSortAs] = useState<SortAs | undefined>();
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState<number>(rows.length > 10 ? 10 : rows.length);
 
 	const handleRequestSort = useCallback(
 		(property: keyof T, sortAs?: SortAs) => () => {
-			setOrder(orderBy === property && order === "asc" ? "desc" : "asc");
-			setOrderBy(property);
+			handleOrderChange({ column: property, direction: order.column === property && order.direction === "asc" ? "desc" : "asc" });
 			setSortAs(sortAs);
 		},
-		[order, orderBy]
+		[handleOrderChange, order]
 	);
 
 	const handleChangePage = useCallback((event: MouseEvent<HTMLButtonElement> | null, page: number) => {
@@ -66,18 +66,18 @@ export const DataGrid = <T extends DataGridDefaultType>({
 	}, [rows]);
 
 	useEffect(() => {
-		setSortAs(headCells.find(cell => cell.id === orderBy)?.sortAs);
-	}, [headCells, orderBy]);
+		setSortAs(headCells.find(cell => cell.id === order.column)?.sortAs);
+	}, [headCells, order]);
 
 	return (
 		<Paper className={clsx("overflow-hidden rounded-lg", className)} variant="outlined">
 			<TableContainer className="max-h-[60vh]">
 				<MuiTable stickyHeader>
-					<DataGridHead headCells={headCells} onSortClick={handleRequestSort} order={order} orderBy={orderBy} />
+					<DataGridHead headCells={headCells} onSortClick={handleRequestSort} order={order.direction} orderBy={order.column} />
 					<TableBody>
 						{rows
 							.slice()
-							.sort(getComparator(order, orderBy, sortAs))
+							.sort(getComparator(order.direction, order.column, sortAs))
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map(row => (
 								<TableRow key={row.id} role="checkbox" tabIndex={-1}>

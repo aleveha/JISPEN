@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { Order, SortAs } from "./comparator-util.types";
+import { Order, SortAs } from "./types";
 
 dayjs.extend(customParseFormat);
 

@@ -1,7 +1,7 @@
 import { Checkbox, TableCell, TableHead as MuiTableHead, TableRow, TableSortLabel } from "@mui/material";
+import { HeadCell, Order, SortAs } from "@shared/utils/comparator/types";
 import clsx from "clsx";
 import React, { ChangeEventHandler } from "react";
-import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 
 interface EnhancedTableHeadProps<T> {
 	headCells: HeadCell<T>[];

@@ -1,7 +1,7 @@
 import { TableCell, TableHead as MuiTableHead, TableRow, TableSortLabel } from "@mui/material";
+import { HeadCell, Order, SortAs } from "@shared/utils/comparator/types";
 import { THEME } from "@styles/theme";
 import React from "react";
-import { HeadCell, Order, SortAs } from "../shared/comparator-util.types";
 
 interface EnhancedTableHeadProps<T> {
 	headCells: HeadCell<T>[];

@@ -3,7 +3,9 @@ import { fetcher } from "@api/index";
 import { Record } from "@api/records/types";
 import { Template } from "@api/templates/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
-import { HeadCell } from "@shared/components/shared/comparator-util.types";
+import { useTableSorting } from "@shared/hooks/useTableSorting";
+import { HeadCell } from "@shared/utils/comparator/types";
+import { Sorting } from "@state/table-sorting/types";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveTemplateModal } from "@zones/templates/components/remove-template-modal";
 import { useRouter } from "next/router";
@@ -11,7 +13,7 @@ import React, { FC, useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { mutate } from "swr";
 
-interface TemplatesTable {
+export interface TemplatesTableColumns {
 	id: Template["id"];
 	title: Template["title"];
 	medicalCompanyUid: Template["medicalCompany"]["uid"];
@@ -19,12 +21,8 @@ interface TemplatesTable {
 	medicalCompanyName: Template["medicalCompany"]["name"];
 }
 
-const HEADER_CELLS: HeadCell<TemplatesTable>[] = [
-	{
-		id: "title",
-		label: "Název šablony",
-		width: 200,
-	},
+const HEADER_CELLS: HeadCell<TemplatesTableColumns>[] = [
+	{ id: "title", label: "Název šablony", width: 200 },
 	{ id: "medicalCompanyUid", label: "IČO" },
 	{ id: "medicalCompanyCompanyId", label: "IČZ/IČS/IČP" },
 	{ id: "medicalCompanyName", label: "Název provozovny", width: 250 },
@@ -36,14 +34,15 @@ interface Props {
 
 export const TemplatesTable: FC<Props> = ({ templates }) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [selectedTemplate, setSelectedTemplate] = useState<TemplatesTable | null>();
+	const [selectedTemplate, setSelectedTemplate] = useState<TemplatesTableColumns | null>();
 	const [recordsCount, setRecordsCount] = useState<number | undefined>(undefined);
 	const [accessToken] = useAuth();
 	const router = useRouter();
+	const [tableSorting, setTableSorting] = useTableSorting();
 
 	const handleModalClose = useCallback(() => setIsModalOpen(false), []);
 
-	const rows: TemplatesTable[] = useMemo(
+	const rows: TemplatesTableColumns[] = useMemo(
 		() =>
 			templates.map(template => ({
 				id: template.id,
@@ -56,7 +55,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 	);
 
 	const handleSelectedChange = useCallback(
-		async (template: TemplatesTable) => {
+		async (template: TemplatesTableColumns) => {
 			setSelectedTemplate(template);
 			setIsModalOpen(true);
 
@@ -80,6 +79,8 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 		},
 		[accessToken, router]
 	);
+
+	const handleOrderChanged = useCallback((value: Sorting<TemplatesTableColumns>) => setTableSorting("templates", value), [setTableSorting]);
 
 	const errorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
 	const successToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
@@ -117,7 +118,13 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 
 	return (
 		<>
-			<DataGrid headCells={HEADER_CELLS} handleDeleteButtonClick={handleSelectedChange} orderedBy="title" rows={rows} />
+			<DataGrid
+				handleDeleteButtonClick={handleSelectedChange}
+				handleOrderChange={handleOrderChanged}
+				headCells={HEADER_CELLS}
+				order={tableSorting?.templates ?? { column: "title", direction: "asc" }}
+				rows={rows}
+			/>
 			{selectedTemplate && (
 				<RemoveTemplateModal
 					isOpen={isModalOpen}

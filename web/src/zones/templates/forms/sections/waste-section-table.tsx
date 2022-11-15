@@ -1,6 +1,6 @@
 import { Waste } from "@api/templates/types";
 import { CheckboxList } from "@shared/components/checkbox-list/checkbox-list";
-import { HeadCell } from "@shared/components/shared/comparator-util.types";
+import { HeadCell } from "@shared/utils/comparator/types";
 import { NewTemplateFormValues } from "@zones/templates/forms/types";
 import React, { FC, useCallback } from "react";
 import { useController, UseControllerProps } from "react-hook-form";
@@ -11,11 +11,7 @@ interface WasteSectionTableProps extends UseControllerProps<NewTemplateFormValue
 
 const HEADER_CELLS: HeadCell<Waste>[] = [
 	{ id: "uid", label: "Odpad", sortAs: "string" },
-	{
-		id: "name",
-		label: "Název odpadu",
-		width: 400,
-	},
+	{ id: "name", label: "Název odpadu", width: 400 },
 	{ id: "category", label: "Druh" },
 	{ id: "certificate", label: "Osvědčení" },
 ];
