@@ -4,8 +4,10 @@ import { AccessTokenResponse } from "@api/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@shared/components/button/button";
 import { Input } from "@shared/components/inputs/text-input";
+import { useReCaptcha } from "@shared/hooks/useReCaptcha";
 import { useRouter } from "next/router";
 import React, { memo, useCallback, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { object, ref, string } from "yup";
@@ -15,6 +17,7 @@ interface RegistrationFormProps {
 }
 
 interface RegistrationFormValues {
+	captcha: string;
 	password: string;
 	repeatedPassword: string;
 }
@@ -38,42 +41,52 @@ export const PasswordResetFormPassword = memo<RegistrationFormProps>(({ accessTo
 
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+	const [catpchaToken, captchaRef, handleRecaptcha] = useReCaptcha();
 
 	const onSubmit = useCallback<SubmitHandler<RegistrationFormValues>>(
-		values => {
+		async values => {
+			if (!catpchaToken) {
+				toast.error("Nejprve musíte potvrdit, že nejste robot");
+				return;
+			}
+
 			const loadingToastId = toast.loading("Probíhá nastavení nového hesla...");
 			setIsLoading(true);
-			fetcher<AccessTokenResponse, RegistrationFormValues>({
+			const { error } = await fetcher<AccessTokenResponse, RegistrationFormValues>({
 				axiosInstance: apiClient,
 				method: "post",
 				url: "/auth/register",
-				data: values,
+				data: { ...values, captcha: catpchaToken },
 				accessToken,
-			})
-				.then(({ data: success, error }) => {
-					setIsLoading(false);
+			});
+			setIsLoading(false);
+			captchaRef.current?.reset();
 
-					if (error || !success) {
-						toast.error("Během nastavení nového hesla se něco nepovedlo", { id: loadingToastId });
-						return;
-					}
+			if (error) {
+				if (error.statusCode === 422) {
+					toast.error("Neplatná capcha, zkuste prosím znovu", { id: loadingToastId });
+					return;
+				}
 
-					router.push("/login").then(() => toast.success("Nastavení nového hesla proběhla uspěšně", { id: loadingToastId }));
-					reset();
-				})
-				.catch(() => toast.error("Neznámá chyba", { id: loadingToastId }));
+				toast.error("Během nastavení nového hesla se něco nepovedlo", { id: loadingToastId });
+				return;
+			}
+
+			router.push("/login").then(() => toast.success("Nastavení nového hesla proběhla uspěšně", { id: loadingToastId }));
+			reset();
 		},
-		[accessToken, reset, router]
+		[accessToken, captchaRef, catpchaToken, reset, router]
 	);
 
 	return (
 		<form
-			className="mt-8 flex w-full flex-col items-center justify-center space-y-3 text-xl sm:w-96 md:space-y-6"
+			className="mt-8 flex w-full flex-col items-start justify-center space-y-3 text-xl sm:w-96 md:space-y-6"
 			noValidate
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<Input control={control} fullWidth name="password" label="Heslo" required type="password" />
 			<Input control={control} fullWidth name="repeatedPassword" label="Zopakujte heslo" required type="password" />
+			<ReCAPTCHA onChange={handleRecaptcha} ref={captchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string} />
 			<Button className="w-full" loading={isLoading} type="submit">
 				Odeslat
 			</Button>

@@ -28,4 +28,6 @@ export class RenewPasswordDto {
 	@IsEmail()
 	@MaxLength(200)
 	email: string;
+
+	captcha: string;
 }

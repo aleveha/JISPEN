@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, Post, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { RecaptchaGuard } from "../captcha/captcha.guard";
 import { UserEmail } from "../decorators/user-email.decorator";
 import { AuthService } from "./auth.service";
 import { AccessTokenResponse, LoginDto, RegistrationDto, RegistrationResponse, RenewPasswordDto } from "./dto/authorizationDto";
@@ -8,6 +9,7 @@ import { JwtAuthGuard } from "./guards/jwt.guard";
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
+	@UseGuards(RecaptchaGuard)
 	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
@@ -26,6 +28,7 @@ export class AuthController {
 		return this.authService.getJWT(email);
 	}
 
+	@UseGuards(RecaptchaGuard)
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
 	@Post("password-reset")
