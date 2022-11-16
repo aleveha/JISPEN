@@ -53,7 +53,6 @@ export interface Waste {
 	uid: number;
 	name: string;
 	category: string;
-	certificate?: string;
 }
 
 export interface WasteCompanyType {

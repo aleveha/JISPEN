@@ -13,7 +13,6 @@ const HEADER_CELLS: HeadCell<Waste>[] = [
 	{ id: "uid", label: "Odpad", sortAs: "string" },
 	{ id: "name", label: "Název odpadu", width: 400 },
 	{ id: "category", label: "Druh" },
-	{ id: "certificate", label: "Osvědčení" },
 ];
 
 export const WasteSectionTable: FC<WasteSectionTableProps> = ({ control, name, wastes }) => {

@@ -16,9 +16,6 @@ export class WasteModel extends BaseEntity {
 	@Column()
 	name: string;
 
-	@Column({ nullable: true })
-	certificate: string;
-
 	@ManyToMany(() => TemplateModel, template => template.wastes)
 	templates: TemplateModel[];
 
