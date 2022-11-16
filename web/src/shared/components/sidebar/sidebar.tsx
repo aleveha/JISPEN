@@ -40,9 +40,18 @@ export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
 			)}
 		>
 			<div className="sticky top-0 left-0 flex flex-col overflow-hidden text-white">
-				<IconButton className={clsx("w-fit py-6 text-white", !open && "px-6")} disableTouchRipple onClick={onClick}>
-					{open ? Icons.chevronLeft : Icons.menu}
-				</IconButton>
+				<div className="flex items-center justify-start">
+					<IconButton className={clsx("w-fit py-6 text-white", !open && "px-6")} disableTouchRipple onClick={onClick}>
+						{open ? Icons.chevronLeft : Icons.menu}
+					</IconButton>
+					{user && open && (
+						<p className="truncate whitespace-nowrap px-6 text-sm text-white">
+							Jste přihlášen/a jako:
+							<br />
+							{user.email}
+						</p>
+					)}
+				</div>
 				<div className={clsx("flex flex-col border-t border-white border-opacity-20", open && "space-y-8 pt-4")}>
 					{user && (
 						<>

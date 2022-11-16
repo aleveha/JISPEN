@@ -93,7 +93,7 @@ function mapFormValuesToDto({
 export const ExportForm = memo<Props>(({ medicalCompanies }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
-	const accessToken = getCookie("accessToken") as string;
+	const accessToken = getCookie("access_token") as string;
 
 	const { control, handleSubmit, watch, resetField } = useForm<ExportFormValues>({ defaultValues, mode: "onChange" });
 

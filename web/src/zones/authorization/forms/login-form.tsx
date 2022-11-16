@@ -29,7 +29,7 @@ function errorHelper(error: ApiError): string {
 		case 401:
 			return "Špatné přihlašovací údaje";
 		default:
-			return "Neznámá chyba";
+			return "Vyskytla se chyba během přihlašování";
 	}
 }
 
@@ -46,27 +46,24 @@ export const LoginForm = memo(() => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const onSubmit = useCallback<SubmitHandler<LoginFormValues>>(
-		values => {
+		async values => {
 			setIsLoading(true);
 			const loadingToastId = toast.loading("Probíhá přihlášení...");
-			fetcher<AccessTokenResponse, LoginFormValues>({
+			const { data, error } = await fetcher<AccessTokenResponse, LoginFormValues>({
 				axiosInstance: apiClient,
 				method: "post",
 				url: "/auth/login",
 				data: values,
-			})
-				.then(({ data, error }) => {
-					setIsLoading(false);
+			});
 
-					if (error || !data) {
-						toast.error(errorHelper(error), { id: loadingToastId });
-						return;
-					}
+			if (error) {
+				toast.error(errorHelper(error), { id: loadingToastId });
+				return;
+			}
 
-					setUser(data.accessToken);
-					router.push("/").then(() => toast.success("Vítejte v aplikaci JISPEN", { id: loadingToastId }));
-				})
-				.catch(() => toast.error("Vyskytla se chyba během přihlašování", { id: loadingToastId }));
+			setUser(data);
+			await router.push("/");
+			toast.success("Vítejte v aplikaci JISPEN", { id: loadingToastId });
 		},
 		[router, setUser]
 	);

@@ -1,4 +1,4 @@
-import { userJwtState } from "@state/user/user-jwt-state";
+import { UserState, userState } from "@state/user/user-state";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
@@ -6,26 +6,29 @@ import { useCallback, useEffect } from "react";
 
 export const useAuth = () => {
 	const router = useRouter();
-	const [userAccessToken, setUserAccessToken] = useAtom(userJwtState);
-	const accessToken = getCookie("accessToken") as string;
+	const [user, setUser] = useAtom(userState);
+	const accessToken = getCookie("access_token") as string;
+	const userEmail = getCookie("user_email") as string;
 
-	const setUser = useCallback(
-		(accessToken: string | null) => {
-			if (!accessToken) {
-				deleteCookie("accessToken");
+	const handleUserChange = useCallback(
+		(userState: UserState | null) => {
+			if (!userState) {
+				deleteCookie("access_token");
+				deleteCookie("user_email");
 			} else {
-				setCookie("accessToken", accessToken);
+				setCookie("access_token", userState.accessToken);
+				setCookie("user_email", userState.email);
 			}
-			setUserAccessToken(accessToken);
+			setUser(userState);
 		},
-		[setUserAccessToken]
+		[setUser]
 	);
 
 	useEffect(() => {
-		if (accessToken && !userAccessToken) {
-			setUserAccessToken(accessToken);
+		if (accessToken && userEmail && !user) {
+			handleUserChange({ accessToken, email: userEmail });
 		}
-	}, [accessToken, router, setUserAccessToken, userAccessToken]);
+	}, [accessToken, router, handleUserChange, user, userEmail]);
 
-	return [userAccessToken, setUser] as const;
+	return [user, handleUserChange] as const;
 };

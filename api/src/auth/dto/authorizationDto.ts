@@ -18,6 +18,7 @@ export class RegistrationDto {
 
 export interface AccessTokenResponse {
 	accessToken: string;
+	email: string;
 }
 
 export interface RegistrationResponse {

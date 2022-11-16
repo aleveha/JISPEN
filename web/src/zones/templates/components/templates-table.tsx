@@ -36,7 +36,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedTemplate, setSelectedTemplate] = useState<TemplatesTableColumns | null>();
 	const [recordsCount, setRecordsCount] = useState<number | undefined>(undefined);
-	const [accessToken] = useAuth();
+	const [user] = useAuth();
 	const router = useRouter();
 	const [tableSorting, setTableSorting] = useTableSorting();
 
@@ -59,7 +59,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 			setSelectedTemplate(template);
 			setIsModalOpen(true);
 
-			if (!accessToken) {
+			if (!user?.accessToken) {
 				router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
 				return;
 			}
@@ -68,7 +68,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 				axiosInstance: apiClient,
 				method: "get",
 				url: "/records/all",
-				accessToken,
+				accessToken: user.accessToken,
 			});
 
 			if (!records) {
@@ -77,7 +77,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 			}
 			setRecordsCount(records.filter(record => record.templateId === template.id).length);
 		},
-		[accessToken, router]
+		[user?.accessToken, router]
 	);
 
 	const handleOrderChanged = useCallback((value: Sorting<TemplatesTableColumns>) => setTableSorting("templates", value), [setTableSorting]);
@@ -90,7 +90,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 			return;
 		}
 
-		if (!accessToken) {
+		if (!user?.accessToken) {
 			router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
 			return;
 		}
@@ -99,7 +99,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 			axiosInstance: apiClient,
 			method: "delete",
 			url: "/templates/delete",
-			accessToken,
+			accessToken: user.accessToken,
 			config: { params: { id: selectedTemplate.id } },
 		})
 			.then(res => {
@@ -114,7 +114,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 				errorToast();
 				setIsModalOpen(false);
 			});
-	}, [selectedTemplate, accessToken, router, successToast, errorToast]);
+	}, [selectedTemplate, user?.accessToken, router, successToast, errorToast]);
 
 	return (
 		<>

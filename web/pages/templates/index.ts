@@ -5,7 +5,7 @@ import { Page } from "@pages/templates/all-templates-page";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const accessToken = ctx.req.cookies["accessToken"];
+	const accessToken = ctx.req.cookies["access_token"];
 	const { data, error } = await fetcher<Template[]>({
 		axiosInstance: apiServer,
 		method: "get",

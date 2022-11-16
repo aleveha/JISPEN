@@ -13,7 +13,7 @@ import { toast } from "react-hot-toast";
 import useSWR, { Fetcher, SWRConfig } from "swr";
 
 const AllTemplates = memo(() => {
-	const accessToken = getCookie("accessToken") as string;
+	const accessToken = getCookie("access_token") as string;
 	const allTemplatesFetcher = useCallback<Fetcher<Template[], string>>(
 		(url: string) => apiClient.get<Template[]>(url, { headers: { Authorization: `Bearer ${accessToken}` } }).then(res => res.data),
 		[accessToken]

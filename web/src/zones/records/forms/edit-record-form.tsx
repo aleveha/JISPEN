@@ -72,7 +72,7 @@ interface Props {
 
 export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
-	const [accessToken] = useAuth();
+	const [user] = useAuth();
 	const router = useRouter();
 	const defaultValues = record ? mapRecordToDefaultValues(record) : DEFAULT_VALUES;
 	const {
@@ -85,7 +85,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
 		async values => {
-			if (!accessToken) {
+			if (!user?.accessToken) {
 				return;
 			}
 
@@ -98,7 +98,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 				axiosInstance: apiClient,
 				method: "post",
 				url: "/records/insert",
-				accessToken,
+				accessToken: user.accessToken,
 				data: mapRecordValues(values, massUnit, record?.id),
 			});
 
@@ -110,7 +110,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 			await router.push("/records");
 			toast.success(`Záznam byl úspěšně ${record ? "upraven" : "vytvořen"}`);
 		},
-		[accessToken, defaultValues, massUnit, record, router]
+		[user?.accessToken, defaultValues, massUnit, record, router]
 	);
 	const onExit = useCallback(() => router.back(), [router]);
 	const onMassUnitChange = useCallback((_: MouseEvent<HTMLElement>, value: string) => setMassUnit(value as MassUnit), []);

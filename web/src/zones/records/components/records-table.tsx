@@ -44,7 +44,7 @@ interface Props {
 export const RecordsTable: FC<Props> = ({ records }) => {
 	const { mutate } = useSWRConfig();
 	const router = useRouter();
-	const [accessToken] = useAuth();
+	const [user] = useAuth();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<RecordsTableColumns | null>();
 	const [tableSorting, setTableSorting] = useTableSorting();
@@ -76,7 +76,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 
 	const handleCopyButtonClick = useCallback(
 		async (record: RecordsTableColumns) => {
-			if (!accessToken) {
+			if (!user?.accessToken) {
 				router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
 				return;
 			}
@@ -85,7 +85,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 				axiosInstance: apiClient,
 				method: "get",
 				url: `/records/duplicate?id=${record.id}`,
-				accessToken,
+				accessToken: user.accessToken,
 			});
 
 			if (error) {
@@ -95,7 +95,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 
 			mutate("/records/all").then(duplicateSuccessToast).catch(duplicateErrorToast);
 		},
-		[accessToken, router, mutate, duplicateSuccessToast, duplicateErrorToast]
+		[user?.accessToken, mutate, duplicateSuccessToast, duplicateErrorToast, router]
 	);
 
 	const handleDeleteButtonClick = useCallback((record: RecordsTableColumns) => {
@@ -106,7 +106,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 	const handleEditButtonClick = useCallback(async (record: RecordsTableColumns) => await router.push(`/records/edit?id=${record.id}`), [router]);
 
 	const onDelete = useCallback(async () => {
-		if (!selectedRecord || !accessToken) {
+		if (!selectedRecord || !user?.accessToken) {
 			return;
 		}
 
@@ -114,7 +114,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 			axiosInstance: apiClient,
 			method: "delete",
 			url: "/records/delete",
-			accessToken,
+			accessToken: user.accessToken,
 			config: { params: { id: selectedRecord.id } },
 		});
 
@@ -126,7 +126,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 
 		mutate("/records/all").then(deleteSuccessToast).catch(deleteErrorToast);
 		setIsDeleteModalOpen(false);
-	}, [accessToken, deleteErrorToast, mutate, selectedRecord, deleteSuccessToast]);
+	}, [user?.accessToken, deleteErrorToast, mutate, selectedRecord, deleteSuccessToast]);
 
 	const handleOrderChanged = useCallback((value: Sorting<RecordsTableColumns>) => setTableSorting("records", value), [setTableSorting]);
 

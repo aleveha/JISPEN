@@ -13,7 +13,7 @@ function removeDuplicates(templates: Template[]): MedicalCompany[] {
 }
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const accessToken = ctx.req.cookies["accessToken"];
+	const accessToken = ctx.req.cookies["access_token"];
 	const { data, error } = await fetcher<Template[]>({
 		axiosInstance: apiServer,
 		method: "get",

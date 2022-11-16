@@ -27,7 +27,7 @@ interface Props {
 }
 
 export const NewTemplateForm = memo<Props>(({ catalogues }) => {
-	const [accessToken] = useAuth();
+	const [user] = useAuth();
 	const router = useRouter();
 
 	const {
@@ -42,7 +42,7 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 
 	const onSubmit = useCallback<SubmitHandler<NewTemplateFormValues>>(
 		async values => {
-			if (!accessToken) {
+			if (!user?.accessToken) {
 				return;
 			}
 
@@ -51,7 +51,7 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 				method: "post",
 				url: "/templates/create",
 				data: mapTemplateValues(values),
-				accessToken,
+				accessToken: user.accessToken,
 			});
 
 			if (error) {
@@ -67,7 +67,7 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 			await router.push("/templates");
 			toast.success("Šablona úspěšně vytvořena");
 		},
-		[router, accessToken]
+		[router, user?.accessToken]
 	);
 
 	const [showModal, handleFormLeave] = useFormLeave((isDirty || isValid) && !isSubmitting);
