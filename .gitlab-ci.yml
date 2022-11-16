@@ -14,7 +14,7 @@ deploy:dev:
         - echo "\n\n# Variables from .gitlab-ci\n" >> web/.env.production
         - echo "NEXT_PUBLIC_API_URL=https://jispen.uxf.dev" >> web/.env.production
         - echo "API_URL=http://nginx:80" >> web/.env.production
-        - echo "NEXT_PUBLIC_RECAPTCHA_SITE_KEY=6LeKBQojAAAAAJ3AAIrtQJ5A9qhIJSaZMnFRdhzD" >> web/.env.production
+        - echo "NEXT_PUBLIC_RECAPTCHA_SITE_KEY=6LdMnw8jAAAAAPDb_4RnwcM1CgNGt-FL8f5SrHnl" >> web/.env.production
 
         - docker build -t registry.dev.uxf.cz/jispen/web:${TAG} ./web
         - docker push registry.dev.uxf.cz/jispen/web:${TAG}

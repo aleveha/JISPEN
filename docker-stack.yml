@@ -26,12 +26,10 @@ services:
             DATABASE_NAME: "jispen"
             DATABASE_PORT: 5432
             JWT_SECRET: "jispen"
-            MAILER_HOST: "portal.inisoft.cz"
-            MAILER_PORT: 465
-            MAILER_USER: "jispen@inisoft.cz"
-            MAILER_PASS: "saw.MAjl1.dAAHW.H9aA"
+            MAILER_USER: "jispencz@gmail.com"
+            MAILER_PASS: "phfeiediaqpwqgbi"
             FRONTEND_URL: "https://jispen.uxf.dev"
-            RECAPTCHA_SECRET: "6LeKBQojAAAAACcFs9TpISObZk_rsFk8cmVveKdn"
+            RECAPTCHA_SECRET: "6LdMnw8jAAAAAFCErOP19b7bP1L3y2mHN_-kd8hX"
 
     db:
         image: postgres:14.1-alpine
