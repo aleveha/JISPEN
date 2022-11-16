@@ -59,10 +59,13 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				className="row-start-2"
 				control={control}
 				disabled={!isRequired}
-				label="Název oprávněné osoby"
+				label="Název partnera"
 				name={`wasteCompanies.${index}.name`}
 				required={isRequired}
-				rules={{ minLength: { value: 3, message: "Název musí obsahovat alespoň 3 znaky" } }}
+				rules={{
+					minLength: { value: 3, message: "Název partnera musí obsahovat alespoň 3 znaky" },
+					maxLength: { value: 60, message: "Název partnera nesmí obsahovat více než 60 znaků" },
+				}}
 			/>
 			<Input
 				className="row-start-3 md:row-start-2"
@@ -75,6 +78,8 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				rules={{
 					pattern: { value: Validator.NUMBER_REGEXP, message: "Pouze čislo" },
 					validate: value => Validator.onlyPositiveNumber(value as string),
+					minLength: { value: 2, message: "IČO musí obsahovat alespoň 1 znak" },
+					maxLength: { value: 8, message: "IČO nesmí obsahovat více než 8 znaků" },
 				}}
 			/>
 			<Input
@@ -84,6 +89,10 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				label="IČZ/IČS/IČP"
 				name={`wasteCompanies.${index}.companyId`}
 				required={isRequired}
+				rules={{
+					minLength: { value: 1, message: "IČZ/IČS/IČP musí obsahovat alespoň 1 znak" },
+					maxLength: { value: 12, message: "IČZ/IČS/IČP nesmí obsahovat více než 12 znaků" },
+				}}
 			/>
 			<Input
 				className="row-start-5 md:row-start-3"
@@ -92,6 +101,10 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				label="Město"
 				name={`wasteCompanies.${index}.address.city`}
 				required={isRequired}
+				rules={{
+					minLength: { value: 3, message: "Město musí obsahovat alespoň 3 znaky" },
+					maxLength: { value: 40, message: "Město nesmí obsahovat více než 40 znaků" },
+				}}
 			/>
 			<Input
 				className="row-start-6 md:row-start-4 lg:row-start-3"
@@ -99,11 +112,30 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				disabled={!isRequired}
 				label="Ulice"
 				name={`wasteCompanies.${index}.address.street`}
-				required={isRequired}
+				rules={{
+					minLength: { value: 3, message: "Ulice musí obsahovat alespoň 3 znaky" },
+					maxLength: { value: 40, message: "Ulice nesmí obsahovat více než 60 znaků" },
+				}}
 			/>
 			<div className="row-start-7 flex space-x-6 md:row-start-4 lg:row-start-3">
-				<Input control={control} disabled={!isRequired} label="Č.P." name={`wasteCompanies.${index}.address.registryNumber`} />
-				<Input control={control} disabled={!isRequired} label="Č.0." name={`wasteCompanies.${index}.address.buildingNumber`} />
+				<Input
+					control={control}
+					disabled={!isRequired}
+					label="Č.P."
+					name={`wasteCompanies.${index}.address.registryNumber`}
+					rules={{
+						maxLength: { value: 5, message: "Č.P. nesmí obsahovat více než 5 znaků" },
+					}}
+				/>
+				<Input
+					control={control}
+					disabled={!isRequired}
+					label="Č.0."
+					name={`wasteCompanies.${index}.address.buildingNumber`}
+					rules={{
+						maxLength: { value: 5, message: "Č.O. nesmí obsahovat více než 5 znaků" },
+					}}
+				/>
 			</div>
 			<Autocomplete
 				autocompleteProps={{
@@ -128,7 +160,6 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				label="PSČ"
 				name={`wasteCompanies.${index}.address.zipcode`}
 				options={zipcodes ?? []}
-				required={isRequired}
 			/>
 		</div>
 	);

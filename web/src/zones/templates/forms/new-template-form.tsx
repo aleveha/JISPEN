@@ -92,7 +92,10 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 							label="Název šablony"
 							name="title"
 							required
-							rules={{ minLength: { value: 3, message: "Název musí obsahovat alespoň 3 znaky" } }}
+							rules={{
+								minLength: { value: 3, message: "Název šablony musí obsahovat alespoň 3 znaky" },
+								maxLength: { value: 60, message: "Název šablony nesmí obsahovat více než 60 znaků" },
+							}}
 						/>
 					</NewTemplateFormSection>
 					<Divider />
@@ -106,7 +109,10 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 								label="Název provozovny"
 								name="medicalCompany.name"
 								required
-								rules={{ minLength: { value: 3, message: "Název musí obsahovat alespoň 3 znaky" } }}
+								rules={{
+									minLength: { value: 3, message: "Název provozovny musí obsahovat alespoň 3 znaky" },
+									maxLength: { value: 60, message: "Název provozovny nesmí obsahovat více než 60 znaků" },
+								}}
 							/>
 							<Input
 								control={control}
@@ -117,14 +123,58 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 								rules={{
 									pattern: { value: Validator.NUMBER_REGEXP, message: "Pouze čislo" },
 									validate: value => Validator.onlyPositiveNumber(value as string),
+									minLength: { value: 2, message: "IČO musí obsahovat alespoň 1 znak" },
+									maxLength: { value: 8, message: "IČO nesmí obsahovat více než 8 znaků" },
 								}}
 							/>
-							<Input control={control} label="IČZ/IČS/IČP" name="medicalCompany.companyId" required />
-							<Input control={control} label="Město" name="medicalCompany.address.city" required />
-							<Input control={control} label="Ulice" name="medicalCompany.address.street" required />
+							<Input
+								control={control}
+								label="IČZ/IČS/IČP"
+								name="medicalCompany.companyId"
+								required
+								rules={{
+									minLength: { value: 1, message: "IČZ/IČS/IČP musí obsahovat alespoň 1 znak" },
+									maxLength: { value: 12, message: "IČZ/IČS/IČP nesmí obsahovat více než 12 znaků" },
+								}}
+							/>
+							<Input
+								control={control}
+								label="Město"
+								name="medicalCompany.address.city"
+								required
+								rules={{
+									minLength: { value: 3, message: "Město musí obsahovat alespoň 3 znaky" },
+									maxLength: { value: 40, message: "Město nesmí obsahovat více než 40 znaků" },
+								}}
+							/>
+							<Input
+								control={control}
+								label="Ulice"
+								name="medicalCompany.address.street"
+								rules={{
+									minLength: { value: 3, message: "Ulice musí obsahovat alespoň 3 znaky" },
+									maxLength: { value: 40, message: "Ulice nesmí obsahovat více než 60 znaků" },
+								}}
+							/>
 							<div className="flex space-x-6">
-								<Input className="min-w-[5rem]" control={control} label="Č.P." name="medicalCompany.address.registryNumber" />
-								<Input className="min-w-[5rem]" control={control} label="Č.0." name="medicalCompany.address.buildingNumber" />
+								<Input
+									className="min-w-[5rem]"
+									control={control}
+									label="Č.P."
+									name="medicalCompany.address.registryNumber"
+									rules={{
+										maxLength: { value: 5, message: "Č.P. nesmí obsahovat více než 5 znaků" },
+									}}
+								/>
+								<Input
+									className="min-w-[5rem]"
+									control={control}
+									label="Č.0."
+									name="medicalCompany.address.buildingNumber"
+									rules={{
+										maxLength: { value: 5, message: "Č.O. nesmí obsahovat více než 5 znaků" },
+									}}
+								/>
 							</div>
 							<Autocomplete
 								autocompleteProps={{
@@ -146,7 +196,6 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 								label="PSČ"
 								name="medicalCompany.address.zipcode"
 								options={catalogues.zipcodes ?? []}
-								required
 							/>
 						</div>
 						<div className="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
@@ -156,12 +205,18 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 								control={control}
 								label="Jméno"
 								name="medicalCompany.contactFirstName"
+								rules={{
+									maxLength: { value: 40, message: "Jméno nesmí obsahovat více než 40 znaků" },
+								}}
 							/>
 							<Input
 								className="col-span-2 md:col-span-1 md:col-start-2"
 								control={control}
 								label="Příjmení"
 								name="medicalCompany.contactLastName"
+								rules={{
+									maxLength: { value: 40, message: "Příjmení nesmí obsahovat více než 40 znaků" },
+								}}
 							/>
 							<Input
 								className="col-span-2 md:col-span-1 md:col-start-1"
