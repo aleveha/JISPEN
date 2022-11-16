@@ -30,10 +30,11 @@ export class ExportController {
 				await this.mailerService.sendMail({
 					to: exportDto.recipientEmail,
 					from: this.configService.get<string>("MAILER_USER"),
-					subject: "Export | JISPEN",
+					subject: "Export z aplikace JISPEN",
 					template: "export",
 					context: {
 						dateNow: date.toLocaleDateString("ru"),
+						senderEmail: userEmail,
 					},
 					attachments: [
 						{

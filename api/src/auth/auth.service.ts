@@ -43,7 +43,7 @@ export class AuthService {
 		await this.mailerService.sendMail({
 			to: email,
 			from: this.configService.get<string>("MAILER_USER"),
-			subject: "Nastavení nového hesla | JISPEN",
+			subject: "Nastavení nového hesla v aplikaci JISPEN",
 			template: "new-password",
 			context: {
 				passwordResetAddress: `${this.configService.get<string>("FRONTEND_URL")}/new-password?accessToken=${jwt}`,
