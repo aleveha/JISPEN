@@ -1,8 +1,16 @@
 import { apiServer } from "@api/config";
 import { fetcher } from "@api/index";
-import { Template } from "@api/templates/types";
+import { MedicalCompany, Template } from "@api/templates/types";
 import { Page } from "@pages/export-page";
 import { GetServerSideProps } from "next";
+
+function removeDuplicates(templates: Template[]): MedicalCompany[] {
+	return templates
+		.map(template => template.medicalCompany)
+		.filter(
+			(medicalCompany, index, self) => index === self.findIndex(t => t.companyId === medicalCompany.companyId && t.uid === medicalCompany.uid)
+		);
+}
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
 	const accessToken = ctx.req.cookies["accessToken"];
@@ -15,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
 	return {
 		props: {
-			data: data ? [...new Set(data.map(template => template.medicalCompany))] : null,
+			data: data ? removeDuplicates(data) : null,
 			error: error ?? null,
 		},
 	};
