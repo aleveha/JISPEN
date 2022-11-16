@@ -23,7 +23,7 @@ export class XmlBuilderService {
 		const wasteCompanies = records
 			.filter(record => record.wasteCompany)
 			.map(record => record.wasteCompany)
-			.filter((wasteCompany, index, self) => index === self.findIndex(t => t.id === wasteCompany.id))
+			.filter((wasteCompany, index, self) => index === self.findIndex(t => t.companyId === wasteCompany.companyId && t.uid === wasteCompany.uid))
 			.map(wasteCompany => this.createXmlObjectSubjectFromWasteCompany(wasteCompany));
 
 		return {
