@@ -72,22 +72,19 @@ interface Props {
 
 export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
-	const [isSubmitting, setIsSubmitting] = useState(false);
-
 	const [accessToken] = useAuth();
 	const router = useRouter();
 	const defaultValues = record ? mapRecordToDefaultValues(record) : DEFAULT_VALUES;
 	const {
 		control,
-		formState: { isDirty, isValid, isSubmitSuccessful },
+		formState: { isDirty, isValid, isSubmitting },
 		handleSubmit,
 		reset,
 		watch,
 	} = useForm<NewRecordFormValues>({ defaultValues, mode: "onChange" });
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
-		values => {
-			setIsSubmitting(true);
+		async values => {
 			if (!accessToken) {
 				return;
 			}
@@ -97,25 +94,21 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 				return;
 			}
 
-			fetcher<Record, InsertRecordDto>({
+			const { error } = await fetcher<Record, InsertRecordDto>({
 				axiosInstance: apiClient,
 				method: "post",
 				url: "/records/insert",
 				accessToken,
 				data: mapRecordValues(values, massUnit, record?.id),
-			})
-				.then(res => {
-					if (res.data) {
-						router.push("/records").then(() => toast.success(`Záznam byl úspěšně ${record ? "upraven" : "vytvořen"}`));
-						return;
-					}
-					toast.error(`Nepodařilo se ${record ? "upravit" : "vytvořit"} záznam`);
-					setIsSubmitting(false);
-				})
-				.catch(() => {
-					toast.error(`Nepodařilo se ${record ? "upravit" : "vytvořit"} záznam`);
-					setIsSubmitting(false);
-				});
+			});
+
+			if (error) {
+				toast.error(`Nepodařilo se ${record ? "upravit" : "vytvořit"} záznam`);
+				return;
+			}
+
+			await router.push("/records");
+			toast.success(`Záznam byl úspěšně ${record ? "upraven" : "vytvořen"}`);
 		},
 		[accessToken, defaultValues, massUnit, record, router]
 	);
@@ -125,7 +118,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	const selectedTemplate = watch("template");
 	const loadingCode = watch("loadingCode");
 
-	const [showModal, handleFormLeave] = useFormLeave((isDirty || isValid) && (!isSubmitSuccessful || !isSubmitting));
+	const [showModal, handleFormLeave] = useFormLeave((isDirty || isValid) && !isSubmitting);
 
 	useEffect(() => {
 		if (!selectedTemplate) {
