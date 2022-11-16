@@ -9,19 +9,19 @@ export interface XmlObjectSubjectWithUid {
 		CinnostNaUzemi: boolean;
 		Adresy: {
 			AdresaSidlo: {
-				Ulice: string;
+				Ulice?: string;
 				CisloPopisne: string;
 				CisloEvidencni: string;
 				Obec: string;
-				PSC: number;
+				PSC?: number;
 				ZUJ: number;
 			};
 			AdresaProvoz: {
-				Ulice: string;
+				Ulice?: string;
 				CisloPopisne: string;
 				CisloEvidencni: string;
 				Obec: string;
-				PSC: number;
+				PSC?: number;
 				ZUJ: number;
 			};
 			Telefon?: {

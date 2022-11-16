@@ -7,10 +7,10 @@ import { ZipcodeModel } from "../../models/zipcode.model";
 
 export interface AddressDto {
 	city: string;
-	street: string;
+	street?: string;
 	registryNumber?: string;
 	buildingNumber?: string;
-	zipcodeId: number;
+	zipcodeId?: number;
 }
 
 export interface MedicalCompanyDto {

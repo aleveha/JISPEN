@@ -33,10 +33,10 @@ export interface WasteCompanyDTO {
 
 export interface AddressDTO {
 	city: string;
-	street: string;
+	street?: string;
 	registryNumber?: string;
 	buildingNumber?: string;
-	zipcodeId: number;
+	zipcodeId?: number;
 }
 
 export interface CataloguesDto {

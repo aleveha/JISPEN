@@ -64,7 +64,7 @@ export class XmlBuilderService {
 						CisloPopisne: company.address.registryNumber,
 						CisloEvidencni: company.address.buildingNumber,
 						Obec: company.address.city,
-						PSC: company.address.zipcode.uid,
+						PSC: company.address.zipcode?.uid,
 						ZUJ: company.territorialUnit.uid,
 					},
 					AdresaProvoz: {
@@ -72,7 +72,7 @@ export class XmlBuilderService {
 						CisloPopisne: company.address.registryNumber,
 						CisloEvidencni: company.address.buildingNumber,
 						Obec: company.address.city,
-						PSC: company.address.zipcode.uid,
+						PSC: company.address.zipcode?.uid,
 						ZUJ: company.territorialUnit.uid,
 					},
 				},
@@ -81,10 +81,6 @@ export class XmlBuilderService {
 	}
 
 	private createXmlObjectSubjectFromWasteCompany(wasteCompany: WasteCompanyModel): XmlObjectSubject {
-		if (wasteCompany.type.uid === WasteCompanyTypeEnum.COMPANY) {
-			return this.createXmlObjectSubjectFromMedicalCompany(wasteCompany);
-		}
-
 		if (wasteCompany.type.uid === WasteCompanyTypeEnum.CITIZENS_OF_MUNICIPALITY) {
 			return {
 				"@Id": wasteCompany.uid ? wasteCompany.uid + "_" + wasteCompany.companyId : `${wasteCompany.templateId}${wasteCompany.id}`,
@@ -98,23 +94,16 @@ export class XmlBuilderService {
 			};
 		}
 
+		const companyXML = this.createXmlObjectSubjectFromMedicalCompany(wasteCompany);
+
+		if (wasteCompany.type.uid === WasteCompanyTypeEnum.COMPANY) {
+			return companyXML;
+		}
+
 		return {
-			"@Id": wasteCompany.uid + "_" + wasteCompany.companyId,
+			"@Id": companyXML["@Id"],
 			SubjektTypCZObec: {
-				Identifikator: wasteCompany.uid,
-				SubjektNazev: wasteCompany.name,
-				ProvozovnaKod: wasteCompany.companyId,
-				ProvozovnaNazev: wasteCompany.name,
-				VykazovaciKod: wasteCompany.companyId,
-				CinnostNaUzemi: false,
-				Adresy: {
-					AdresaSidlo: {
-						ZUJ: wasteCompany.territorialUnit.uid,
-					},
-					AdresaProvoz: {
-						ZUJ: wasteCompany.territorialUnit.uid,
-					},
-				},
+				...companyXML.SubjektTypCZPO,
 			},
 		};
 	}

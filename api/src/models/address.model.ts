@@ -9,8 +9,8 @@ export class AddressModel extends BaseEntity {
 	@Column()
 	city: string;
 
-	@Column()
-	street: string;
+	@Column({ nullable: true })
+	street?: string;
 
 	@Column({ name: "registry_number", nullable: true })
 	registryNumber?: string;
@@ -18,10 +18,10 @@ export class AddressModel extends BaseEntity {
 	@Column({ name: "building_number", nullable: true })
 	buildingNumber?: string;
 
-	@Column({ name: "zip_code_id" })
-	zipcodeId: number;
+	@Column({ name: "zip_code_id", nullable: true })
+	zipcodeId?: number;
 
 	@JoinColumn({ name: "zip_code_id" })
 	@ManyToOne(() => ZipcodeModel, zipCode => zipCode.addresses)
-	zipcode: ZipcodeModel;
+	zipcode?: ZipcodeModel;
 }

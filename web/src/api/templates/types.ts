@@ -7,11 +7,11 @@ export interface Zipcode {
 export interface Address {
 	id: number;
 	city: string;
-	street: string;
+	street: string | null;
 	registryNumber: string | null;
 	buildingNumber: string | null;
-	zipcodeId: number;
-	zipcode: Zipcode;
+	zipcodeId: number | null;
+	zipcode: Zipcode | null;
 }
 
 export interface TerritorialUnit {

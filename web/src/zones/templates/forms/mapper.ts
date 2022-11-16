@@ -6,8 +6,8 @@ function mapAddress(address: NewTemplateFormValues["medicalCompany"]["address"])
 		buildingNumber: address.buildingNumber && address.buildingNumber.length > 0 ? address.buildingNumber : undefined,
 		city: address.city,
 		registryNumber: address.registryNumber && address.registryNumber.length > 0 ? address.registryNumber : undefined,
-		street: address.street,
-		zipcodeId: parseInt(address.zipcode?.id ?? "0"),
+		street: address.street && address.street.length > 0 ? address.street : undefined,
+		zipcodeId: address.zipcode?.id ? parseInt(address.zipcode.id) : undefined,
 	};
 }
 
@@ -27,7 +27,7 @@ export function mapTemplateValues(values: NewTemplateFormValues): TemplateDTO {
 		},
 		title: values.title,
 		wasteCompanies: values.wasteCompanies.map(value => {
-			const valuesRequired = value.type ? parseInt(value.type?.uid) !== 3 : true;
+			const valuesRequired = value.type ? parseInt(value.type.uid) !== 3 : true;
 			return {
 				...value,
 				address: valuesRequired ? mapAddress(value.address) : undefined,
