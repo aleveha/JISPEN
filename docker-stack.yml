@@ -19,7 +19,6 @@ services:
     api:
         image: registry.dev.uxf.cz/jispen/api:${TAG}
         environment:
-            STAGE: "prod"
             DATABASE_USER: "jispen"
             DATABASE_PASS: "jispen"
             DATABASE_HOST: "db"
