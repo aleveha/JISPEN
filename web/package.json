@@ -9,9 +9,9 @@
 	"description": "Web application for waste registration in hospitals and medical institutions (JISPEN)",
 	"scripts": {
 		"build": "next build",
+		"check": "concurrently 'yarn tsc' 'next lint' 'prettier --write .'",
 		"dev": "next dev",
-		"start": "next start",
-		"check": "concurrently 'yarn tsc' 'next lint' 'prettier --write .'"
+		"start": "next start"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.9.3",
