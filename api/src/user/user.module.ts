@@ -1,6 +1,6 @@
+import { UserModel } from "@models/user.model";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserModel } from "../models/user.model";
 import { UserService } from "./user.service";
 
 @Module({

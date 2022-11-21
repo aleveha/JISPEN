@@ -1,9 +1,9 @@
+import { WasteCompanyTypeEnum } from "@export/waste-company-type.enum";
+import { MedicalCompanyModel } from "@models/medicalCompany.model";
+import { RecordModel } from "@models/record.model";
+import { WasteCompanyModel } from "@models/wasteCompany.model";
 import { Injectable } from "@nestjs/common";
 import * as xmlBuilder from "xmlbuilder2";
-import { WasteCompanyTypeEnum } from "../../export/waste-company-type.enum";
-import { MedicalCompanyModel } from "../../models/medicalCompany.model";
-import { RecordModel } from "../../models/record.model";
-import { WasteCompanyModel } from "../../models/wasteCompany.model";
 import { XmlObject, XmlObjectSubject, XmlObjectSubjectWithUid, XmlObjectWaste } from "./xml-builder.service.types";
 
 @Injectable()

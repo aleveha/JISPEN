@@ -1,7 +1,7 @@
+import { RecordModel } from "@models/record.model";
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Between, FindManyOptions, Repository } from "typeorm";
-import { RecordModel } from "../models/record.model";
 import { RecordDto } from "./dto/recordDto";
 
 @Injectable()

@@ -1,11 +1,11 @@
+import { LoadingCodeModel } from "@models/loadingCode.model";
+import { TerritorialUnitModel } from "@models/territorialUnit.model";
+import { WasteModel } from "@models/waste.model";
+import { WasteCompanyTypeModel } from "@models/wasteCompanyType.model";
+import { ZipcodeModel } from "@models/zipcode.model";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { LoadingCodeModel } from "../models/loadingCode.model";
-import { TerritorialUnitModel } from "../models/territorialUnit.model";
-import { WasteModel } from "../models/waste.model";
-import { WasteCompanyTypeModel } from "../models/wasteCompanyType.model";
-import { ZipcodeModel } from "../models/zipcode.model";
 import { CataloguesDto } from "./dto/template.dto";
 
 @Injectable()

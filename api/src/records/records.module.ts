@@ -1,6 +1,6 @@
+import { RecordModel } from "@models/record.model";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { RecordModel } from "../models/record.model";
 import { RecordsController } from "./records.controller";
 import { RecordsService } from "./records.service";
 

@@ -1,6 +1,4 @@
-/dist
 /node_modules
-*.log
-/.idea
+/dist
 .env.local
 *.iml

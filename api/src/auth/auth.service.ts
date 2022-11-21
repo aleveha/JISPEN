@@ -1,10 +1,10 @@
+import { UserModel } from "@models/user.model";
 import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+import { UserService } from "@user/user.service";
 import { compare, genSalt, hash } from "bcryptjs";
-import { UserModel } from "../models/user.model";
-import { UserService } from "../user/user.service";
 import { AccessTokenResponse, LoginDto } from "./dto/authorizationDto";
 
 @Injectable()

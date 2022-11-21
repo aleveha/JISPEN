@@ -9,6 +9,17 @@
 		"module": "commonjs",
 		"noFallthroughCasesInSwitch": false,
 		"outDir": "./dist",
+		"paths": {
+			"@auth/*": ["src/auth/*"],
+			"@configs/*": ["src/configs/*"],
+			"@decorators/*": ["src/decorators/*"],
+			"@export/*": ["src/export/*"],
+			"@models/*": ["src/models/*"],
+			"@records/*": ["src/records/*"],
+			"@template/*": ["src/template/*"],
+			"@user/*": ["src/user/*"],
+			"@utils/*": ["src/utils/*"]
+		},
 		"skipLibCheck": true,
 		"strict": true,
 		"strictNullChecks": false,

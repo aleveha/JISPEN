@@ -1,6 +1,6 @@
-import { join } from "path";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { join } from "path";
 
 export const postgresConfig = async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
 	type: "postgres",

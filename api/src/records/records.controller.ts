@@ -1,7 +1,7 @@
+import { JwtAuthGuard } from "@auth/guards/jwt.guard";
+import { UserEmail } from "@decorators/user-email.decorator";
+import { RecordModel } from "@models/record.model";
 import { Body, Controller, Delete, Get, Post, Query, UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
-import { UserEmail } from "../decorators/user-email.decorator";
-import { RecordModel } from "../models/record.model";
 import { RecordDto } from "./dto/recordDto";
 import { RecordsService } from "./records.service";
 

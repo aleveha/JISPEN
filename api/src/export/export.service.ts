@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { RecordsService } from "../records/records.service";
-import { XlsxBuilderService } from "../utils/xlsx-builder/xlsx-builder.service";
-import { XmlBuilderService } from "../utils/xml-builder/xml-builder.service";
+import { RecordsService } from "@records/records.service";
+import { XlsxBuilderService } from "@utils/xlsx-builder/xlsx-builder.service";
+import { XmlBuilderService } from "@utils/xml-builder/xml-builder.service";
 import { ExportDto } from "./dto/exportDto";
 
 @Injectable()

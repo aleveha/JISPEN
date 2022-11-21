@@ -1,10 +1,10 @@
+import { JwtAuthGuard } from "@auth/guards/jwt.guard";
+import { UserEmail } from "@decorators/user-email.decorator";
 import { MailerService } from "@nestjs-modules/mailer";
 import { BadRequestException, Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Response } from "express";
 import * as stream from "stream";
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
-import { UserEmail } from "../decorators/user-email.decorator";
 import { ExportDto } from "./dto/exportDto";
 import { ExportService } from "./export.service";
 

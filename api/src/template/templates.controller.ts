@@ -1,7 +1,7 @@
+import { JwtAuthGuard } from "@auth/guards/jwt.guard";
+import { UserEmail } from "@decorators/user-email.decorator";
+import { TemplateModel } from "@models/template.model";
 import { Body, Controller, Delete, Get, HttpCode, Post, Query, UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
-import { UserEmail } from "../decorators/user-email.decorator";
-import { TemplateModel } from "../models/template.model";
 import { CatalogueService } from "./catalogue.service";
 import { CataloguesDto, TemplateDto } from "./dto/template.dto";
 import { TemplatesService } from "./templates.service";

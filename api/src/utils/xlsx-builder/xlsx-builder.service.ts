@@ -1,7 +1,7 @@
+import { RecordModel } from "@models/record.model";
 import { Injectable } from "@nestjs/common";
 import { get } from "lodash";
 import xlsx, { WorkSheet } from "node-xlsx";
-import { RecordModel } from "../../models/record.model";
 
 interface WorksheetKey {
 	columnWidth?: number;

@@ -1,10 +1,10 @@
+import { AddressModel } from "@models/address.model";
+import { MedicalCompanyModel } from "@models/medicalCompany.model";
+import { TemplateModel } from "@models/template.model";
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { UserService } from "@user/user.service";
 import { Repository } from "typeorm";
-import { AddressModel } from "../models/address.model";
-import { MedicalCompanyModel } from "../models/medicalCompany.model";
-import { TemplateModel } from "../models/template.model";
-import { UserService } from "../user/user.service";
 import { MedicalCompanyDto, TemplateDto } from "./dto/template.dto";
 
 @Injectable()

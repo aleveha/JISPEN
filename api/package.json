@@ -7,21 +7,19 @@
 		"email": "nikita.tashilin@gmail.com"
 	},
 	"license": "ISC",
-	"private": true,
+	"private": false,
 	"scripts": {
-		"prebuild": "rimraf dist",
 		"build": "nest build",
+		"check": "tsc && yarn run format && yarn run lint",
 		"dev": "NODE_ENV=local nest start --watch",
-		"debug": "nest start --debug --watch",
-		"start": "node dist/main",
-		"lint": "eslint --fix",
-		"test": "jest",
-		"test:watch": "jest --watch",
-		"test:cov": "jest --coverage",
+		"format": "prettier --write .",
+		"lint": "eslint",
 		"migrations:gen": "ts-node ./node_modules/typeorm/cli.js migration:generate -n",
 		"migrations:gen:dev": "NODE_ENV=local ts-node ./node_modules/typeorm/cli.js migration:generate -n",
 		"migrations:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
-		"migrations:run:dev": "NODE_ENV=local ts-node ./node_modules/typeorm/cli.js migration:run"
+		"migrations:run:dev": "NODE_ENV=local ts-node ./node_modules/typeorm/cli.js migration:run",
+		"prebuild": "rimraf dist",
+		"start": "node dist/main"
 	},
 	"dependencies": {
 		"@nestjs-modules/mailer": "^1.8.1",
