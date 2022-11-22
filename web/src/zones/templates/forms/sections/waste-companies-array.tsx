@@ -78,7 +78,7 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				rules={{
 					pattern: { value: Validator.NUMBER_REGEXP, message: "Pouze čislo" },
 					validate: value => Validator.onlyPositiveNumber(value as string),
-					minLength: { value: 2, message: "IČO musí obsahovat alespoň 1 znak" },
+					minLength: { value: 2, message: "IČO musí obsahovat alespoň 2 znaky" },
 					maxLength: { value: 8, message: "IČO nesmí obsahovat více než 8 znaků" },
 				}}
 			/>

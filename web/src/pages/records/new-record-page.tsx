@@ -28,4 +28,4 @@ const CreateRecordPage: NextPage<DiscriminatedUnion<Template[]>> = ({ data: temp
 	return <EditRecordForm templates={templates} />;
 };
 
-export const Page = withDashboardLayout(CreateRecordPage, "Nová evidence");
+export const Page = withDashboardLayout(CreateRecordPage, "Nový záznam");

@@ -120,7 +120,7 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 								rules={{
 									pattern: { value: Validator.NUMBER_REGEXP, message: "Pouze čislo" },
 									validate: value => Validator.onlyPositiveNumber(value as string),
-									minLength: { value: 2, message: "IČO musí obsahovat alespoň 1 znak" },
+									minLength: { value: 2, message: "IČO musí obsahovat alespoň 2 znaky" },
 									maxLength: { value: 8, message: "IČO nesmí obsahovat více než 8 znaků" },
 								}}
 							/>
@@ -249,7 +249,7 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 					<Divider />
 					<NewTemplateFormSection
 						className={clsx(!requireWasteCompany && "hidden")}
-						description="Zadejte, prosím, všechny opravněné osoby, které&nbsp;mohou z&nbsp;provozovny převzít odpad, nebo jej na&nbsp;provozovnu předat"
+						description="Zadejte, prosím, všechny oprávněné osoby, které mohou z&nbsp;provozovny převzít odpad, nebo partnery, které odpad na&nbsp;provozovnu předávají"
 						title="Oprávněné osoby (partner)"
 					>
 						<WasteCompaniesArray
