@@ -48,9 +48,9 @@ export class XmlBuilderService {
 		};
 	}
 
-	private createXmlObjectSubjectFromMedicalCompany(company: MedicalCompanyModel | WasteCompanyModel): XmlObjectSubjectWithUid {
+	private createXmlObjectSubjectFromMedicalCompany(company: MedicalCompanyModel | WasteCompanyModel, isWasteCompany = false): XmlObjectSubjectWithUid {
 		return {
-			"@Id": company.uid + "_" + company.companyId,
+			"@Id": `${isWasteCompany ? "WC" : "MC"}_` + company.uid + "_" + company.companyId,
 			SubjektTypCZPO: {
 				Identifikator: company.uid,
 				SubjektNazev: company.name,
@@ -83,7 +83,7 @@ export class XmlBuilderService {
 	private createXmlObjectSubjectFromWasteCompany(wasteCompany: WasteCompanyModel): XmlObjectSubject {
 		if (wasteCompany.type.uid === WasteCompanyTypeEnum.CITIZENS_OF_MUNICIPALITY) {
 			return {
-				"@Id": wasteCompany.uid ? wasteCompany.uid + "_" + wasteCompany.companyId : `${wasteCompany.templateId}${wasteCompany.id}`,
+				"@Id": wasteCompany.uid ? "WC_" + wasteCompany.uid + "_" + wasteCompany.companyId : `WC_${wasteCompany.templateId}${wasteCompany.id}`,
 				SubjektTypCZOO: {
 					Adresy: {
 						AdresaSidlo: {
@@ -111,13 +111,13 @@ export class XmlBuilderService {
 	private createXmlObjectWasteFromRecord(record: RecordModel): XmlObjectWaste {
 		return {
 			"@Id": record.id.toString(),
-			IdSubjektEvident: record.template.medicalCompany.uid + "_" + record.template.medicalCompany.companyId,
+			IdSubjektEvident: "MC_" + record.template.medicalCompany.uid + "_" + record.template.medicalCompany.companyId,
 			Datum: record.date.toISOString().split("T")[0],
 			Mnozstvi: record.amount,
 			KatalogKod: record.waste.uid,
 			Kategorie: record.waste.category.includes("/") ? record.waste.category.split("/")[1] : record.waste.category,
 			KodNakladaniKod: record.loadingCode.uid,
-			IdSubjektPartner: record.wasteCompany ? (record.wasteCompany.uid ? record.wasteCompany.uid + "_" + record.wasteCompany.companyId : `${record.wasteCompany.templateId}${record.wasteCompany.id}`) : undefined,
+			IdSubjektPartner: record.wasteCompany ? (record.wasteCompany.uid ? "WC_" + record.wasteCompany.uid + "_" + record.wasteCompany.companyId : `WC_${record.wasteCompany.templateId}${record.wasteCompany.id}`) : undefined,
 		};
 	}
 }
