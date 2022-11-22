@@ -67,7 +67,13 @@ export const Sidebar = memo<SideBarProps>(({ onClick, open }) => {
 						label={!user ? "Přihlášení" : "Odhlášení"}
 						onClick={user ? handleModalOpen : undefined}
 					/>
-					<SidebarMenuItem href="/static/files/user_documentation.pdf" iconName="info" isOpen={open} label="Nápověda" target="_blank" />
+					<SidebarMenuItem
+						href="/static/files/Uživatelská dokumentace JISPEN.pdf"
+						iconName="info"
+						isOpen={open}
+						label="Nápověda"
+						target="_blank"
+					/>
 				</div>
 			</div>
 			{open && (
