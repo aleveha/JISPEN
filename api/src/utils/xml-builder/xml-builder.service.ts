@@ -94,7 +94,7 @@ export class XmlBuilderService {
 			};
 		}
 
-		const companyXML = this.createXmlObjectSubjectFromMedicalCompany(wasteCompany);
+		const companyXML = this.createXmlObjectSubjectFromMedicalCompany(wasteCompany, true);
 
 		if (wasteCompany.type.uid === WasteCompanyTypeEnum.COMPANY) {
 			return companyXML;
