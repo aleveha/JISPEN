@@ -57,11 +57,13 @@ export const LoginForm = memo(() => {
 			});
 
 			if (error) {
+				setIsLoading(false);
 				toast.error(errorHelper(error), { id: loadingToastId });
 				return;
 			}
 
 			setUser(data);
+			setIsLoading(false);
 			await router.push("/");
 			toast.success("Vítejte v aplikaci JISPEN", { id: loadingToastId });
 		},
