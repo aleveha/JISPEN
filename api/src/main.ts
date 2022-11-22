@@ -1,5 +1,4 @@
 import { NestFactory } from "@nestjs/core";
-import "module-alias/register";
 import { AppModule } from "./app.module";
 
 async function main() {
