@@ -10,7 +10,12 @@ export default class MyDocument extends Document {
 		return (
 			<Html lang="cs">
 				<Head>
-					<meta name="description" content="Program pro pro evidenci odpadů v nemocnicích a ve zdravotnických zařízeních" />
+					<meta
+						name="description"
+						content="Systém pro jednoduché vytváření podkladů do průběžné evidence odpadů v nemocnicích i v dalších typech zdravotnických zařízeních s možností exportu dat."
+					/>
+					<meta name="title" content="Průběžná evidence odpadů | JISPEN" />
+					<meta name="og:image" content={`${process.env.NEXT_PUBLIC_API_URL}/static/images/og-image.png`} />
 					<link rel="preconnect" href="https://fonts.googleapis.com" />
 					<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
 					<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -19,8 +24,6 @@ export default class MyDocument extends Document {
 					<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />
 					<link rel="manifest" href="/static/site.webmanifest" />
 					<link rel="mask-icon" href="/static/safari-pinned-tab.svg" color="#3b82f6" />
-					<meta name="msapplication-TileColor" content="#ffffff" />
-					<meta name="theme-color" content="#ffffff" />
 				</Head>
 				<body>
 					<Main />

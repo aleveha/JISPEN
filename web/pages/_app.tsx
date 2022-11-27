@@ -29,7 +29,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 	return (
 		<>
 			<Head>
-				<title>JISPEN – evidence odpadů</title>
+				<title>Průběžná evidence odpadů | JISPEN</title>
 			</Head>
 			<ThemeProvider theme={THEME}>
 				<Component {...pageProps} />
