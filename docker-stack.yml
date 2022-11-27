@@ -25,6 +25,7 @@ services:
             DATABASE_NAME: "jispen"
             DATABASE_PORT: 5432
             JWT_SECRET: "jispen"
+            MAILER_SERVICE: "gmail"
             MAILER_USER: "jispencz@gmail.com"
             MAILER_PASS: "phfeiediaqpwqgbi"
             FRONTEND_URL: "https://jispen.uxf.dev"

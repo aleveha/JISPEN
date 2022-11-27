@@ -43,7 +43,7 @@ export class AuthService {
 	public async sendPasswordResetEmail(email: string, jwt: string): Promise<void> {
 		await this.mailerService.sendMail({
 			to: email,
-			from: this.configService.get<string>("MAILER_USER"),
+			from: this.configService.get<string>("MAILER_SENDER") ?? this.configService.get<string>("MAILER_USER"),
 			subject: "Nastavení nového hesla v aplikaci JISPEN",
 			template: "new-password",
 			context: {

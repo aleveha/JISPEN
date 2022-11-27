@@ -29,7 +29,7 @@ export class ExportController {
 				const date = new Date();
 				await this.mailerService.sendMail({
 					to: exportDto.recipientEmail,
-					from: this.configService.get<string>("MAILER_USER"),
+					from: this.configService.get<string>("MAILER_SENDER") ?? this.configService.get<string>("MAILER_USER"),
 					subject: "Export z aplikace JISPEN",
 					template: "export",
 					context: {
