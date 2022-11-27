@@ -22,6 +22,7 @@
 		"start": "node dist/main"
 	},
 	"dependencies": {
+		"@nestjs-modules/ioredis": "^1.0.1",
 		"@nestjs-modules/mailer": "^1.8.1",
 		"@nestjs/axios": "^1.0.0",
 		"@nestjs/common": "^8.0.0",
@@ -35,6 +36,7 @@
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.13.2",
 		"handlebars": "^4.7.7",
+		"ioredis": "^5.2.4",
 		"lodash": "^4.17.21",
 		"module-alias": "^2.2.2",
 		"node-xlsx": "^0.21.0",

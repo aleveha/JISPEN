@@ -14,6 +14,8 @@ export class RegistrationDto {
 	@IsString()
 	@MinLength(8)
 	password: string;
+
+	captcha: string;
 }
 
 export interface AccessTokenResponse {

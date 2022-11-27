@@ -10,23 +10,14 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import useSWR, { Fetcher, mutate } from "swr";
 
-interface RegistrationFormProps {
-	accessToken: string;
-}
-
 interface RegistrationFormValues {
 	captcha: string;
-	password: string;
-	repeatedPassword: string;
+	email: string;
 }
 
-export const PasswordResetFormPassword = memo<RegistrationFormProps>(({ accessToken }) => {
-	const { control, handleSubmit, reset, watch } = useForm<RegistrationFormValues>({
-		defaultValues: {
-			captcha: "",
-			password: "",
-			repeatedPassword: "",
-		},
+export const PasswordResetFormEmail = memo(() => {
+	const { control, handleSubmit, reset } = useForm<RegistrationFormValues>({
+		defaultValues: { email: "" },
 		mode: "onChange",
 	});
 
@@ -37,18 +28,15 @@ export const PasswordResetFormPassword = memo<RegistrationFormProps>(({ accessTo
 
 	const { data: captchaResponse } = useSWR<CaptchaDto>("/captcha/generate", captchaFetcher);
 
-	const passwordValue = watch("password");
-
 	const onSubmit = useCallback<SubmitHandler<RegistrationFormValues>>(
 		async values => {
-			const loadingToastId = toast.loading("Probíhá nastavení nového hesla...");
+			const loadingToastId = toast.loading("Odesílám e-mail..");
 			setIsLoading(true);
 			const { error } = await fetcher<AccessTokenResponse, RegistrationFormValues>({
 				axiosInstance: apiClient,
 				method: "post",
-				url: "/auth/register",
+				url: "/auth/password-reset",
 				data: values,
-				accessToken,
 			});
 			setIsLoading(false);
 
@@ -59,14 +47,14 @@ export const PasswordResetFormPassword = memo<RegistrationFormProps>(({ accessTo
 					return;
 				}
 
-				toast.error("Během nastavení nového hesla se něco nepovedlo", { id: loadingToastId });
+				toast.error("Během odesílání e-mailu se něco nepovedlo", { id: loadingToastId });
 				return;
 			}
 
-			router.push("/login").then(() => toast.success("Nastavení nového hesla proběhla uspěšně", { id: loadingToastId }));
+			router.push("/").then(() => toast.success("Pokračujte na odkazu, který jsme vám zaslali e-mailem", { id: loadingToastId }));
 			reset();
 		},
-		[accessToken, reset, router]
+		[reset, router]
 	);
 
 	if (!captchaResponse) {
@@ -80,31 +68,7 @@ export const PasswordResetFormPassword = memo<RegistrationFormProps>(({ accessTo
 			noValidate
 			onSubmit={handleSubmit(onSubmit)}
 		>
-			<Input
-				control={control}
-				fullWidth
-				label="Heslo"
-				name="password"
-				required
-				rules={{ minLength: { value: 8, message: "Heslo musí obsahovat minimalně 8 znaků" } }}
-				type="password"
-			/>
-			<Input
-				control={control}
-				fullWidth
-				label="Zopakujte heslo"
-				name="repeatedPassword"
-				required
-				rules={{
-					validate: value => {
-						if (value !== passwordValue) {
-							return "Hesla se musí shodovat";
-						}
-						return undefined;
-					},
-				}}
-				type="password"
-			/>
+			<Input control={control} fullWidth label="Uživatelské jméno (e-mail)" name="email" required type="email" />
 			<span className="w-full select-none rounded-xl bg-gray-400 py-2 px-4 text-center text-2xl text-white">{captchaResponse.captcha}</span>
 			<Input
 				control={control}
@@ -121,4 +85,4 @@ export const PasswordResetFormPassword = memo<RegistrationFormProps>(({ accessTo
 	);
 });
 
-PasswordResetFormPassword.displayName = "PasswordResetFormPassword";
+PasswordResetFormEmail.displayName = "PasswordResetFormEmail";

@@ -1,6 +1,6 @@
+import { CaptchaModule } from "@captcha/captcha.module";
 import { getJwtConfig } from "@configs/jwt.config";
 import { UserModel } from "@models/user.model";
-import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
@@ -22,7 +22,7 @@ import { JwtStrategy } from "./strategies/jwt-strategy";
 		PassportModule,
 		TypeOrmModule.forFeature([UserModel]),
 		UserModule,
-		HttpModule,
+		CaptchaModule,
 	],
 	controllers: [AuthController],
 	providers: [AuthService, JwtStrategy],

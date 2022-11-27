@@ -1,26 +1,22 @@
-import { RenewPasswordDto } from "@auth/dto/authorizationDto";
-import { HttpService } from "@nestjs/axios";
 import { CanActivate, ExecutionContext, Injectable, UnprocessableEntityException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { lastValueFrom } from "rxjs";
+import { CaptchaService } from "./captcha.service";
 
-export interface ReCaptchaResponse {
-	success: boolean;
+interface CaptchaDto {
+	captcha: string;
 }
 
 @Injectable()
-export class RecaptchaGuard implements CanActivate {
-	constructor(private readonly configService: ConfigService, private readonly httpService: HttpService) {}
+export class CaptchaGuard implements CanActivate {
+	constructor(private readonly captchaService: CaptchaService) {}
 
 	public async canActivate(context: ExecutionContext): Promise<boolean> {
 		const {
 			body: { captcha },
-		} = context.switchToHttp().getRequest<{ body: RenewPasswordDto }>();
-		const captchaSecret = this.configService.get<string>("RECAPTCHA_SECRET");
+		} = context.switchToHttp().getRequest<{ body: CaptchaDto }>();
 
-		const { data } = await lastValueFrom(this.httpService.post<ReCaptchaResponse>(`https://www.google.com/recaptcha/api/siteverify?secret=${captchaSecret}&response=${captcha}`));
+		const isCaptchaValid = await this.captchaService.validateCaptcha(captcha);
 
-		if (!data.success) {
+		if (!isCaptchaValid) {
 			throw new UnprocessableEntityException("Captcha is invalid");
 		}
 

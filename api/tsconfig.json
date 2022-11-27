@@ -11,6 +11,7 @@
 		"outDir": "./dist",
 		"paths": {
 			"@auth/*": ["src/auth/*"],
+			"@captcha/*": ["src/captcha/*"],
 			"@configs/*": ["src/configs/*"],
 			"@decorators/*": ["src/decorators/*"],
 			"@export/*": ["src/export/*"],

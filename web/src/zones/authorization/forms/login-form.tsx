@@ -2,7 +2,6 @@ import { apiClient } from "@api/config";
 import { ApiError } from "@api/config/types";
 import { fetcher } from "@api/index";
 import { AccessTokenResponse } from "@api/types";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@shared/components/button/button";
 import { Input } from "@shared/components/inputs/text-input";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
@@ -10,17 +9,11 @@ import { useRouter } from "next/router";
 import React, { memo, useCallback, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { object, string } from "yup";
 
 export interface LoginFormValues {
 	email: string;
 	password: string;
 }
-
-const loginSchema = object({
-	email: string().required("Povinní údaj").email("Špatný format e-mailu"),
-	password: string().required("Povinní údaj").min(8, "Heslo musí obsahovat minimalně 8 znaků"),
-});
 
 function errorHelper(error: ApiError): string {
 	switch (error.statusCode) {
@@ -40,7 +33,6 @@ export const LoginForm = memo(() => {
 	const { control, handleSubmit } = useForm<LoginFormValues>({
 		defaultValues: { email: "", password: "" },
 		mode: "onChange",
-		resolver: yupResolver(loginSchema),
 	});
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +69,15 @@ export const LoginForm = memo(() => {
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<Input control={control} fullWidth label="Uživatelské jméno (e-mail)" name="email" required type="email" />
-			<Input control={control} fullWidth name="password" label="Heslo" required type="password" />
+			<Input
+				control={control}
+				fullWidth
+				label="Heslo"
+				name="password"
+				required
+				rules={{ minLength: { value: 8, message: "Heslo musí obsahovat minimalně 8 znaků" } }}
+				type="password"
+			/>
 			<Button className="w-full" loading={isLoading} type="submit">
 				Přihlásit
 			</Button>
