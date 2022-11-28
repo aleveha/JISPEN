@@ -17,15 +17,15 @@ function getEnhancedTableToolbarTitlePlural(numSelected: number): string {
 	}
 
 	if (value === 1) {
-		return `Vybrana ${numSelected} položka`;
+		return `Vybraná ${numSelected} položka`;
 	}
 
 	if (value > 1 && value < 5) {
-		return `Vybráno ${numSelected} položky`;
+		return `Vybráno: ${numSelected} položky`;
 	}
 
 	if (value >= 5) {
-		return `Vybráno ${numSelected} položek`;
+		return `Vybráno: ${numSelected} položek`;
 	}
 
 	return "";
@@ -35,7 +35,7 @@ export const CheckboxListToolbar = memo<Props>(({ isError, numSelected, onDelete
 	<MuiToolbar className={clsx("flex justify-between bg-opacity-10", numSelected > 0 && "bg-secondary", isError && "bg-red")}>
 		<div className="py-2 font-medium md:text-lg">
 			{isError ? (
-				<p className="text-red">Musite vybrat alespon jednu polozku</p>
+				<p className="text-red">Musíte vybrat alespoň jednu položku</p>
 			) : numSelected > 0 ? (
 				<p className="text-secondary-dark">{getEnhancedTableToolbarTitlePlural(numSelected)}</p>
 			) : (
