@@ -69,6 +69,7 @@ export const Input = <FormData extends Record<string, any>>({
 			label={label}
 			name={name}
 			onChange={onChange}
+			required={required}
 			type={type}
 			value={value}
 			variant="outlined"

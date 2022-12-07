@@ -102,6 +102,7 @@ export const NewTemplateForm = memo<Props>(({ catalogues }) => {
 						<NewTemplateFormSection
 							description="Zadejte prosím údaje o&nbsp;provozovně, za&nbsp;kterou bude vedena evidence včetně kontaktní osoby"
 							title="Provozovna"
+							warning="* položky jsou povinné"
 						>
 							<div className="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
 								<Input
