@@ -77,7 +77,7 @@ export class RecordsService {
 					user: { email },
 				},
 			},
-			relations: [...this.RECORD_RELATIONS, "template.loadingCodes", "template.wastes", "template.wasteCompanies"],
+			relations: [...this.RECORD_RELATIONS, "template.loadingCodes", "template.wastes", "template.wasteCompanies", "template.wasteCompanies.territorialUnit"],
 		});
 
 		if (!record) {
