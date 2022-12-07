@@ -5,9 +5,9 @@ import { Button } from "@shared/components/button/button";
 import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { Input } from "@shared/components/inputs/text-input";
 import { Validator } from "@shared/utils/validator/validator";
-import { newTemplateFormDefaultValues, NewTemplateFormValues } from "@zones/templates/forms/types";
+import { newTemplateFormDefaultValues, NewTemplateFormValues, wasteCompanyDefaultValue } from "@zones/templates/forms/types";
 import React, { FC, useCallback, useEffect } from "react";
-import { FieldArrayWithId, useFieldArray, UseFieldArrayProps, useWatch } from "react-hook-form";
+import { FieldArrayWithId, useFieldArray, UseFieldArrayProps, useFormContext } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 interface WasteCompanyFormProps extends Omit<Props, "name" | "requireWasteCompany" | "wasteCompanyDefaultValue"> {
@@ -27,12 +27,18 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 	wasteCompanyTypes,
 	zipcodes,
 }) => {
-	const type = useWatch({
-		name: `wasteCompanies.${index}.type`,
-		control,
-	});
+	const { watch, setValue } = useFormContext();
+
+	const type = watch(`wasteCompanies.${index}.type`);
 
 	const isRequired = type ? parseInt(type.uid) !== 3 : false;
+
+	useEffect(() => {
+		setValue(`wasteCompanies.${index}`, {
+			...wasteCompanyDefaultValue,
+			type,
+		});
+	}, [type, index, isRequired, setValue]);
 
 	return (
 		<div
