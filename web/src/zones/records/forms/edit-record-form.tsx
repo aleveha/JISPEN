@@ -77,10 +77,11 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	const defaultValues = record ? mapRecordToDefaultValues(record) : DEFAULT_VALUES;
 	const {
 		control,
-		formState: { isDirty, isValid, isSubmitting },
+		formState: { isDirty, isSubmitting },
 		handleSubmit,
 		reset,
 		watch,
+		setValue,
 	} = useForm<NewRecordFormValues>({ defaultValues, mode: "onChange" });
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
@@ -118,7 +119,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	const selectedTemplate = watch("template");
 	const loadingCode = watch("loadingCode");
 
-	const [showModal, handleFormLeave] = useFormLeave((isDirty || isValid) && !isSubmitting);
+	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitting);
 
 	useEffect(() => {
 		if (!selectedTemplate) {
@@ -126,12 +127,19 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 		}
 	}, [reset, selectedTemplate]);
 
+	useEffect(() => {
+		if (!loadingCode?.requireWasteCompany) {
+			setValue("wasteCompany", null);
+		}
+	}, [setValue, loadingCode]);
+
 	return (
 		<>
 			<form noValidate onSubmit={handleSubmit(onSubmit)}>
 				<div className="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
 					<Autocomplete
 						autocompleteProps={{
+							disabled: !!record,
 							getOptionLabel: (option: Template) => option.title,
 							noOptionsText: "Žádná šablona nebyla nalezena",
 						}}

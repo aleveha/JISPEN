@@ -33,4 +33,4 @@ const EditRecordPage: NextPage<DiscriminatedUnion<Record>> = ({ data: record, er
 	return <EditRecordForm record={record} templates={[record.template]} />;
 };
 
-export const Page = withDashboardLayout(EditRecordPage, "Oprava evidence");
+export const Page = withDashboardLayout(EditRecordPage, "Oprava záznamu");
