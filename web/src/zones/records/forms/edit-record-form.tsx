@@ -9,6 +9,7 @@ import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { DatePickerInput } from "@shared/components/inputs/date-picker";
 import { Input } from "@shared/components/inputs/text-input";
 import { useFormLeave } from "@shared/hooks/useFormLeave";
+import { useUserSorting } from "@shared/hooks/useUserSorting";
 import { formatDecimal } from "@shared/utils/validator/helpers";
 import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
@@ -16,7 +17,7 @@ import { LeaveEditorModal } from "@zones/common/components/leave-editor-modal";
 import dayjs from "dayjs";
 import { isEqual } from "lodash";
 import { useRouter } from "next/router";
-import React, { FC, MouseEvent, useCallback, useEffect, useState } from "react";
+import React, { FC, MouseEvent, useCallback, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
@@ -29,7 +30,7 @@ interface NewRecordFormValues {
 	wasteCompany: WasteCompany | null;
 }
 
-type MassUnit = "kg" | "t";
+export type MassUnit = "kg" | "t";
 
 const DEFAULT_VALUES: NewRecordFormValues = {
 	amount: "",
@@ -71,7 +72,6 @@ interface Props {
 }
 
 export const EditRecordForm: FC<Props> = ({ templates, record }) => {
-	const [massUnit, setMassUnit] = useState<MassUnit>("kg");
 	const [user] = useAuth();
 	const router = useRouter();
 	const defaultValues = record ? mapRecordToDefaultValues(record) : DEFAULT_VALUES;
@@ -83,6 +83,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 		watch,
 		setValue,
 	} = useForm<NewRecordFormValues>({ defaultValues, mode: "onChange" });
+	const [userSorting, setUserSorting] = useUserSorting();
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
 		async values => {
@@ -100,7 +101,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 				method: "post",
 				url: "/records/insert",
 				accessToken: user.accessToken,
-				data: mapRecordValues(values, massUnit, record?.id),
+				data: mapRecordValues(values, userSorting.massUnit, record?.id),
 			});
 
 			if (error) {
@@ -111,10 +112,13 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 			await router.push("/records");
 			toast.success(`Záznam byl úspěšně ${record ? "upraven" : "vytvořen"}`);
 		},
-		[user?.accessToken, defaultValues, massUnit, record, router]
+		[user?.accessToken, defaultValues, userSorting.massUnit, record, router]
 	);
 	const onExit = useCallback(() => router.back(), [router]);
-	const onMassUnitChange = useCallback((_: MouseEvent<HTMLElement>, value: string) => setMassUnit(value as MassUnit), []);
+	const onMassUnitChange = useCallback(
+		(_: MouseEvent<HTMLElement>, value: string) => setUserSorting("massUnit", value as MassUnit),
+		[setUserSorting]
+	);
 
 	const selectedTemplate = watch("template");
 	const loadingCode = watch("loadingCode");
@@ -168,7 +172,7 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 						<ToggleButtonGroup
 							className="absolute top-0 bottom-0 right-0 h-fit"
 							orientation="vertical"
-							value={massUnit}
+							value={userSorting.massUnit}
 							exclusive
 							onChange={onMassUnitChange}
 						>

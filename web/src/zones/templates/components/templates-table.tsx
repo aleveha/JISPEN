@@ -3,9 +3,9 @@ import { fetcher } from "@api/index";
 import { Record } from "@api/records/types";
 import { Template } from "@api/templates/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
-import { useTableSorting } from "@shared/hooks/useTableSorting";
+import { useUserSorting } from "@shared/hooks/useUserSorting";
 import { HeadCell } from "@shared/utils/comparator/types";
-import { Sorting } from "@state/table-sorting/types";
+import { Sorting } from "@state/sorting/types";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveTemplateModal } from "@zones/templates/components/remove-template-modal";
 import { useRouter } from "next/router";
@@ -38,7 +38,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 	const [recordsCount, setRecordsCount] = useState<number | undefined>(undefined);
 	const [user] = useAuth();
 	const router = useRouter();
-	const [tableSorting, setTableSorting] = useTableSorting();
+	const [userSorting, setUserSorting] = useUserSorting();
 
 	const handleModalClose = useCallback(() => setIsModalOpen(false), []);
 
@@ -80,7 +80,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 		[user?.accessToken, router]
 	);
 
-	const handleOrderChanged = useCallback((value: Sorting<TemplatesTableColumns>) => setTableSorting("templates", value), [setTableSorting]);
+	const handleOrderChanged = useCallback((value: Sorting<TemplatesTableColumns>) => setUserSorting("templates", value), [setUserSorting]);
 
 	const errorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
 	const successToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
@@ -122,7 +122,7 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 				handleDeleteButtonClick={handleSelectedChange}
 				handleOrderChange={handleOrderChanged}
 				headCells={HEADER_CELLS}
-				order={tableSorting?.templates ?? { column: "title", direction: "asc" }}
+				order={userSorting?.templates ?? { column: "title", direction: "asc" }}
 				rows={rows}
 			/>
 			{selectedTemplate && (

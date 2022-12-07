@@ -3,7 +3,7 @@ import { IconButton, Paper, Table as MuiTable, TableBody, TableCell, TableContai
 import { DataGridHead } from "@shared/components/data-grid/data-grid-head";
 import { getComparator } from "@shared/utils/comparator/comparator";
 import { HeadCell, SortAs } from "@shared/utils/comparator/types";
-import { Sorting } from "@state/table-sorting/types";
+import { Sorting } from "@state/sorting/types";
 import clsx from "clsx";
 import React, { ChangeEventHandler, MouseEvent, useCallback, useEffect, useState } from "react";
 

@@ -2,9 +2,9 @@ import { apiClient } from "@api/config";
 import { fetcher } from "@api/index";
 import { Record } from "@api/records/types";
 import { DataGrid } from "@shared/components/data-grid/data-grid";
-import { useTableSorting } from "@shared/hooks/useTableSorting";
+import { useUserSorting } from "@shared/hooks/useUserSorting";
 import { HeadCell } from "@shared/utils/comparator/types";
-import { Sorting } from "@state/table-sorting/types";
+import { Sorting } from "@state/sorting/types";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { RemoveRecordModal } from "@zones/records/components/remove-record-modal";
 import { useRouter } from "next/router";
@@ -47,7 +47,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 	const [user] = useAuth();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<RecordsTableColumns | null>();
-	const [tableSorting, setTableSorting] = useTableSorting();
+	const [userSorting, setUserSorting] = useUserSorting();
 
 	const deleteErrorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
 	const deleteSuccessToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
@@ -128,7 +128,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 		setIsDeleteModalOpen(false);
 	}, [user?.accessToken, deleteErrorToast, mutate, selectedRecord, deleteSuccessToast]);
 
-	const handleOrderChanged = useCallback((value: Sorting<RecordsTableColumns>) => setTableSorting("records", value), [setTableSorting]);
+	const handleOrderChanged = useCallback((value: Sorting<RecordsTableColumns>) => setUserSorting("records", value), [setUserSorting]);
 
 	return (
 		<>
@@ -138,7 +138,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 				handleEditButtonClick={handleEditButtonClick}
 				handleOrderChange={handleOrderChanged}
 				headCells={HEADER_CELLS}
-				order={tableSorting?.records ?? { column: "date", direction: "asc" }}
+				order={userSorting?.records ?? { column: "date", direction: "asc" }}
 				rows={rows}
 			/>
 			{selectedRecord && (
