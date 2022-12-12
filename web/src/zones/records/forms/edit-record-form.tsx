@@ -55,9 +55,9 @@ function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit, record
 	};
 }
 
-function mapRecordToDefaultValues(record: Record): NewRecordFormValues {
+function mapRecordToDefaultValues(record: Record, massUnit: MassUnit): NewRecordFormValues {
 	return {
-		amount: `${record.amount * 1000}`,
+		amount: `${massUnit === "kg" ? record.amount * 1000 : record.amount}`,
 		date: dayjs(record.date).toDate(),
 		loadingCode: record.loadingCode,
 		template: record.template,
@@ -74,7 +74,8 @@ interface Props {
 export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	const [user] = useAuth();
 	const router = useRouter();
-	const defaultValues = record ? mapRecordToDefaultValues(record) : DEFAULT_VALUES;
+	const [userSorting, setUserSorting] = useUserSorting();
+	const defaultValues = record ? mapRecordToDefaultValues(record, userSorting.massUnit) : DEFAULT_VALUES;
 	const {
 		control,
 		formState: { isDirty, isSubmitting },
@@ -83,7 +84,10 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 		watch,
 		setValue,
 	} = useForm<NewRecordFormValues>({ defaultValues, mode: "onChange" });
-	const [userSorting, setUserSorting] = useUserSorting();
+
+	const amount = watch("amount");
+	const selectedTemplate = watch("template");
+	const loadingCode = watch("loadingCode");
 
 	const onSubmit = useCallback<SubmitHandler<NewRecordFormValues>>(
 		async values => {
@@ -116,12 +120,17 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 	);
 	const onExit = useCallback(() => router.back(), [router]);
 	const onMassUnitChange = useCallback(
-		(_: MouseEvent<HTMLElement>, value: string) => setUserSorting("massUnit", value as MassUnit),
-		[setUserSorting]
-	);
+		(_: MouseEvent<HTMLElement>, value: string) => {
+			const massUnit = value as MassUnit;
+			if (massUnit === null) {
+				return;
+			}
 
-	const selectedTemplate = watch("template");
-	const loadingCode = watch("loadingCode");
+			setValue("amount", formatDecimal((massUnit === "kg" ? parseFloat(amount) * 1000 : parseFloat(amount) / 1000).toString()));
+			setUserSorting("massUnit", massUnit);
+		},
+		[amount, setUserSorting, setValue]
+	);
 
 	const [showModal, handleFormLeave] = useFormLeave(isDirty && !isSubmitting);
 
@@ -136,6 +145,10 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 			setValue("wasteCompany", null);
 		}
 	}, [setValue, loadingCode]);
+
+	useEffect(() => {
+		console.log(userSorting.massUnit);
+	}, [userSorting.massUnit]);
 
 	return (
 		<>
