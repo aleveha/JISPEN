@@ -148,10 +148,10 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 							noOptionsText: "Žádná šablona nebyla nalezena",
 						}}
 						control={control}
-						label="Vyberte šablonu"
+						label={record ? "Nelze změnit výchozí šablonu" : "Vyberte šablonu"}
 						name="template"
 						options={templates}
-						required
+						required={!record}
 					/>
 					<DatePickerInput control={control} disabled={!selectedTemplate} label="Datum" name="date" required />
 					<div className="relative">
