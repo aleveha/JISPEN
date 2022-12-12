@@ -38,7 +38,8 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 			...wasteCompanyDefaultValue,
 			type,
 		});
-	}, [type, index, isRequired, setValue]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [index, type.uid]);
 
 	return (
 		<div
