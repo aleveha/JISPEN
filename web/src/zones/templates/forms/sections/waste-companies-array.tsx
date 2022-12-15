@@ -6,7 +6,7 @@ import { Autocomplete } from "@shared/components/inputs/autocomplete";
 import { Input } from "@shared/components/inputs/text-input";
 import { Validator } from "@shared/utils/validator/validator";
 import { newTemplateFormDefaultValues, NewTemplateFormValues, wasteCompanyDefaultValue } from "@zones/templates/forms/types";
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useCallback, useEffect, useRef } from "react";
 import { FieldArrayWithId, useFieldArray, UseFieldArrayProps, useFormContext } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
@@ -31,15 +31,19 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 
 	const type = watch(`wasteCompanies.${index}.type`);
 
+	const latestTypeUidRef = useRef(type?.uid as string | undefined);
+
 	const isRequired = type ? parseInt(type.uid) !== 3 : false;
 
 	useEffect(() => {
-		setValue(`wasteCompanies.${index}`, {
-			...wasteCompanyDefaultValue,
-			type,
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [index, type.uid]);
+		if (type?.uid && latestTypeUidRef.current !== type.uid) {
+			setValue(`wasteCompanies.${index}`, {
+				...wasteCompanyDefaultValue,
+				type,
+			});
+			latestTypeUidRef.current = type.uid;
+		}
+	}, [index, latestTypeUidRef, setValue, type]);
 
 	return (
 		<div

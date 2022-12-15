@@ -13,7 +13,7 @@ services:
         build:
             dockerfile: Dockerfile.dev
         volumes:
-            - web:/app
+            - ./web:/app
         env_file:
             - ./web/.env.local
         command: yarn dev
@@ -37,32 +37,3 @@ services:
 volumes:
     api:
     web:
-
-x-mutagen:
-    sync:
-        defaults:
-            ignore:
-                vcs: true
-            permissions:
-                defaultOwner: "id:501"
-        api:
-            alpha: "./api"
-            beta: "volume://api"
-            mode: "two-way-resolved"
-            configurationBeta:
-                permissions:
-                    defaultOwner: "id:501"
-                    defaultDirectoryMode: 0777
-            ignore:
-                paths:
-                    - ./.idea
-                    - ./web
-        web:
-            alpha: "./web"
-            beta: "volume://web"
-            mode: "two-way-resolved"
-            configurationBeta:
-                permissions:
-                    defaultOwner: "id:1000"
-                    defaultGroup: "id:1000"
-                    defaultDirectoryMode: 0777
