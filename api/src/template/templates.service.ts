@@ -73,7 +73,10 @@ export class TemplatesService {
 	}
 
 	public async delete(templateId: number): Promise<TemplateModel> {
-		const templateToBeDeleted = await this.templateRepository.findOne({ id: templateId }, { relations: this.TEMPLATE_RELATIONS });
+		const templateToBeDeleted = await this.templateRepository.findOne({
+			where: { id: templateId },
+			relations: this.TEMPLATE_RELATIONS,
+		});
 		if (!templateToBeDeleted) {
 			throw new BadRequestException();
 		}
@@ -98,24 +101,24 @@ export class TemplatesService {
 	}
 
 	private async getUserTemplateByTitle(title: string, userEmail: string): Promise<TemplateModel> {
-		return await this.templateRepository.findOne(
-			{
+		return await this.templateRepository.findOne({
+			where: {
 				title: title,
 				user: { email: userEmail },
 			},
-			{ relations: this.TEMPLATE_RELATIONS }
-		);
+			relations: this.TEMPLATE_RELATIONS,
+		});
 	}
 
 	private async getUserMedicalCompany(userEmail: string, medicalCompanyId: string, medicalCompanyUid: number): Promise<MedicalCompanyModel> {
-		return await this.medicalCompanyRepository.findOne(
-			{
+		return await this.medicalCompanyRepository.findOne({
+			where: {
 				companyId: medicalCompanyId,
 				uid: medicalCompanyUid,
 				user: { email: userEmail },
 			},
-			{ relations: ["address", "address.zipcode", "territorialUnit", "user"] }
-		);
+			relations: ["address", "address.zipcode", "territorialUnit", "user"],
+		});
 	}
 
 	private async createMedicalCompany(medicalCompany: MedicalCompanyDto): Promise<MedicalCompanyModel> {

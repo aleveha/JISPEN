@@ -7,6 +7,6 @@ until nc -z -v -w30 "$DATABASE_HOST" "$DATABASE_PORT"; do
   sleep 5
 done
 
-node ../node_modules/typeorm/cli.js migration:run
+node ../node_modules/typeorm/cli.js migration:run -d ormconfig.js
 
 exec "$@"

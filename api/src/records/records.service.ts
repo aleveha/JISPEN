@@ -56,7 +56,7 @@ export class RecordsService {
 	}
 
 	public async delete(recordId: number): Promise<RecordModel> {
-		const recordToBeDeleted = await this.recordsRepository.findOne({ id: recordId });
+		const recordToBeDeleted = await this.recordsRepository.findOne({ where: { id: recordId } });
 		if (!recordToBeDeleted) {
 			throw new BadRequestException();
 		}
@@ -90,13 +90,10 @@ export class RecordsService {
 	public async getUserRecords(email: string, medicalCompanyId?: number, date?: { from: Date; to: Date }): Promise<RecordModel[]> {
 		const where: FindManyOptions<RecordModel>["where"] = {
 			template: {
+				medicalCompanyId: medicalCompanyId,
 				user: { email },
 			},
 		};
-
-		if (medicalCompanyId) {
-			where.template.medicalCompanyId = medicalCompanyId;
-		}
 
 		if (date) {
 			where.date = Between(date.from, date.to);

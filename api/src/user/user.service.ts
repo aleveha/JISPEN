@@ -23,6 +23,6 @@ export class UserService {
 	}
 
 	public async getUserByEmail(email: string): Promise<UserModel> {
-		return this.userRepository.findOne({ email: email });
+		return this.userRepository.findOne({ where: { email } });
 	}
 }
