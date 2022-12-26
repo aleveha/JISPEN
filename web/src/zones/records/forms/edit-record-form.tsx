@@ -125,9 +125,12 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 			if (massUnit === null) {
 				return;
 			}
-
-			setValue("amount", formatDecimal((massUnit === "kg" ? parseFloat(amount) * 1000 : parseFloat(amount) / 1000).toString()));
 			setUserSorting("massUnit", massUnit);
+
+			if (!amount) {
+				return;
+			}
+			setValue("amount", formatDecimal((massUnit === "kg" ? parseFloat(amount) * 1000 : parseFloat(amount) / 1000).toString()));
 		},
 		[amount, setUserSorting, setValue]
 	);
@@ -145,10 +148,6 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 			setValue("wasteCompany", null);
 		}
 	}, [setValue, loadingCode]);
-
-	useEffect(() => {
-		console.log(userSorting.massUnit);
-	}, [userSorting.massUnit]);
 
 	return (
 		<>
@@ -184,10 +183,11 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 						/>
 						<ToggleButtonGroup
 							className="absolute top-0 bottom-0 right-0 h-fit"
-							orientation="vertical"
-							value={userSorting.massUnit}
+							disabled={!selectedTemplate}
 							exclusive
 							onChange={onMassUnitChange}
+							orientation="vertical"
+							value={userSorting.massUnit}
 						>
 							<ToggleButton className="rounded-l-none py-1 text-[0.66rem] lowercase" value="t">
 								t

@@ -2,11 +2,12 @@ import { sortingState } from "@state/sorting/sorting-state";
 import { SortingState, UserSorting } from "@state/sorting/types";
 import { getCookie, setCookie } from "cookies-next";
 import { useAtom } from "jotai";
+import { isEqual } from "lodash";
 import { useCallback, useEffect } from "react";
 
 export function useUserSorting() {
 	const [userSorting, setUserSorting] = useAtom(sortingState);
-	const tableSortingCookie = getCookie("table_sorting") as string;
+	const tableSortingCookie = getCookie("user_sorting") as string;
 
 	const handleTableSortingChange = useCallback(
 		(key: UserSorting, value: SortingState[UserSorting]) => {
@@ -17,7 +18,11 @@ export function useUserSorting() {
 	);
 
 	useEffect(() => {
-		if (tableSortingCookie && !userSorting) {
+		if (!tableSortingCookie) {
+			return;
+		}
+		const userSortingCookie = JSON.parse(tableSortingCookie) as SortingState;
+		if (!isEqual(userSortingCookie, userSorting)) {
 			setUserSorting(JSON.parse(tableSortingCookie));
 		}
 	}, [setUserSorting, userSorting, tableSortingCookie]);
