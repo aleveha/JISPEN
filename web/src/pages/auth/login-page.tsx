@@ -9,8 +9,8 @@ interface NewPasswordRequestLinkProps {
 }
 
 const NewPasswordRequestLink: FC<NewPasswordRequestLinkProps> = ({ children }) => (
-	<Link href="/new-password-request" passHref>
-		<a className="w-fit cursor-pointer text-primary underline hover:text-primary-dark">{children}</a>
+	<Link className="w-fit cursor-pointer text-primary underline hover:text-primary-dark" href="/new-password-request" passHref>
+		{children}
 	</Link>
 );
 

@@ -6,7 +6,6 @@ import { DiscriminatedUnion } from "@shared/types/types";
 import { TemplatesTable } from "@zones/templates/components/templates-table";
 import { getCookie } from "cookies-next";
 import { NextPage } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { memo, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
@@ -29,9 +28,9 @@ const AllTemplates = memo(() => {
 				<TemplatesTable templates={templates} />
 			)}
 			<div className="mt-8 flex w-full items-center justify-end">
-				<Link href="/templates/new" passHref>
-					<Button variant="primary">Nová šablona</Button>
-				</Link>
+				<Button href="/templates/new" variant="primary">
+					Nová šablona
+				</Button>
 			</div>
 		</div>
 	);

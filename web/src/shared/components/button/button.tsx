@@ -1,5 +1,6 @@
 import { Button as MuiButton, CircularProgress } from "@mui/material";
 import clsx from "clsx";
+import Link from "next/link";
 import React, { forwardRef, MouseEventHandler, ReactNode } from "react";
 
 const ButtonType = {
@@ -32,7 +33,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 		return (
 			<MuiButton
 				className={clsx("relative rounded-lg py-3 px-6 text-lg font-medium tracking-wider", _className, className)}
-				component={href ? "a" : "button"}
+				component={href ? Link : "button"}
 				disabled={disabled || loading}
 				href={href}
 				onClick={onClick}

@@ -23,27 +23,26 @@ export const SidebarMenuItem = memo<Props>(({ href, iconName, isOpen, label, onC
 	}, [pathname]);
 
 	return (
-		<Link href={href} passHref>
-			<Button
-				className={clsx(
-					"transition duration-300 hover:bg-white hover:bg-opacity-20",
-					pathname.includes(href) && "bg-white bg-opacity-10",
-					isOpen ? "w-full py-3 px-4" : "w-fit rounded-none py-7 px-7"
-				)}
-				component="a"
-				disableFocusRipple={disableFocus}
-				onClick={onClick}
-				tabIndex={disableFocus ? -1 : 0}
-				target={target}
-			>
-				<div className={clsx("w-full items-center text-white", isOpen ? "grid grid-cols-6" : "relative flex w-fit justify-start")}>
-					{iconName && Icons[iconName]}
-					<span className={clsx("col-span-5 col-start-2 -mt-[2px] h-6 text-start text-lg", isOpen ? "ml-3 inline-block" : "hidden")}>
-						{label}
-					</span>
-				</div>
-			</Button>
-		</Link>
+		<Button
+			className={clsx(
+				"transition duration-300 hover:bg-white hover:bg-opacity-20",
+				pathname.includes(href) && "bg-white bg-opacity-10",
+				isOpen ? "w-full py-3 px-4" : "w-fit rounded-none py-7 px-7"
+			)}
+			component={Link}
+			disableFocusRipple={disableFocus}
+			href={href}
+			onClick={onClick}
+			tabIndex={disableFocus ? -1 : 0}
+			target={target}
+		>
+			<div className={clsx("w-full items-center text-white", isOpen ? "grid grid-cols-6" : "relative flex w-fit justify-start")}>
+				{iconName && Icons[iconName]}
+				<span className={clsx("col-span-5 col-start-2 -mt-[2px] h-6 text-start text-lg", isOpen ? "ml-3 inline-block" : "hidden")}>
+					{label}
+				</span>
+			</div>
+		</Button>
 	);
 });
 

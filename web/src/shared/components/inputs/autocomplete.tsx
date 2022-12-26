@@ -1,7 +1,7 @@
 import { Autocomplete as MuiAutocomplete, AutocompleteProps, TextField, TextFieldProps } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useEffect } from "react";
-import { Control, Path, useController } from "react-hook-form";
+import { Control, Path, UnPackAsyncDefaultValues, useController } from "react-hook-form";
 import { FieldValues } from "react-hook-form/dist/types/fields";
 
 export type AutocompleteElementProps<F extends FieldValues, T, M extends boolean | undefined, D extends boolean | undefined> = {
@@ -10,7 +10,7 @@ export type AutocompleteElementProps<F extends FieldValues, T, M extends boolean
 	label?: TextFieldProps["label"];
 	loading?: boolean;
 	multiple?: M;
-	name: Path<F>;
+	name: Path<UnPackAsyncDefaultValues<F>>;
 	options: T[];
 	required?: boolean;
 	requiredMessage?: string;
