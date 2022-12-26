@@ -52,10 +52,6 @@ const AllTemplatesPageComponent: NextPage<DiscriminatedUnion<Template[]>> = ({ d
 		}
 	}, [error, router]);
 
-	if (!templates || error) {
-		return null;
-	}
-
 	return (
 		<SWRConfig value={{ fallback: { "/templates/all": templates } }}>
 			<AllTemplates />

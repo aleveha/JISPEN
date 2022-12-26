@@ -17,7 +17,7 @@ const CreateRecord = () => {
 		[accessToken]
 	);
 
-	const { data: templates } = useSWR<Template[]>("/record/new", allTemplatesFetcher);
+	const { data: templates } = useSWR<Template[]>("/records/new", allTemplatesFetcher);
 
 	if (!templates) {
 		return null;
@@ -40,12 +40,8 @@ const CreateRecordComponent: NextPage<DiscriminatedUnion<Template[]>> = ({ data:
 		}
 	}, [error, router]);
 
-	if (!templates || error) {
-		return null;
-	}
-
 	return (
-		<SWRConfig value={{ fallback: { "/record/new": templates } }}>
+		<SWRConfig value={{ fallback: { "/records/new": templates } }}>
 			<CreateRecord />
 		</SWRConfig>
 	);

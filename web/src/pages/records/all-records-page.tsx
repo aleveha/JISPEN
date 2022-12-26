@@ -48,10 +48,6 @@ const RecordsHomeComponent: NextPage<DiscriminatedUnion<Record[]>> = ({ data: re
 		}
 	}, [error, router]);
 
-	if (!records || error) {
-		return null;
-	}
-
 	return (
 		<SWRConfig value={{ fallback: { "/records/all": records } }}>
 			<AllRecords />
