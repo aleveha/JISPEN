@@ -8,7 +8,7 @@ RUN mv public .next/standalone/public && \
     mv .next/static .next/standalone/.next/static && \
     mv .next/standalone /home/node
 
-FROM node:16-alpine AS prod
+FROM node:18-alpine AS prod
 COPY --from=deps /home/node /home/node
 WORKDIR /home/node/standalone
 EXPOSE 3000
