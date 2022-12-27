@@ -211,10 +211,18 @@ export const WasteCompaniesArray: FC<Props> = ({
 	useEffect(() => {
 		if (requireWasteCompany) {
 			append(wasteCompanyDefaultValue);
-		} else {
+		}
+	}, [append, requireWasteCompany, wasteCompanyDefaultValue]);
+
+	useEffect(() => {
+		if (!requireWasteCompany && fields.length > 0) {
 			remove();
 		}
-	}, [append, remove, requireWasteCompany, wasteCompanyDefaultValue]);
+	});
+
+	useEffect(() => {
+		console.log("fields", fields);
+	}, [fields]);
 
 	return (
 		<div className="flex flex-col gap-8 pt-6">
