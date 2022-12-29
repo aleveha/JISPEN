@@ -149,6 +149,12 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 		}
 	}, [setValue, loadingCode]);
 
+	useEffect(() => {
+		if (record) {
+			setValue("amount", formatDecimal((userSorting.massUnit === "kg" ? record.amount * 1000 : record.amount).toString()));
+		}
+	}, [record, setValue, userSorting.massUnit]);
+
 	return (
 		<>
 			<form noValidate onSubmit={handleSubmit(onSubmit)}>
