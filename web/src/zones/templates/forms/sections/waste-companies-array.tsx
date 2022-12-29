@@ -220,10 +220,6 @@ export const WasteCompaniesArray: FC<Props> = ({
 		}
 	});
 
-	useEffect(() => {
-		console.log("fields", fields);
-	}, [fields]);
-
 	return (
 		<div className="flex flex-col gap-8 pt-6">
 			{fields.map((field, index) => (
