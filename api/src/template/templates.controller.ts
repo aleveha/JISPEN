@@ -30,7 +30,6 @@ export class TemplatesController {
 		return await this.templateService.delete(templateId);
 	}
 
-	@UseGuards(JwtAuthGuard)
 	@Get("catalogues")
 	async getLoadingCodes(): Promise<CataloguesDto> {
 		return await this.catalogueService.getCatalogues();

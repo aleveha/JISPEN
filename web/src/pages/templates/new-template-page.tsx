@@ -21,8 +21,7 @@ const CreateTemplatePage: NextPage<DiscriminatedUnion<CataloguesDto>> = ({ data:
 		}
 	}, [error, router]);
 
-	if (error) {
-		console.error(error);
+	if (!catalogues || error) {
 		return null;
 	}
 
