@@ -1,15 +1,33 @@
-## JISPEN – a simple tool for waste registration in hospitals and medical institutions
+## JISPEN – waste records
 
-### Challenge:
-Create a program for waste management and registration in medical institutions with the possibility of importing data into ENVITA with the subsequent creation of an annual report on waste production
+### What is it?
+
+JISPEN is a tool that helps hospitals and medical institutions keep track of their waste management. It is designed to be simple to use and allows
+users to easily register different types of waste. This information can then be used to ensure that the waste is handled and disposed of properly in
+accordance with regulations and guidelines. JISPEN can also help hospitals and medical institutions with reporting and compliance, and can be used as
+part of an overall waste management program.
 
 ### Technologies:
-Database: PostgreSQL 14\
-Back-end: TypeScript, NodeJS, NestJS, TypeORM\
-Front-end: Typescript, ReactJS, NextJS, Tailwind
 
-### Database design:
-<img src="https://user-images.githubusercontent.com/63300936/145693348-a8bb8c2d-0579-4c83-b159-e56218decaeb.png" width="600" />
+**Database**: PostgreSQL, Redis\
+**Back-end**: TypeScript, Node.js, NestJS, TypeORM\
+**Front-end**: Typescript, React, Next.js, Tailwind, MUI\
+**DevOps**: Docker, Docker Compose, Docker Stack, GitLab CI/CD
 
-### Application design (Figma)
-https://www.figma.com/file/ciUc6o2wvTDGywXl37BbGS/JISPEN
+### How to run:
+
+#### Development:
+
+1. Install Docker and Docker Compose
+2. Run `docker-compose up -d --build` in the root directory
+3. Open `localhost:8008` in your browser
+
+#### Production:
+
+1. Install Docker and Docker Compose
+2. Run `docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build` in the root directory
+3. Open `localhost:8008` in your browser
+
+Note that the production version is optimized for production and does not include any of the development tools.\
+Also note that the development version use hot reloading, which means that you can make changes to the code and see the changes immediately in your
+browser.
