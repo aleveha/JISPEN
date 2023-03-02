@@ -1,7 +1,11 @@
 import { Icons } from "@icons/icons.config";
 import { withDashboardLayout } from "@shared/components/layout/layout";
 import { NextPage } from "next";
+import Image from "next/image";
 import React from "react";
+import logoINISOFT from "../../public/static/images/logo_inisoft.png";
+import logoTACR from "../../public/static/images/logo_tacr.png";
+import logoTUL from "../../public/static/images/logo_tul.png";
 
 const HomePageComponent: NextPage = () => {
 	return (
@@ -22,6 +26,14 @@ const HomePageComponent: NextPage = () => {
 						průběžné evidence odpadů. JISPEN obsahuje všechny potřebné číselníky, druhy odpadů ze&nbsp;zdravotnictví i&nbsp;kódy
 						přípustných způsobů nakládání.
 					</p>
+					<div className="space-y-6">
+						<div className="space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+							<Image className="h-24 w-24" src={logoTACR} alt="TACR" />
+							<Image className="h-24 w-44" src={logoTUL} alt="TUL" />
+						</div>
+						<Image className="w-80" src={logoINISOFT} alt="Inisoft" />
+					</div>
+					<p>Aplikace vznikla za financní spolupráce s Technologickou agenturou ČR.</p>
 				</div>
 			</div>
 			<div className="flex flex-col space-y-2 text-grey md:flex-row md:space-x-2 md:space-y-0">
