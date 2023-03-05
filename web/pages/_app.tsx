@@ -29,6 +29,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 	return (
 		<>
 			<Head>
+				<meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
 				<title>Průběžná evidence odpadů | JISPEN</title>
 			</Head>
 			<ThemeProvider theme={THEME}>

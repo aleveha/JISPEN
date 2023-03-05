@@ -33,7 +33,10 @@ const HomePageComponent: NextPage = () => {
 						</div>
 						<Image className="w-80" src={logoINISOFT} alt="Inisoft" />
 					</div>
-					<p>Aplikace vznikla za financní spolupráce s Technologickou agenturou ČR.</p>
+					<p>
+						Tento software je financován se&nbsp;státní podporou Technologické agentury ČR a&nbsp;Ministerstva životního prostředí
+						v&nbsp;rámci Programu Prostředí pro život.
+					</p>
 				</div>
 			</div>
 			<div className="flex flex-col space-y-2 text-grey md:flex-row md:space-x-2 md:space-y-0">
