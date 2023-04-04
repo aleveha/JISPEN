@@ -113,7 +113,7 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 				name={`wasteCompanies.${index}.address.city`}
 				required={isRequired}
 				rules={{
-					minLength: { value: 3, message: "Město musí obsahovat alespoň 3 znaky" },
+					minLength: { value: 2, message: "Město musí obsahovat alespoň 3 znaky" },
 					maxLength: { value: 40, message: "Město nesmí obsahovat více než 40 znaků" },
 				}}
 			/>
