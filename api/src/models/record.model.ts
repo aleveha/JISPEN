@@ -15,6 +15,9 @@ export class RecordModel extends BaseEntity {
 	@Column({ type: "decimal" })
 	amount: number;
 
+	@Column({ type: "decimal", nullable: true })
+	expense: number;
+
 	@Column({ name: "template_id" })
 	templateId: number;
 

@@ -15,6 +15,7 @@ import { useSWRConfig } from "swr";
 export interface RecordsTableColumns {
 	amount: string;
 	date: string;
+	expense: string;
 	id: Record["id"];
 	loadingCodeUid: Record["loadingCode"]["uid"];
 	medicalCompanyName: Record["template"]["medicalCompany"]["name"];
@@ -31,6 +32,7 @@ const HEADER_CELLS: HeadCell<RecordsTableColumns>[] = [
 	{ id: "loadingCodeUid", label: "Nakládání" },
 	{ id: "medicalCompanyName", label: "Provozovna" },
 	{ id: "wasteCompanyName", label: "Oprávněná osoba", width: 240 },
+	{ id: "expense", label: "Výdaje" },
 ];
 
 function formatDate(date: Date): string {
@@ -62,6 +64,7 @@ export const RecordsTable: FC<Props> = ({ records }) => {
 			records.map(record => ({
 				amount: `${record.amount} t`,
 				date: formatDate(record.date),
+				expense: record.expense ? `${record.expense} Kč` : "—",
 				id: record.id,
 				loadingCodeUid: record.loadingCode.uid,
 				medicalCompanyName: record.template.medicalCompany.name,

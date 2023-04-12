@@ -3,6 +3,7 @@ import { LoadingCode, Template, Waste, WasteCompany } from "@api/templates/types
 export interface Record {
 	amount: number;
 	date: Date;
+	expense: number | null;
 	id: number;
 	loadingCode: LoadingCode;
 	loadingCodeId: number;

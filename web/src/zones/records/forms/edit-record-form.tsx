@@ -24,6 +24,7 @@ import { toast } from "react-hot-toast";
 interface NewRecordFormValues {
 	amount: string;
 	date: Date | string;
+	expense: string;
 	loadingCode: LoadingCode | null;
 	template: Template | null;
 	waste: Waste | null;
@@ -35,6 +36,7 @@ export type MassUnit = "kg" | "t";
 const DEFAULT_VALUES: NewRecordFormValues = {
 	amount: "",
 	date: "",
+	expense: "",
 	loadingCode: null,
 	template: null,
 	waste: null,
@@ -43,10 +45,12 @@ const DEFAULT_VALUES: NewRecordFormValues = {
 
 function mapRecordValues(values: NewRecordFormValues, massUnit: MassUnit, recordId?: number): InsertRecordDto {
 	const formattedAmount = parseFloat(formatDecimal(values.amount));
+	const formattedExpense = parseFloat(formatDecimal(values.expense));
 	const dayjsDate = dayjs(values.date);
 	return {
 		amount: massUnit === "t" ? formattedAmount : formattedAmount / 1000,
 		date: dayjsDate.set("minute", dayjsDate.utcOffset()).toDate(),
+		expense: formattedExpense,
 		id: recordId ?? null,
 		loadingCodeId: values.loadingCode?.id ?? 0,
 		templateId: values.template?.id ?? 0,
@@ -59,6 +63,7 @@ function mapRecordToDefaultValues(record: Record, massUnit: MassUnit): NewRecord
 	return {
 		amount: `${massUnit === "kg" ? record.amount * 1000 : record.amount}`,
 		date: dayjs(record.date).toDate(),
+		expense: record.expense ? record.expense.toString() : "",
 		loadingCode: record.loadingCode,
 		template: record.template,
 		waste: record.waste,
@@ -238,6 +243,18 @@ export const EditRecordForm: FC<Props> = ({ templates, record }) => {
 						name="wasteCompany"
 						options={selectedTemplate?.wasteCompanies ?? []}
 						required={loadingCode?.requireWasteCompany}
+					/>
+					<Input
+						control={control}
+						disabled={!selectedTemplate}
+						inputMode="numeric"
+						label="Zadejte výdaje"
+						name="expense"
+						rules={{
+							maxLength: { value: 10, message: "Příliš velká častka" },
+							pattern: { value: Validator.DECIMAL_REGEXP, message: "Pouze čislo" },
+							validate: value => Validator.onlyPositiveNumber(value as string),
+						}}
 					/>
 				</div>
 				<div className="py-8">
