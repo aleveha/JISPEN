@@ -56,7 +56,7 @@ export const Autocomplete = <FormData extends FieldValues>({
 			isOptionEqualToValue={
 				autocompleteProps?.isOptionEqualToValue
 					? autocompleteProps.isOptionEqualToValue
-					: (option, value) => (value ? option.id === value.id : false)
+					: (option, value) => (value ? option.id == value.id : false)
 			}
 			loading={loading}
 			multiple={multiple}

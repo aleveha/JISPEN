@@ -13,7 +13,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 	return {
 		props: {
-			data: data ?? null,
+			data: data ? { catalogues: data } : null,
 			error: error ?? null,
 		},
 		revalidate: 10,

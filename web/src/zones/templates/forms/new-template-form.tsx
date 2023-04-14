@@ -10,7 +10,7 @@ import { useFormLeave } from "@shared/hooks/useFormLeave";
 import { Validator } from "@shared/utils/validator/validator";
 import { useAuth } from "@zones/authorization/hooks/useAuth";
 import { LeaveEditorModal } from "@zones/common/components/leave-editor-modal";
-import { mapTemplateValues } from "@zones/templates/forms/mapper";
+import { mapTemplateValues, templateToDefaultValues } from "@zones/templates/forms/mapper";
 import { NewTemplateFormSection } from "@zones/templates/forms/new-template-form-section";
 import { newTemplateFormDefaultValues, NewTemplateFormValues, wasteCompanyDefaultValue } from "@zones/templates/forms/types";
 import clsx from "clsx";
@@ -24,14 +24,15 @@ import { WasteSectionTable } from "./sections/waste-section-table";
 
 interface Props {
 	catalogues: CataloguesDto;
+	template?: Template;
 }
 
-export const NewTemplateForm = memo<Props>(({ catalogues }) => {
+export const NewTemplateForm = memo<Props>(({ catalogues, template }) => {
 	const [user] = useAuth();
 	const router = useRouter();
 
 	const form = useForm<NewTemplateFormValues>({
-		defaultValues: newTemplateFormDefaultValues,
+		defaultValues: template ? templateToDefaultValues(template) : newTemplateFormDefaultValues,
 		mode: "onChange",
 	});
 

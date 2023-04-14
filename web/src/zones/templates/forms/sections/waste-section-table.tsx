@@ -36,6 +36,7 @@ export const WasteSectionTable: FC<WasteSectionTableProps> = ({ control, name, w
 			orderedBy="uid"
 			rows={wastes}
 			title="Povolené odpady"
+			value={field.value as Waste[]}
 		/>
 	);
 };

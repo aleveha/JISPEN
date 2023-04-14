@@ -1,4 +1,5 @@
 import { AddressDTO, TemplateDTO } from "@api/templates/dto";
+import { Template } from "@api/templates/types";
 import { NewTemplateFormValues } from "@zones/templates/forms/types";
 
 function mapAddress(address: NewTemplateFormValues["medicalCompany"]["address"]): AddressDTO {
@@ -40,5 +41,70 @@ export function mapTemplateValues(values: NewTemplateFormValues): TemplateDTO {
 			};
 		}),
 		wastes: values.wastes.filter(value => !!value.id),
+	};
+}
+
+export function templateToDefaultValues(template: Template): NewTemplateFormValues {
+	return {
+		loadingCodes: template.loadingCodes,
+		medicalCompany: {
+			...template.medicalCompany,
+			uid: template.medicalCompany.uid.toString(),
+			territorialUnitId: template.medicalCompany.territorialUnitId.toString(),
+			addressId: template.medicalCompany.addressId.toString(),
+			address: {
+				...template.medicalCompany.address,
+				street: template.medicalCompany.address.street ?? "",
+				registryNumber: template.medicalCompany.address.registryNumber ?? "",
+				buildingNumber: template.medicalCompany.address.buildingNumber ?? "",
+				zipcode: {
+					...template.medicalCompany.address.zipcode,
+					id: template.medicalCompany.address.zipcode?.id.toString() || "",
+					uid: template.medicalCompany.address.zipcode?.uid.toString() || "",
+					name: template.medicalCompany.address.zipcode?.name.toString() || "",
+				},
+			},
+			contactEmail: template.medicalCompany.contactEmail ?? "",
+			contactFirstName: template.medicalCompany.contactFirstName ?? "",
+			contactLastName: template.medicalCompany.contactLastName ?? "",
+			contactPhone: template.medicalCompany.contactPhone ?? "",
+			territorialUnit: {
+				...template.medicalCompany.territorialUnit,
+				id: template.medicalCompany.territorialUnit?.id.toString() || "",
+				uid: template.medicalCompany.territorialUnit?.uid.toString() || "",
+			},
+		},
+		title: "",
+		wasteCompanies: template.wasteCompanies.map(wc => ({
+			...wc,
+			uid: wc.uid?.toString() || "",
+			companyId: wc.companyId?.toString() || "",
+			name: wc.name ?? "",
+			expiredAt: wc.expiredAt?.toISOString().split("T")[0] || "",
+			address: {
+				...wc.address,
+				street: wc.address?.street ?? "",
+				registryNumber: wc.address?.registryNumber ?? "",
+				buildingNumber: wc.address?.buildingNumber ?? "",
+				city: wc.address?.city ?? "",
+				zipcode: {
+					...wc.address?.zipcode,
+					id: wc.address?.zipcode?.id.toString() || "",
+					uid: wc.address?.zipcode?.uid.toString() || "",
+					name: wc.address?.zipcode?.name.toString() || "",
+				},
+			},
+			territorialUnit: {
+				...wc.territorialUnit,
+				id: wc.territorialUnit?.id.toString() || "",
+				uid: wc.territorialUnit?.uid.toString() || "",
+			},
+			type: {
+				...wc.type,
+				id: wc.type?.id.toString() || "",
+				uid: wc.type?.uid.toString() || "",
+			},
+		})),
+		wastes: template.wastes,
 	};
 }

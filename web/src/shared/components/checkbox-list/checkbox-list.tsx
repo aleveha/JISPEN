@@ -19,6 +19,7 @@ interface EnhancedTableProps<T extends TableDefaultType> {
 	orderedBy: keyof T;
 	rows: T[];
 	title: string;
+	value?: T[];
 }
 
 export const CheckboxList = <T extends TableDefaultType>({
@@ -30,11 +31,12 @@ export const CheckboxList = <T extends TableDefaultType>({
 	orderedBy,
 	rows,
 	title,
+	value,
 }: EnhancedTableProps<T>) => {
 	const [order, setOrder] = useState<Order>("asc");
 	const [orderBy, setOrderBy] = useState<keyof T>(orderedBy);
 	const [sortAs, setSortAs] = useState<SortAs | undefined>();
-	const [selected, setSelected] = useState<T[]>([]);
+	const [selected, setSelected] = useState<T[]>(value ?? []);
 
 	const handleRequestSort = useCallback(
 		(property: keyof T, sortAs?: SortAs) => () => {
@@ -55,7 +57,8 @@ export const CheckboxList = <T extends TableDefaultType>({
 
 	const handleClick = useCallback(
 		(value: T) => () => {
-			const selectedIndex = selected.indexOf(value);
+			const element = selected.find(v => v.id === value.id);
+			const selectedIndex = element ? selected.indexOf(element) : -1;
 			let newSelected: T[] = [];
 
 			if (selectedIndex === -1) {
@@ -83,7 +86,7 @@ export const CheckboxList = <T extends TableDefaultType>({
 		onSelectedValueChanged && onSelectedValueChanged([]);
 	}, [onDelete, onSelectedValueChanged, selected]);
 
-	const isSelected = useCallback((value: T) => selected.indexOf(value) !== -1, [selected]);
+	const isSelected = useCallback((value: T) => selected.find(v => v.id === value.id) !== undefined, [selected]);
 
 	useEffect(() => {
 		setSortAs(headCells.find(cell => cell.id === orderBy)?.sortAs);

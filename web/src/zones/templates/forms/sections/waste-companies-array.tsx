@@ -57,7 +57,7 @@ const WasteCompanyForm: FC<WasteCompanyFormProps> = ({
 			)}
 			<Autocomplete
 				autocompleteProps={{
-					getOptionLabel: (option: TerritorialUnit) => (option.uid === 0 ? "" : `${option.uid} \u2013 ${option.name}`),
+					getOptionLabel: (option: TerritorialUnit) => (option.uid == 0 ? "" : `${option.uid} \u2013 ${option.name}`),
 					noOptionsText: "Žádný typ nebyl nalezen",
 				}}
 				control={control}
@@ -209,10 +209,10 @@ export const WasteCompaniesArray: FC<Props> = ({
 	);
 
 	useEffect(() => {
-		if (requireWasteCompany) {
+		if (requireWasteCompany && fields.length === 0) {
 			append(wasteCompanyDefaultValue);
 		}
-	}, [append, requireWasteCompany, wasteCompanyDefaultValue]);
+	}, [append, fields.length, requireWasteCompany, wasteCompanyDefaultValue]);
 
 	useEffect(() => {
 		if (!requireWasteCompany && fields.length > 0) {

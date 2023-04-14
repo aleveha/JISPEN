@@ -19,7 +19,10 @@ export class TemplatesService {
 		"loadingCodes",
 		"wastes",
 		"wasteCompanies",
+		"wasteCompanies.address",
+		"wasteCompanies.address.zipcode",
 		"wasteCompanies.territorialUnit",
+		"wasteCompanies.type",
 	];
 
 	public constructor(
@@ -39,6 +42,13 @@ export class TemplatesService {
 			order: {
 				id: "DESC",
 			},
+		});
+	}
+
+	public async getById(email: string, id: number): Promise<TemplateModel | null> {
+		return await this.templateRepository.findOne({
+			where: { id, user: { email } },
+			relations: this.TEMPLATE_RELATIONS,
 		});
 	}
 

@@ -35,6 +35,7 @@ export const LoadingCodesSectionTable: FC<WasteSectionTableProps> = ({ control, 
 			orderedBy="uid"
 			rows={loadingCodes}
 			title="Kódy nakládání"
+			value={field.value as LoadingCode[]}
 		/>
 	);
 };

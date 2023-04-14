@@ -82,9 +82,6 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 
 	const handleOrderChanged = useCallback((value: Sorting<TemplatesTableColumns>) => setUserSorting("templates", value), [setUserSorting]);
 
-	const errorToast = useCallback(() => toast.error("Vyskytla se\xa0chyba během mazání šablony"), []);
-	const successToast = useCallback(() => toast.success("Šablona byla úspěšně smazána"), []);
-
 	const onDelete = useCallback(() => {
 		if (!selectedTemplate) {
 			return;
@@ -94,6 +91,9 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 			router.push("/login").then(() => toast.error("Musíte se nejdřív přihlásit"));
 			return;
 		}
+
+		const errorToast = () => toast.error("Vyskytla se\xa0chyba během mazání šablony");
+		const successToast = () => toast.success("Šablona byla úspěšně smazána");
 
 		fetcher<Template>({
 			axiosInstance: apiClient,
@@ -114,11 +114,19 @@ export const TemplatesTable: FC<Props> = ({ templates }) => {
 				errorToast();
 				setIsModalOpen(false);
 			});
-	}, [selectedTemplate, user?.accessToken, router, successToast, errorToast]);
+	}, [selectedTemplate, user?.accessToken, router]);
+
+	const onDuplicate = useCallback(
+		async (template: TemplatesTableColumns) => {
+			await router.push("/templates/new/" + template.id);
+		},
+		[router]
+	);
 
 	return (
 		<>
 			<DataGrid
+				handleCopyButtonClick={onDuplicate}
 				handleDeleteButtonClick={handleSelectedChange}
 				handleOrderChange={handleOrderChanged}
 				headCells={HEADER_CELLS}

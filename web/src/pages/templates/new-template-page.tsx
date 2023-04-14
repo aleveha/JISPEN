@@ -1,4 +1,5 @@
 import { CataloguesDto } from "@api/templates/dto";
+import { Template } from "@api/templates/types";
 import { withDashboardLayout } from "@shared/components/layout/layout";
 import { DiscriminatedUnion } from "@shared/types/types";
 import { NewTemplateForm } from "@zones/templates/forms/new-template-form";
@@ -7,7 +8,12 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
-const CreateTemplatePage: NextPage<DiscriminatedUnion<CataloguesDto>> = ({ data: catalogues, error }) => {
+interface Props {
+	catalogues: CataloguesDto;
+	template: Template | null;
+}
+
+const CreateTemplatePage: NextPage<DiscriminatedUnion<Props>> = ({ data, error }) => {
 	const router = useRouter();
 
 	useEffect(() => {
@@ -21,11 +27,11 @@ const CreateTemplatePage: NextPage<DiscriminatedUnion<CataloguesDto>> = ({ data:
 		}
 	}, [error, router]);
 
-	if (!catalogues || error) {
+	if (!data || error) {
 		return null;
 	}
 
-	return <NewTemplateForm catalogues={catalogues} />;
+	return <NewTemplateForm catalogues={data.catalogues} template={data.template ?? undefined} />;
 };
 
 export const Page = withDashboardLayout(CreateTemplatePage, "Nová šablona");
