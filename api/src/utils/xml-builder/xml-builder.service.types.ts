@@ -75,6 +75,7 @@ export interface XmlObjectWaste {
 	Kategorie: string;
 	KodNakladaniKod: string;
 	IdSubjektPartner?: string;
+	Vydaje?: number;
 }
 
 export interface XmlObject {

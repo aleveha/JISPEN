@@ -14,6 +14,7 @@ export class XlsxBuilderService {
 	private worksheetKeys: WorksheetKey[] = [
 		{ key: "date", label: "Datum", columnWidth: 10 },
 		{ key: "amount", label: "Množství", columnWidth: 10 },
+		{ key: "expense", label: "Vydaje", columnWidth: 10 },
 		{ key: "waste.uid", label: "Kód odpadu", columnWidth: 15 },
 		{ key: "waste.category", label: "Kategorie odpadu", columnWidth: 10 },
 		{ key: "waste.name", label: "Název odpadu", columnWidth: 30 },

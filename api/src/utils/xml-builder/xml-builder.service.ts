@@ -118,6 +118,7 @@ export class XmlBuilderService {
 			Kategorie: record.waste.category.includes("/") ? record.waste.category.split("/")[1] : record.waste.category,
 			KodNakladaniKod: record.loadingCode.uid,
 			IdSubjektPartner: record.wasteCompany ? (record.wasteCompany.uid ? "WC_" + record.wasteCompany.uid + "_" + record.wasteCompany.companyId : `WC_${record.wasteCompany.templateId}${record.wasteCompany.id}`) : undefined,
+			Vydaje: record.expense,
 		};
 	}
 }
